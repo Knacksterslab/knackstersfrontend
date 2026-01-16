@@ -1,0 +1,280 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+  }
+
+  .dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+  }
+
+  body {
+    font-family: var(--font-mono), "Space Mono", monospace;
+  }
+}
+
+/* Primary SVG button hover - only arrow section changes color */
+.landing-button-wrapper:hover .button-arrow {
+  fill: #e9414c;
+  transition: fill 0.3s ease;
+}
+
+/* Primary button hover - entire button changes color (header buttons only) */
+.primary-button-wrapper:not(.hero-primary-button-wrapper):hover .button-bg {
+  fill: #e9414c;
+  transition: fill 0.3s ease;
+}
+
+.primary-button-wrapper:not(.hero-primary-button-wrapper):hover .button-arrow {
+  fill: #e9414c;
+  transition: fill 0.3s ease;
+}
+
+.primary-button-wrapper:not(.hero-primary-button-wrapper):hover #paint0_linear_461_14741 stop {
+  stop-color: #e9414c;
+}
+
+/* Hero primary button hover - scoped to hero button only */
+.hero-primary-button-wrapper:hover .button-bg {
+  fill: #e9414c;
+  transition: fill 0.3s ease;
+}
+
+.hero-primary-button-wrapper:hover .button-arrow {
+  fill: #e9414c;
+  transition: fill 0.3s ease;
+}
+
+.hero-primary-button-wrapper:hover #paint0_linear_hero_button stop {
+  stop-color: #e9414c;
+}
+
+/* Section primary buttons hover - all primary buttons in sections */
+.primary-button-wrapper:hover .button-bg {
+  fill: #e9414c;
+  transition: fill 0.3s ease;
+}
+
+.primary-button-wrapper:hover .button-arrow {
+  fill: #e9414c;
+  transition: fill 0.3s ease;
+}
+
+.primary-button-wrapper:hover [id^="paint0_linear"] stop {
+  stop-color: #e9414c;
+}
+
+/* Outline button hover - all outline buttons */
+.outline-button-wrapper:hover .outline-button-bg,
+.outline-button-wrapper:hover .button-bg {
+  fill: #e9414c;
+  transition: fill 0.3s ease;
+}
+
+.outline-button-wrapper:hover .button-arrow {
+  fill: #e9414c;
+  transition: fill 0.3s ease;
+}
+
+.outline-button-wrapper:hover [id^="paint0_linear"] stop {
+  stop-color: #e9414c;
+}
+
+.benefit-icon-container svg {
+  stroke: #fff !important;
+}
+
+/* Benefits icon hover effect - only icon outline/stroke color changes */
+.benefit-card:hover svg path,
+.benefit-card:hover svg rect,
+.benefit-card:hover svg circle,
+.benefit-card:hover svg line {
+  stroke: #ff9634 !important;
+  transition: stroke 0.3s ease;
+}
+
+/* Banner scrolling animations - vertical from bottom to top */
+@keyframes scroll-primary {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+.animate-scroll-up {
+  display: flex;
+  flex-direction: column;
+  animation: scroll-primary 12s linear 0s infinite normal none running;
+}
+
+/* Scroll down animation for right carousel */
+@keyframes scroll-secondary {
+  0% {
+    transform: translateY(-50%);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animate-scroll-down {
+  display: flex;
+  flex-direction: column;
+  animation: scroll-secondary 12s linear 0s infinite normal none running;
+}
+
+.animated-row-1 {
+  display: none;
+}
+
+.animated-row-2 {
+  display: none;
+}
+
+@media (min-width: 1200px) {
+  .animated-row-1 {
+    display: block;
+  }
+}
+
+@media (min-width: 1899px) {
+  .animated-row-2 {
+    display: block;
+  }
+}
+
+/* Partner Logo Hover Effect */
+.partner-logo-container:hover svg text,
+.partner-logo-container:hover svg path,
+.partner-logo-container:hover svg circle {
+  fill: #000000 !important;
+  stroke: #000000 !important;
+  opacity: 1 !important;
+}
+
+/* Fade In Up Animation for Partners */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Scroller Dot Animation */
+@keyframes scroll-dot {
+  0% {
+    opacity: 1;
+    top: 8px;
+  }
+
+  25% {
+    opacity: 1;
+    top: 5px;
+  }
+
+  75% {
+    opacity: 1;
+    top: 15px;
+  }
+
+  100% {
+    opacity: 0;
+    top: 10px;
+  }
+}
+
+.animate-scroll-dot {
+  animation: scroll-dot 2s ease-in-out 0s infinite normal none running;
+}
+
+/* Partner Logo Fade In Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease-out;
+}
