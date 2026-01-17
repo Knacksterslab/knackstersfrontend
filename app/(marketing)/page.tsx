@@ -9,6 +9,10 @@ import Scroller from "@/components/shared/Scroller";
 import PartnersComponent from "@/components/partners/PartnersComponent";
 import { defaultLandingContent, LandingContent } from "@/components/landing/landing-content";
 
+// Force dynamic rendering and revalidation
+export const dynamic = 'force-dynamic';
+export const revalidate = 0; // Disable caching
+
 export const metadata: Metadata = {
   title: defaultLandingContent.seo.pageTitle,
   description: defaultLandingContent.seo.metaDescription,

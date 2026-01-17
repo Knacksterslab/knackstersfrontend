@@ -169,18 +169,34 @@ export default function Banner() {
     const fetchTalentCards = async () => {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-        const response = await fetch(`${apiUrl}/api/public/content/landing-hero`);
+        const fetchUrl = `${apiUrl}/api/public/content/landing-hero`;
+        
+        console.log('🔍 Fetching talent cards from:', fetchUrl);
+        
+        const response = await fetch(fetchUrl, {
+          cache: 'no-store', // Disable caching
+          headers: {
+            'Cache-Control': 'no-cache',
+          },
+        });
+        
+        console.log('📡 Response status:', response.status);
         
         if (response.ok) {
           const data = await response.json();
+          console.log('📦 Response data:', data);
           
           if (data.success && data.data?.content?.talentCards) {
+            console.log('✅ Setting talent cards:', data.data.content.talentCards.length, 'cards');
             setTalentCards(data.data.content.talentCards);
+          } else {
+            console.log('⚠️ No talent cards in response, using defaults');
           }
+        } else {
+          console.error('❌ Response not OK:', response.status, response.statusText);
         }
       } catch (error) {
-        // Silently fail and use default content
-        console.error('Failed to fetch talent cards:', error);
+        console.error('❌ Failed to fetch talent cards:', error);
       }
     };
     
