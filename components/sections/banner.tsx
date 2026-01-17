@@ -192,9 +192,6 @@ export default function Banner() {
         
         const response = await fetch(fetchUrl, {
           cache: 'no-store', // Disable caching
-          headers: {
-            'Cache-Control': 'no-cache',
-          },
         });
         
         console.log('📡 Response status:', response.status);
