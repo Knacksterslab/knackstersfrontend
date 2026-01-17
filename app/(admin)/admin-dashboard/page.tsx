@@ -41,7 +41,6 @@ export default function AdminDashboardPage() {
       title: 'View All Users',
       description: 'Manage talents, clients, and business managers',
       href: '/admin-dashboard/users',
-      badge: 'Coming Soon',
     },
     {
       title: 'Platform Settings',

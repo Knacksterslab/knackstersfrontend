@@ -616,12 +616,47 @@ export const adminApi = {
   },
 
   /**
+   * Create user (ADMIN, MANAGER, or TALENT only)
+   */
+  createUser: async (data: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    role: 'ADMIN' | 'MANAGER' | 'TALENT';
+  }) => {
+    return apiFetch<ApiResponse>('/api/admin/users', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  /**
    * Update user
    */
   updateUser: async (userId: string, data: any) => {
     return apiFetch<ApiResponse>(`/api/admin/users/${userId}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
+    });
+  },
+
+  /**
+   * Update user role
+   */
+  updateUserRole: async (userId: string, role: string) => {
+    return apiFetch<ApiResponse>(`/api/admin/users/${userId}/role`, {
+      method: 'PATCH',
+      body: JSON.stringify({ role }),
+    });
+  },
+
+  /**
+   * Toggle user status (activate/deactivate)
+   */
+  toggleUserStatus: async (userId: string, active: boolean) => {
+    return apiFetch<ApiResponse>(`/api/admin/users/${userId}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ active }),
     });
   },
 

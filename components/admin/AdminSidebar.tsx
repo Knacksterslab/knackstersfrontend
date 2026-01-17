@@ -42,6 +42,18 @@ export default function AdminSidebar() {
           icon: ImageIcon,
           path: '/admin-dashboard/content/partners',
         },
+        {
+          id: 'faq',
+          label: 'FAQ',
+          icon: MessageSquare,
+          path: '/admin-dashboard/content/faq',
+        },
+        {
+          id: 'legal',
+          label: 'Legal Pages',
+          icon: FileText,
+          path: '/admin-dashboard/content/legal',
+        },
       ],
     },
     {
@@ -49,7 +61,6 @@ export default function AdminSidebar() {
       label: 'User Management',
       icon: Users,
       path: '/admin-dashboard/users',
-      badge: 'Soon',
     },
     {
       id: 'settings',
