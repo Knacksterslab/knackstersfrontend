@@ -1,3 +1,5 @@
+'use client';
+
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminAuthGuard from '@/components/admin/AdminAuthGuard';
 import TopBar from '@/components/dashboard/TopBar';
