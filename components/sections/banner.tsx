@@ -168,10 +168,27 @@ export default function Banner() {
   useEffect(() => {
     const fetchTalentCards = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+        // Determine API URL with smart fallbacks
+        let apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        
+        // If env var not set, use production URL if on production domain
+        if (!apiUrl) {
+          if (typeof window !== 'undefined') {
+            const hostname = window.location.hostname;
+            if (hostname === 'knacksters.co' || hostname === 'www.knacksters.co') {
+              apiUrl = 'https://knackstersbackend-production.up.railway.app';
+            } else {
+              apiUrl = 'http://localhost:5000';
+            }
+          } else {
+            apiUrl = 'http://localhost:5000';
+          }
+        }
+        
         const fetchUrl = `${apiUrl}/api/public/content/landing-hero`;
         
         console.log('🔍 Fetching talent cards from:', fetchUrl);
+        console.log('🔍 NEXT_PUBLIC_API_URL env var:', process.env.NEXT_PUBLIC_API_URL);
         
         const response = await fetch(fetchUrl, {
           cache: 'no-store', // Disable caching
