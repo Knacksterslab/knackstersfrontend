@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Mail, Eye, EyeOff, Lock } from 'lucide-react';
 import { signIn } from 'supertokens-auth-react/recipe/emailpassword';
 import Session from 'supertokens-auth-react/recipe/session';
+import { userRoles } from '@/lib/supertokens/config';
 
 interface LoginFormProps {
   userType: 'client' | 'manager' | 'talent';
@@ -46,8 +47,8 @@ export default function LoginForm({
         const accessTokenPayload = await Session.getAccessTokenPayloadSecurely();
         const userRole = accessTokenPayload.role;
 
-        // If user is admin, always redirect to admin dashboard
-        if (userRole === 'ADMIN') {
+        // If user is admin, always redirect to admin dashboard (role is lowercase in session)
+        if (userRole === userRoles.ADMIN) {
           router.push('/admin-dashboard');
           return;
         }

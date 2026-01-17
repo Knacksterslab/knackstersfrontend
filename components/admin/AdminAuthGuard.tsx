@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Lock, AlertCircle } from 'lucide-react';
 import Session from 'supertokens-auth-react/recipe/session';
+import { userRoles } from '@/lib/supertokens/config';
 
 export default function AdminAuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -38,8 +39,8 @@ export default function AdminAuthGuard({ children }: { children: React.ReactNode
       
       setUserEmail(email || '');
 
-      // Check if user has ADMIN role
-      if (role === 'ADMIN') {
+      // Check if user has ADMIN role (role is lowercase in session)
+      if (role === userRoles.ADMIN) {
         setIsAdmin(true);
       } else {
         setIsAdmin(false);
