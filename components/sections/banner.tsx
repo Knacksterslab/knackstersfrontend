@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import TalentCard from "./TalentCard";
 import PrimaryButton from "../svg/primary-button";
 import Link from "next/link";
@@ -160,7 +161,31 @@ const FeatureIcon = ({ type }: { type: string }) => {
 };
 
 export default function Banner() {
-  const { headline, subheadline, ctaButtonText, talentCards } = defaultLandingContent.hero;
+  const { headline, subheadline, ctaButtonText } = defaultLandingContent.hero;
+  const [talentCards, setTalentCards] = useState(defaultLandingContent.hero.talentCards);
+  
+  // Fetch talent cards from API
+  useEffect(() => {
+    const fetchTalentCards = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+        const response = await fetch(`${apiUrl}/api/public/content/landing-hero`);
+        
+        if (response.ok) {
+          const data = await response.json();
+          
+          if (data.success && data.data?.content?.talentCards) {
+            setTalentCards(data.data.content.talentCards);
+          }
+        }
+      } catch (error) {
+        // Silently fail and use default content
+        console.error('Failed to fetch talent cards:', error);
+      }
+    };
+    
+    fetchTalentCards();
+  }, []);
   
   // Split talent cards - first 3 for left carousel, last 3 for right carousel
   const leftCarouselCards = talentCards.slice(0, 3);

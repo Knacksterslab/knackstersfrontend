@@ -31,6 +31,12 @@ export default function AdminSidebar() {
       path: '#',
       submenu: [
         {
+          id: 'hero',
+          label: 'Hero Section',
+          icon: ImageIcon,
+          path: '/admin-dashboard/content/hero',
+        },
+        {
           id: 'landing',
           label: 'Landing Page',
           icon: FileText,

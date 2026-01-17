@@ -700,6 +700,49 @@ export const adminApi = {
     const query = userId ? `?userId=${userId}` : '';
     return apiFetch<ApiResponse>(`/api/admin/activities/stats${query}`);
   },
+
+  /**
+   * Content Management - Get landing hero / talent cards
+   */
+  getLandingHero: async () => {
+    return apiFetch<ApiResponse>('/api/admin/pages/landing-hero');
+  },
+
+  /**
+   * Content Management - Update landing hero / talent cards
+   */
+  updateLandingHero: async (talentCards: Array<{
+    id: string;
+    image: string;
+    name: string;
+    role: string;
+  }>) => {
+    return apiFetch<ApiResponse>('/api/admin/pages/landing-hero', {
+      method: 'PUT',
+      body: JSON.stringify({ talentCards }),
+    });
+  },
+
+  /**
+   * Upload file (images for partners, talent, etc)
+   */
+  uploadFile: async (file: File, destination: 'partners' | 'talent' = 'talent') => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('destination', destination);
+    
+    const response = await fetch(`${API_URL}/api/admin/upload`, {
+      method: 'POST',
+      body: formData,
+      credentials: 'include',
+    });
+    
+    if (!response.ok) {
+      throw new Error('Upload failed');
+    }
+    
+    return response.json();
+  },
 };
 
 /**
