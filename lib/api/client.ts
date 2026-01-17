@@ -580,22 +580,11 @@ export const managerApi = {
  */
 export const adminApi = {
   /**
-   * Admin login
+   * Check admin authentication status
+   * Verifies user has valid SuperTokens session with ADMIN role
    */
-  login: async (password: string) => {
-    return apiFetch<ApiResponse>('/api/admin/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ password }),
-    });
-  },
-
-  /**
-   * Admin logout
-   */
-  logout: async () => {
-    return apiFetch<ApiResponse>('/api/admin/auth/logout', {
-      method: 'POST',
-    });
+  checkStatus: async () => {
+    return apiFetch<ApiResponse>('/api/admin/auth/status');
   },
 
   /**

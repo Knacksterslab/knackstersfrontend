@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Mail, Eye, EyeOff, Lock } from 'lucide-react';
 import { signIn } from 'supertokens-auth-react/recipe/emailpassword';
+import Session from 'supertokens-auth-react/recipe/session';
 
 interface LoginFormProps {
   userType: 'client' | 'manager' | 'talent';
@@ -41,14 +42,29 @@ export default function LoginForm({
       });
 
       if (response.status === 'OK') {
-        // Redirect to appropriate dashboard based on user type
-        const dashboardMap = {
+        // Get user role from session to determine redirect
+        const accessTokenPayload = await Session.getAccessTokenPayloadSecurely();
+        const userRole = accessTokenPayload.role;
+
+        // If user is admin, always redirect to admin dashboard
+        if (userRole === 'ADMIN') {
+          router.push('/admin-dashboard');
+          return;
+        }
+
+        // Otherwise redirect based on user type or role
+        const dashboardMap: Record<string, string> = {
           client: '/dashboard',
           manager: '/manager-dashboard',
-          talent: '/talent-dashboard'
+          talent: '/talent-dashboard',
+          CLIENT: '/dashboard',
+          MANAGER: '/manager-dashboard',
+          TALENT: '/talent-dashboard',
         };
         
-        router.push(dashboardMap[userType]);
+        // Try role first, then userType
+        const redirect = dashboardMap[userRole] || dashboardMap[userType] || '/dashboard';
+        router.push(redirect);
       } else if (response.status === 'WRONG_CREDENTIALS_ERROR') {
         setError('Invalid credentials. Please try again.');
       } else if (response.status === 'SIGN_IN_NOT_ALLOWED') {
