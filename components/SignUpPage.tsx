@@ -145,7 +145,9 @@ export default function SignUpPage() {
       {/* Main Content - Split Screen */}
       <div className="flex flex-col lg:flex-row flex-1">
         {/* Left Side - Form */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center px-4 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-10 lg:py-12 relative">
+        <div className={`w-full flex items-center justify-center px-4 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-10 lg:py-12 relative ${
+          currentStep === 1 ? 'lg:w-1/2' : 'lg:w-full max-w-6xl mx-auto'
+        }`}>
           <div className="w-full max-w-lg">
 
           {/* Progress Indicator */}
@@ -342,7 +344,8 @@ export default function SignUpPage() {
         </div>
       </div>
 
-      {/* Right Side - Marketing Content */}
+      {/* Right Side - Marketing Content (Only Step 1) */}
+      {currentStep === 1 && (
       <div className="hidden lg:flex w-full lg:w-1/2 bg-gradient-to-br from-orange-200 via-orange-300 to-orange-200 p-8 lg:p-12 items-center justify-center relative overflow-hidden min-h-[400px] lg:min-h-0">
         <div className="max-w-lg w-full">
           {/* Top Card - Extended Subscription */}
@@ -413,6 +416,7 @@ export default function SignUpPage() {
           </div>
         </div>
       </div>
+      )}
       </div>
 
       {/* Footer */}
