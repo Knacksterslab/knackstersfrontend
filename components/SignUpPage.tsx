@@ -3,26 +3,30 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight, ChevronLeft } from 'lucide-react';
 import KnackstersButton from '@/components/svg/knacksters-button';
 import OnboardingFooter from '@/components/shared/OnboardingFooter';
 import { toast } from 'react-toastify';
 import { signUp } from 'supertokens-auth-react/recipe/emailpassword';
+import SolutionSelector, { SolutionType } from './signup/SolutionSelector';
 
 export default function SignUpPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [currentStep, setCurrentStep] = useState(1); // 1: Account Details, 2: Solution Selection
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     company: '',
     email: '',
-    password: ''
+    password: '',
+    selectedSolution: null as SolutionType | null,
+    solutionNotes: ''
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
@@ -30,22 +34,44 @@ export default function SignUpPage() {
     setError(''); // Clear error on input change
   };
 
-  const handleSubmit = async () => {
+  const handleSolutionSelect = (solution: SolutionType) => {
+    setFormData({
+      ...formData,
+      selectedSolution: solution
+    });
     setError('');
-    setIsLoading(true);
+  };
 
-    // Validation
+  const handleStep1Continue = () => {
+    // Validation for step 1
     if (!formData.firstName || !formData.lastName || !formData.email || !formData.password) {
       setError('Please fill in all required fields');
-      setIsLoading(false);
       return;
     }
 
     if (formData.password.length < 8) {
       setError('Password must be at least 8 characters long');
-      setIsLoading(false);
       return;
     }
+
+    // Move to step 2
+    setCurrentStep(2);
+    setError('');
+  };
+
+  const handleFinalSubmit = async () => {
+    // Validation for step 2
+    if (!formData.selectedSolution) {
+      setError('Please select your primary need');
+      return;
+    }
+
+    setError('');
+    setIsLoading(true);
+
+    // Get solution notes from textarea if present
+    const solutionNotesEl = document.getElementById('solution-notes') as HTMLTextAreaElement;
+    const solutionNotes = solutionNotesEl?.value || '';
 
     try {
       // Use SuperTokens SDK for signup
@@ -55,23 +81,19 @@ export default function SignUpPage() {
           { id: 'password', value: formData.password },
           { id: 'name', value: `${formData.firstName} ${formData.lastName}` },
           { id: 'role', value: 'client' },
+          { id: 'selectedSolution', value: formData.selectedSolution },
+          { id: 'solutionNotes', value: solutionNotes },
         ],
       });
 
       if (response.status === 'OK') {
-        // Save additional data to backend (company name, etc.) if needed
-        if (formData.company) {
-          console.log('Company info:', formData.company);
-        }
-
-        toast.success('Account created successfully!');
+        toast.success('Account created successfully! Your dedicated manager will contact you soon.');
         
         // Wait for session to be fully established
         await new Promise(resolve => setTimeout(resolve, 1000));
         
-        // Session is automatically created by SuperTokens SDK
-        // Redirect to schedule page for onboarding call
-        router.push('/schedule');
+        // Redirect to client dashboard
+        router.push('/client-dashboard');
       } else if (response.status === 'FIELD_ERROR') {
         const fieldErrors = response.formFields
           .filter((f: any) => f.error)
@@ -126,8 +148,42 @@ export default function SignUpPage() {
         <div className="w-full lg:w-1/2 flex items-center justify-center px-4 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-10 lg:py-12 relative">
           <div className="w-full max-w-lg">
 
+          {/* Progress Indicator */}
+          <div className="mb-6">
+            <div className="flex items-center justify-center gap-2">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold ${
+                currentStep >= 1 ? 'bg-gradient-to-r from-[#E9414C] to-[#FC8838] text-white' : 'bg-gray-200 text-gray-600'
+              }`}>
+                1
+              </div>
+              <div className={`h-1 w-16 ${currentStep >= 2 ? 'bg-gradient-to-r from-[#E9414C] to-[#FC8838]' : 'bg-gray-200'}`}></div>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold ${
+                currentStep >= 2 ? 'bg-gradient-to-r from-[#E9414C] to-[#FC8838] text-white' : 'bg-gray-200 text-gray-600'
+              }`}>
+                2
+              </div>
+            </div>
+            <div className="flex justify-between mt-2 px-4">
+              <span className="text-xs text-gray-600">Account Details</span>
+              <span className="text-xs text-gray-600">Your Needs</span>
+            </div>
+          </div>
+
+          {/* Back Button (Step 2) */}
+          {currentStep === 2 && (
+            <button
+              onClick={() => setCurrentStep(1)}
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4"
+            >
+              <ChevronLeft size={20} />
+              <span>Back</span>
+            </button>
+          )}
+
           {/* Form */}
           <div className="space-y-4 sm:space-y-5">
+            {currentStep === 1 && (
+              <>
             {/* Name Fields */}
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex-1">
@@ -230,23 +286,12 @@ export default function SignUpPage() {
               </div>
             )}
 
-            {/* Sign Up Button */}
+            {/* Continue Button (Step 1) */}
             <button
-              onClick={handleSubmit}
-              disabled={isLoading}
-              className="w-full px-6 py-3 bg-gradient-to-r from-[#E9414C] to-[#FF9634] text-white rounded-lg hover:opacity-90 transition-opacity font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handleStep1Continue}
+              className="w-full px-6 py-3 bg-gradient-to-r from-[#E9414C] to-[#FF9634] text-white rounded-lg hover:opacity-90 transition-opacity font-semibold text-base"
             >
-              {isLoading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Creating account...
-                </span>
-              ) : (
-                'Sign up'
-              )}
+              Continue
             </button>
 
             {/* Already have account */}
@@ -255,6 +300,44 @@ export default function SignUpPage() {
                 Already have an account? Log in
               </a>
             </div>
+            </>
+            )}
+
+            {currentStep === 2 && (
+              <>
+                {/* Solution Selector */}
+                <SolutionSelector
+                  selectedSolution={formData.selectedSolution}
+                  onSelect={handleSolutionSelect}
+                />
+
+                {/* Error Message */}
+                {error && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg mt-4">
+                    <p className="text-sm text-red-600">{error}</p>
+                  </div>
+                )}
+
+                {/* Create Account Button (Step 2) */}
+                <button
+                  onClick={handleFinalSubmit}
+                  disabled={isLoading || !formData.selectedSolution}
+                  className="w-full px-6 py-3 bg-gradient-to-r from-[#E9414C] to-[#FF9634] text-white rounded-lg hover:opacity-90 transition-opacity font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed mt-6"
+                >
+                  {isLoading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Creating account...
+                    </span>
+                  ) : (
+                    'Create Account'
+                  )}
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>
