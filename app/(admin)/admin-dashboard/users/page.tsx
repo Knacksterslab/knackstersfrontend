@@ -30,6 +30,7 @@ interface User {
   status: string;
   createdAt: string;
   subscriptions?: any[];
+  specializations?: string[];
   _count?: {
     clientProjects: number;
     assignedTasks: number;
@@ -62,6 +63,7 @@ export default function UsersManagementPage() {
     firstName: '',
     lastName: '',
     role: 'MANAGER' as 'ADMIN' | 'MANAGER' | 'TALENT',
+    specializations: [] as string[],
   });
 
   // Edit user form
@@ -109,6 +111,12 @@ export default function UsersManagementPage() {
     e.preventDefault();
     setError('');
     setSuccess('');
+
+    // Validate manager specializations
+    if (formData.role === 'MANAGER' && formData.specializations.length === 0) {
+      setError('Please select at least one specialization for managers');
+      return;
+    }
 
     try {
       const response = await fetch('/api/admin/users', {
@@ -184,6 +192,7 @@ export default function UsersManagementPage() {
       firstName: '',
       lastName: '',
       role: 'MANAGER',
+      specializations: [],
     });
     setIsModalOpen(true);
   };
@@ -364,8 +373,15 @@ export default function UsersManagementPage() {
                       <div className="text-sm text-gray-500">{user.email}</div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {getRoleBadge(user.role)}
+                  <td className="px-6 py-4">
+                    <div>
+                      {getRoleBadge(user.role)}
+                      {user.role === 'MANAGER' && user.specializations && user.specializations.length > 0 && (
+                        <div className="mt-1 text-xs text-gray-500">
+                          {user.specializations.map(s => s.replace(/_/g, ' ')).join(', ')}
+                        </div>
+                      )}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {user.status === 'ACTIVE' ? (
@@ -536,6 +552,42 @@ export default function UsersManagementPage() {
                   Note: CLIENT users sign up through the normal signup flow
                 </p>
               </div>
+
+              {formData.role === 'MANAGER' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Specializations *
+                  </label>
+                  <div className="space-y-2 max-h-48 overflow-y-auto border border-gray-300 rounded-lg p-3">
+                    {[
+                      { value: 'AI_MACHINE_LEARNING', label: 'AI & Machine Learning' },
+                      { value: 'CYBERSECURITY', label: 'Cybersecurity' },
+                      { value: 'SOFTWARE_DEVELOPMENT', label: 'Software Development' },
+                      { value: 'DESIGN_CREATIVE', label: 'Design & Creative' },
+                      { value: 'MARKETING_GROWTH', label: 'Marketing & Growth' },
+                      { value: 'HEALTHCARE_LIFE_SCIENCES', label: 'Healthcare & Life Sciences' },
+                    ].map((spec) => (
+                      <label key={spec.value} className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={formData.specializations.includes(spec.value)}
+                          onChange={(e) => {
+                            const newSpecs = e.target.checked
+                              ? [...formData.specializations, spec.value]
+                              : formData.specializations.filter(s => s !== spec.value);
+                            setFormData({ ...formData, specializations: newSpecs });
+                          }}
+                          className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <span className="text-sm text-gray-700">{spec.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                  <p className="mt-1 text-xs text-gray-500">
+                    Select one or more solutions this manager specializes in
+                  </p>
+                </div>
+              )}
 
               {/* Modal Footer */}
               <div className="flex items-center justify-end gap-3 pt-4">
