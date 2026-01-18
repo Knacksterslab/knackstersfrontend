@@ -100,7 +100,7 @@ export default function ScheduleFlow() {
     
     // Redirect based on flow type
     if (isClientFlow) {
-      router.push('/dashboard');
+      router.push('/client-dashboard');
     } else {
       router.push('/');
     }

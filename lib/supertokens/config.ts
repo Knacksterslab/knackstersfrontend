@@ -16,7 +16,7 @@ export const userRoles = {
 export type UserRole = typeof userRoles[keyof typeof userRoles];
 
 export const dashboardPaths: Record<UserRole, string> = {
-  [userRoles.CLIENT]: '/dashboard',
+  [userRoles.CLIENT]: '/client-dashboard',
   [userRoles.MANAGER]: '/manager-dashboard',
   [userRoles.TALENT]: '/talent-dashboard',
   [userRoles.ADMIN]: '/admin-dashboard'

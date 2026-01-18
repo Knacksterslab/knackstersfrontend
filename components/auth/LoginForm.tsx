@@ -55,16 +55,16 @@ export default function LoginForm({
 
         // Otherwise redirect based on user type or role
         const dashboardMap: Record<string, string> = {
-          client: '/dashboard',
+          client: '/client-dashboard',
           manager: '/manager-dashboard',
           talent: '/talent-dashboard',
-          CLIENT: '/dashboard',
+          CLIENT: '/client-dashboard',
           MANAGER: '/manager-dashboard',
           TALENT: '/talent-dashboard',
         };
         
         // Try role first, then userType
-        const redirect = dashboardMap[userRole] || dashboardMap[userType] || '/dashboard';
+        const redirect = dashboardMap[userRole] || dashboardMap[userType] || '/client-dashboard';
         router.push(redirect);
       } else if (response.status === 'WRONG_CREDENTIALS_ERROR') {
         setError('Invalid credentials. Please try again.');

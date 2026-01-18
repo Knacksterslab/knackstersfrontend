@@ -263,7 +263,7 @@ export default function AdminAuthGuard({ children }: { children: React.ReactNode
               {/* Action Buttons */}
               <div className="space-y-3">
                 <button
-                  onClick={() => router.push('/dashboard')}
+                  onClick={() => router.push('/client-dashboard')}
                   className="w-full px-6 py-3 bg-gradient-to-r from-[#E9414C] to-[#FF9634] text-white rounded-lg hover:opacity-90 transition-opacity font-semibold"
                 >
                   Go to Dashboard

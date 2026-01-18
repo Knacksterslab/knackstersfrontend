@@ -17,7 +17,7 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   const { logout } = useUser()
 
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/client-dashboard' },
     { id: 'tasks', label: 'Tasks / Projects', icon: FolderKanban, path: '/tasks-projects' },
     { id: 'billing', label: 'Billing & Subscription', icon: CreditCard, path: '/billing' },
     { id: 'support', label: 'Support / Help', icon: HelpCircle, path: '/support' },
