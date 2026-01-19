@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import RoleGuard from '@/components/auth/RoleGuard'
 import Sidebar from './Sidebar'
 import TopBar from './TopBar'
 import MinutesOverview from './MinutesOverview'
@@ -47,9 +48,10 @@ export default function DashboardLayout() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+    <RoleGuard allowedRoles={['client']}>
+      <div className="flex h-screen bg-gray-50">
+        {/* Sidebar */}
+        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -162,6 +164,7 @@ export default function DashboardLayout() {
         </main>
       </div>
     </div>
+    </RoleGuard>
   )
 }
 

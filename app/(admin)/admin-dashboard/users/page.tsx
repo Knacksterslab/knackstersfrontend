@@ -64,6 +64,7 @@ export default function UsersManagementPage() {
     lastName: '',
     role: 'MANAGER' as 'ADMIN' | 'MANAGER' | 'TALENT',
     specializations: [] as string[],
+    password: '',
   });
 
   // Edit user form
@@ -92,8 +93,10 @@ export default function UsersManagementPage() {
       }
 
       const data = await response.json();
-      setUsers(data.users || []);
-      setTotal(data.total || 0);
+      // Backend wraps response in { success: true, data: { users, total } }
+      const responseData = data.data || data;
+      setUsers(responseData.users || []);
+      setTotal(responseData.total || 0);
     } catch (error: any) {
       console.error('Error fetching users:', error);
       setError('Failed to load users');
@@ -111,6 +114,12 @@ export default function UsersManagementPage() {
     e.preventDefault();
     setError('');
     setSuccess('');
+
+    // Validate password
+    if (!formData.password || formData.password.length < 8) {
+      setError('Password must be at least 8 characters');
+      return;
+    }
 
     // Validate manager specializations
     if (formData.role === 'MANAGER' && formData.specializations.length === 0) {
@@ -132,7 +141,7 @@ export default function UsersManagementPage() {
         throw new Error(data.error || 'Failed to create user');
       }
 
-      setSuccess(`User created successfully! They can now sign up at ${window.location.origin}/signup with ${formData.email}`);
+      setSuccess(`User created successfully! They can now log in at ${window.location.origin}/login with email: ${formData.email}`);
       fetchUsers();
       closeModal();
     } catch (error: any) {
@@ -193,6 +202,7 @@ export default function UsersManagementPage() {
       lastName: '',
       role: 'MANAGER',
       specializations: [],
+      password: '',
     });
     setIsModalOpen(true);
   };
@@ -532,6 +542,24 @@ export default function UsersManagementPage() {
                   placeholder="Doe"
                   required
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Temporary Password *
+                </label>
+                <input
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Min 8 characters"
+                  required
+                  minLength={8}
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  User will be able to log in immediately with this password
+                </p>
               </div>
 
               <div>
