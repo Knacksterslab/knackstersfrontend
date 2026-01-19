@@ -2,8 +2,12 @@ import SuperTokens from 'supertokens-auth-react';
 import EmailPassword from 'supertokens-auth-react/recipe/emailpassword';
 import Session from 'supertokens-auth-react/recipe/session';
 
+// Track if we've already initialized to prevent double initialization
+let isInitialized = false;
+
 export function initSuperTokensFrontend() {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== 'undefined' && !isInitialized) {
+    isInitialized = true;
     // Get API domain - prioritize NEXT_PUBLIC_API_URL, then NEXT_PUBLIC_API_DOMAIN
     const apiDomain = process.env.NEXT_PUBLIC_API_URL || 
                      process.env.NEXT_PUBLIC_API_DOMAIN || 

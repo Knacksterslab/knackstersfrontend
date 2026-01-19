@@ -1,10 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import TalentCard from "./TalentCard";
 import PrimaryButton from "../svg/primary-button";
 import Link from "next/link";
 import { defaultLandingContent } from "@/components/landing/landing-content";
+
+interface TalentCard {
+  id: string;
+  image: string;
+  name: string;
+  role: string;
+}
+
+interface BannerProps {
+  talentCards?: TalentCard[];
+}
 
 // Feature list items with icons and descriptions
 const features = [
@@ -160,62 +170,11 @@ const FeatureIcon = ({ type }: { type: string }) => {
   }
 };
 
-export default function Banner() {
+export default function Banner({ talentCards: talentCardsProp }: BannerProps) {
   const { headline, subheadline, ctaButtonText } = defaultLandingContent.hero;
-  const [talentCards, setTalentCards] = useState(defaultLandingContent.hero.talentCards);
   
-  // Fetch talent cards from API
-  useEffect(() => {
-    const fetchTalentCards = async () => {
-      try {
-        // Determine API URL with smart fallbacks
-        let apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        
-        // If env var not set, use production URL if on production domain
-        if (!apiUrl) {
-          if (typeof window !== 'undefined') {
-            const hostname = window.location.hostname;
-            if (hostname === 'knacksters.co' || hostname === 'www.knacksters.co') {
-              apiUrl = 'https://knackstersbackend-production.up.railway.app';
-            } else {
-              apiUrl = 'http://localhost:5000';
-            }
-          } else {
-            apiUrl = 'http://localhost:5000';
-          }
-        }
-        
-        const fetchUrl = `${apiUrl}/api/public/content/landing-hero`;
-        
-        console.log('🔍 Fetching talent cards from:', fetchUrl);
-        console.log('🔍 NEXT_PUBLIC_API_URL env var:', process.env.NEXT_PUBLIC_API_URL);
-        
-        const response = await fetch(fetchUrl, {
-          cache: 'no-store', // Disable caching
-        });
-        
-        console.log('📡 Response status:', response.status);
-        
-        if (response.ok) {
-          const data = await response.json();
-          console.log('📦 Response data:', data);
-          
-          if (data.success && data.data?.content?.talentCards) {
-            console.log('✅ Setting talent cards:', data.data.content.talentCards.length, 'cards');
-            setTalentCards(data.data.content.talentCards);
-          } else {
-            console.log('⚠️ No talent cards in response, using defaults');
-          }
-        } else {
-          console.error('❌ Response not OK:', response.status, response.statusText);
-        }
-      } catch (error) {
-        console.error('❌ Failed to fetch talent cards:', error);
-      }
-    };
-    
-    fetchTalentCards();
-  }, []);
+  // Use provided talent cards or fall back to defaults
+  const talentCards = talentCardsProp || defaultLandingContent.hero.talentCards;
   
   // Split talent cards - first 3 for left carousel, last 3 for right carousel
   const leftCarouselCards = talentCards.slice(0, 3);

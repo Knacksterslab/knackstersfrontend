@@ -25,10 +25,35 @@ export const metadata: Metadata = {
   ],
 };
 
-export default function Home() {
+// Fetch talent cards server-side
+async function getTalentCards() {
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    const response = await fetch(`${apiUrl}/api/public/content/landing-hero`, {
+      cache: 'no-store', // Always fetch fresh data
+      next: { revalidate: 0 },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data.success && data.data?.content?.talentCards) {
+        return data.data.content.talentCards;
+      }
+    }
+  } catch (error) {
+    console.error('Failed to fetch talent cards server-side:', error);
+  }
+  
+  // Return default cards as fallback
+  return defaultLandingContent.hero.talentCards;
+}
+
+export default async function Home() {
+  const talentCards = await getTalentCards();
+
   return (
     <>
-      <Banner />
+      <Banner talentCards={talentCards} />
       <div className="flex justify-center py-8">
         <Scroller />
       </div>
