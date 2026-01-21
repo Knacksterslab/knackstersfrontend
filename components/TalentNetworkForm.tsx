@@ -150,15 +150,6 @@ export default function TalentNetworkForm() {
       // Filter out empty URLs and submit application to backend
       const validProfileUrls = profileUrls.filter(url => url.trim() !== '');
       
-      // #region agent log
-      // Hypothesis D: Log talent form submission
-      console.log('[DEBUG] Talent form submitting', {
-        email: formData.email,
-        currentUrl: window.location.href,
-        timestamp: new Date().toISOString()
-      });
-      // #endregion
-      
       const response = await talentApplicationApi.apply({
         firstName: formData.firstName,
         lastName: formData.lastName,
@@ -171,15 +162,6 @@ export default function TalentNetworkForm() {
         hourlyRate: parseFloat(formData.hourlyRate),
       });
       
-      // #region agent log
-      // Hypothesis D: Log successful response
-      console.log('[DEBUG] API response received', {
-        success: response.success,
-        hasProfileId: !!response.data?.profileId,
-        timestamp: new Date().toISOString()
-      });
-      // #endregion
-      
       if (response.success && response.data?.profileId) {
         // Store profile ID for next step
         if (typeof window !== 'undefined') {
@@ -190,15 +172,6 @@ export default function TalentNetworkForm() {
         setError(response.error || 'Failed to submit application');
       }
     } catch (err: any) {
-      // #region agent log
-      // Hypothesis D & E: Log error details
-      console.error('[DEBUG] API call failed', {
-        errorMessage: err.message,
-        errorType: err.name,
-        errorString: String(err),
-        timestamp: new Date().toISOString()
-      });
-      // #endregion
       setError(err.message || 'Failed to submit application');
     } finally {
       setLoading(false);

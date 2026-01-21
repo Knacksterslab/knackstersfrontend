@@ -5,17 +5,6 @@
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
-// #region agent log
-// Hypothesis B: Log the API_URL value at module initialization (client-side only)
-if (typeof window !== 'undefined') {
-  console.log('[DEBUG] API Client initialized', {
-    API_URL,
-    envVar: process.env.NEXT_PUBLIC_API_URL,
-    fallbackUsed: !process.env.NEXT_PUBLIC_API_URL
-  });
-}
-// #endregion
-
 interface ApiResponse<T = any> {
   success: boolean;
   data?: T;
@@ -28,16 +17,6 @@ interface ApiResponse<T = any> {
  */
 async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = `${API_URL}${endpoint}`;
-  
-  // #region agent log
-  // Hypothesis E: Log the actual URL being called before fetch
-  console.log('[DEBUG] apiFetch called', {
-    endpoint,
-    API_URL,
-    constructedUrl: url,
-    method: options.method || 'GET'
-  });
-  // #endregion
   
   const headers: any = {
     'Content-Type': 'application/json',
