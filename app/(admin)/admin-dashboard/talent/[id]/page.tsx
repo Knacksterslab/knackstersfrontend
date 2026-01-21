@@ -16,6 +16,7 @@ import {
   ArrowLeft,
 } from 'lucide-react';
 import Link from 'next/link';
+import { adminApi } from '@/lib/api/client';
 
 interface TalentProfile {
   id: string;
@@ -50,20 +51,17 @@ export default function TalentDetailPage() {
   useEffect(() => {
     async function fetchProfile() {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-        const response = await fetch(`${apiUrl}/api/admin/talent/${talentId}`, {
-          credentials: 'include',
-        });
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success) {
-            setProfile(data.data);
-          }
-        } else if (response.status === 404) {
+        const data = await adminApi.getTalentApplication(talentId as string);
+        if (data.success) {
+          setProfile(data.data);
+        } else {
           router.push('/admin-dashboard/talent');
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Failed to fetch talent profile:', error);
+        if (error.message?.includes('404')) {
+          router.push('/admin-dashboard/talent');
+        }
       } finally {
         setLoading(false);
       }
@@ -80,22 +78,10 @@ export default function TalentDetailPage() {
 
     setActionLoading(true);
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const response = await fetch(`${apiUrl}/api/admin/talent/${talentId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ status: newStatus }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          setProfile(data.data);
-          alert(`Status updated to ${formatStatus(newStatus)}`);
-        }
-      } else {
-        alert('Failed to update status');
+      const data = await adminApi.updateTalentStatus(talentId as string, newStatus);
+      if (data.success) {
+        setProfile(data.data);
+        alert(`Status updated to ${formatStatus(newStatus)}`);
       }
     } catch (error) {
       console.error('Failed to update status:', error);

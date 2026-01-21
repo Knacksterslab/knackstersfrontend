@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Bell, Check, CheckCheck, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { adminApi } from '@/lib/api/client';
 
 interface Notification {
   id: string;
@@ -26,15 +27,9 @@ export default function NotificationBell() {
   // Fetch notifications
   const fetchNotifications = async () => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const response = await fetch(`${apiUrl}/api/admin/notifications?limit=10`, {
-        credentials: 'include',
-      });
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          setNotifications(data.data || []);
-        }
+      const data = await adminApi.getNotifications(10);
+      if (data.success) {
+        setNotifications(data.data || []);
       }
     } catch (error) {
       console.error('Failed to fetch notifications:', error);
@@ -44,15 +39,9 @@ export default function NotificationBell() {
   // Fetch unread count
   const fetchUnreadCount = async () => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const response = await fetch(`${apiUrl}/api/admin/notifications/count`, {
-        credentials: 'include',
-      });
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          setUnreadCount(data.data?.count || 0);
-        }
+      const data = await adminApi.getUnreadNotificationCount();
+      if (data.success) {
+        setUnreadCount(data.data?.count || 0);
       }
     } catch (error) {
       console.error('Failed to fetch unread count:', error);
@@ -62,18 +51,11 @@ export default function NotificationBell() {
   // Mark notification as read
   const markAsRead = async (notificationId: string) => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const response = await fetch(`${apiUrl}/api/admin/notifications/${notificationId}/read`, {
-        method: 'PATCH',
-        credentials: 'include',
-      });
-      
-      if (response.ok) {
-        setNotifications(prev =>
-          prev.map(n => (n.id === notificationId ? { ...n, isRead: true } : n))
-        );
-        setUnreadCount(prev => Math.max(0, prev - 1));
-      }
+      await adminApi.markNotificationAsRead(notificationId);
+      setNotifications(prev =>
+        prev.map(n => (n.id === notificationId ? { ...n, isRead: true } : n))
+      );
+      setUnreadCount(prev => Math.max(0, prev - 1));
     } catch (error) {
       console.error('Failed to mark notification as read:', error);
     }
@@ -83,16 +65,9 @@ export default function NotificationBell() {
   const markAllAsRead = async () => {
     setLoading(true);
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const response = await fetch(`${apiUrl}/api/admin/notifications/read-all`, {
-        method: 'PATCH',
-        credentials: 'include',
-      });
-      
-      if (response.ok) {
-        setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
-        setUnreadCount(0);
-      }
+      await adminApi.markAllNotificationsAsRead();
+      setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+      setUnreadCount(0);
     } catch (error) {
       console.error('Failed to mark all as read:', error);
     } finally {

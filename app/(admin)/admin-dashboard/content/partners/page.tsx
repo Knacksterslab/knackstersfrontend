@@ -13,6 +13,7 @@ import {
   EyeOff,
   AlertCircle,
 } from 'lucide-react';
+import { adminApi } from '@/lib/api/client';
 
 interface Partner {
   id: string;
@@ -46,11 +47,8 @@ export default function PartnersManagementPage() {
   // Fetch partners
   const fetchPartners = async () => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const response = await fetch(`${apiUrl}/api/admin/partners`, {
-        credentials: 'include',
-      });
-      const data = await response.json();
+      const response = await adminApi.getPartners();
+      const data = response.data || response;
       setPartners(data.partners || []);
     } catch (error) {
       console.error('Error fetching partners:', error);
@@ -73,21 +71,7 @@ export default function PartnersManagementPage() {
     setError('');
 
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const response = await fetch(`${apiUrl}/api/admin/upload`, {
-        method: 'POST',
-        credentials: 'include',
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Upload failed');
-      }
+      const data = await adminApi.uploadFile(file, 'partners');
 
       setUploadedFile(data.url);
       setFormData((prev) => ({ ...prev, logoUrl: data.url }));
@@ -105,19 +89,10 @@ export default function PartnersManagementPage() {
     setSuccess('');
 
     try {
-      const method = editingPartner ? 'PUT' : 'POST';
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const response = await fetch(`${apiUrl}/api/admin/partners`, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Operation failed');
+      if (editingPartner) {
+        await adminApi.updatePartner(formData);
+      } else {
+        await adminApi.createPartner(formData);
       }
 
       setSuccess(editingPartner ? 'Partner updated successfully!' : 'Partner added successfully!');
@@ -133,15 +108,7 @@ export default function PartnersManagementPage() {
     if (!confirm('Are you sure you want to delete this partner?')) return;
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const response = await fetch(`${apiUrl}/api/admin/partners?id=${id}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        throw new Error('Delete failed');
-      }
+      await adminApi.deletePartner(id);
 
       setSuccess('Partner deleted successfully!');
       fetchPartners();
@@ -153,17 +120,7 @@ export default function PartnersManagementPage() {
   // Handle toggle active
   const handleToggleActive = async (partner: Partner) => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const response = await fetch(`${apiUrl}/api/admin/partners`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ id: partner.id, active: !partner.active }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Update failed');
-      }
+      await adminApi.updatePartner({ id: partner.id, active: !partner.active });
 
       fetchPartners();
     } catch (error) {

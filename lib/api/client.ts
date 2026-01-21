@@ -743,6 +743,76 @@ export const adminApi = {
     
     return response.json();
   },
+
+  /**
+   * Admin Notifications API
+   */
+  getNotifications: async (limit?: number) => {
+    const query = limit ? `?limit=${limit}` : '';
+    return apiFetch<ApiResponse>(`/api/admin/notifications${query}`);
+  },
+
+  getUnreadNotificationCount: async () => {
+    return apiFetch<ApiResponse>('/api/admin/notifications/count');
+  },
+
+  markNotificationAsRead: async (id: string) => {
+    return apiFetch<ApiResponse>(`/api/admin/notifications/${id}/read`, {
+      method: 'PATCH',
+    });
+  },
+
+  markAllNotificationsAsRead: async () => {
+    return apiFetch<ApiResponse>('/api/admin/notifications/read-all', {
+      method: 'PATCH',
+    });
+  },
+
+  /**
+   * Admin Talent Management API
+   */
+  getTalentApplications: async (status?: string) => {
+    const query = status ? `?status=${status}` : '';
+    return apiFetch<ApiResponse>(`/api/admin/talent${query}`);
+  },
+
+  getTalentApplication: async (id: string) => {
+    return apiFetch<ApiResponse>(`/api/admin/talent/${id}`);
+  },
+
+  updateTalentStatus: async (id: string, status: string) => {
+    return apiFetch<ApiResponse>(`/api/admin/talent/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    });
+  },
+
+  /**
+   * Admin Partners API
+   */
+  getPartners: async () => {
+    return apiFetch<ApiResponse>('/api/admin/partners');
+  },
+
+  createPartner: async (data: { name: string; logoUrl: string; websiteUrl?: string; active?: boolean }) => {
+    return apiFetch<ApiResponse>('/api/admin/partners', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  updatePartner: async (data: { id: string; name?: string; logoUrl?: string; websiteUrl?: string; active?: boolean }) => {
+    return apiFetch<ApiResponse>('/api/admin/partners', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+
+  deletePartner: async (id: string) => {
+    return apiFetch<ApiResponse>(`/api/admin/partners?id=${id}`, {
+      method: 'DELETE',
+    });
+  },
 };
 
 /**

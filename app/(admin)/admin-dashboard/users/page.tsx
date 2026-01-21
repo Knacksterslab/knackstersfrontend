@@ -19,6 +19,7 @@ import {
   Star,
   UserCircle2,
 } from 'lucide-react';
+import { adminApi } from '@/lib/api/client';
 
 interface User {
   id: string;
@@ -77,23 +78,17 @@ export default function UsersManagementPage() {
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
-      const params = new URLSearchParams();
-      if (roleFilter !== 'ALL') params.append('role', roleFilter);
-      if (statusFilter !== 'ALL') params.append('status', statusFilter);
-      if (searchQuery) params.append('search', searchQuery);
-      params.append('limit', usersPerPage.toString());
-      params.append('offset', ((currentPage - 1) * usersPerPage).toString());
+      const filters: any = {
+        limit: usersPerPage,
+        offset: (currentPage - 1) * usersPerPage,
+      };
+      
+      if (roleFilter !== 'ALL') filters.role = roleFilter;
+      if (statusFilter !== 'ALL') filters.status = statusFilter;
+      if (searchQuery) filters.search = searchQuery;
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const response = await fetch(`${apiUrl}/api/admin/users?${params.toString()}`, {
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch users');
-      }
-
-      const data = await response.json();
+      const data = await adminApi.getUsers(filters);
+      
       // Backend wraps response in { success: true, data: { users, total } }
       const responseData = data.data || data;
       setUsers(responseData.users || []);
@@ -129,17 +124,9 @@ export default function UsersManagementPage() {
     }
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const response = await fetch(`${apiUrl}/api/admin/users`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(formData),
-      });
+      const data = await adminApi.createUser(formData as any);
 
-      const data = await response.json();
-
-      if (!response.ok) {
+      if (!data.success) {
         throw new Error(data.error || 'Failed to create user');
       }
 
@@ -156,17 +143,7 @@ export default function UsersManagementPage() {
     if (!editingUser) return;
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const response = await fetch(`${apiUrl}/api/admin/users/${editingUser.id}/role`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ role: editFormData.role }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update user role');
-      }
+      await adminApi.updateUserRole(editingUser.id, editFormData.role);
 
       setSuccess('User role updated successfully');
       fetchUsers();
@@ -179,17 +156,7 @@ export default function UsersManagementPage() {
   // Handle toggle user status
   const handleToggleStatus = async (userId: string, currentlyActive: boolean) => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const response = await fetch(`${apiUrl}/api/admin/users/${userId}/status`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ active: !currentlyActive }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update user status');
-      }
+      await adminApi.toggleUserStatus(userId, !currentlyActive);
 
       setSuccess(`User ${!currentlyActive ? 'activated' : 'deactivated'} successfully`);
       fetchUsers();

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { UserCheck, Search, Calendar, Mail, ExternalLink, Filter } from 'lucide-react';
 import Link from 'next/link';
+import { adminApi } from '@/lib/api/client';
 
 interface TalentApplication {
   id: string;
@@ -30,16 +31,10 @@ export default function TalentManagementPage() {
   useEffect(() => {
     async function fetchApplications() {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-        const response = await fetch(`${apiUrl}/api/admin/talent`, {
-          credentials: 'include',
-        });
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success) {
-            setApplications(data.data || []);
-            setFilteredApplications(data.data || []);
-          }
+        const data = await adminApi.getTalentApplications();
+        if (data.success) {
+          setApplications(data.data || []);
+          setFilteredApplications(data.data || []);
         }
       } catch (error) {
         console.error('Failed to fetch talent applications:', error);
