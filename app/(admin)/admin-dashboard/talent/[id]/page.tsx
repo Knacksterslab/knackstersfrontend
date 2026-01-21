@@ -50,7 +50,10 @@ export default function TalentDetailPage() {
   useEffect(() => {
     async function fetchProfile() {
       try {
-        const response = await fetch(`/api/admin/talent/${talentId}`);
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+        const response = await fetch(`${apiUrl}/api/admin/talent/${talentId}`, {
+          credentials: 'include',
+        });
         if (response.ok) {
           const data = await response.json();
           if (data.success) {
@@ -77,9 +80,11 @@ export default function TalentDetailPage() {
 
     setActionLoading(true);
     try {
-      const response = await fetch(`/api/admin/talent/${talentId}`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/admin/talent/${talentId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ status: newStatus }),
       });
 

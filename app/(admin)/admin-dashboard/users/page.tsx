@@ -84,7 +84,8 @@ export default function UsersManagementPage() {
       params.append('limit', usersPerPage.toString());
       params.append('offset', ((currentPage - 1) * usersPerPage).toString());
 
-      const response = await fetch(`/api/admin/users?${params.toString()}`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/admin/users?${params.toString()}`, {
         credentials: 'include',
       });
 
@@ -128,7 +129,8 @@ export default function UsersManagementPage() {
     }
 
     try {
-      const response = await fetch('/api/admin/users', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/admin/users`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -154,7 +156,8 @@ export default function UsersManagementPage() {
     if (!editingUser) return;
 
     try {
-      const response = await fetch(`/api/admin/users/${editingUser.id}/role`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/admin/users/${editingUser.id}/role`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -176,7 +179,8 @@ export default function UsersManagementPage() {
   // Handle toggle user status
   const handleToggleStatus = async (userId: string, currentlyActive: boolean) => {
     try {
-      const response = await fetch(`/api/admin/users/${userId}/status`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/admin/users/${userId}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

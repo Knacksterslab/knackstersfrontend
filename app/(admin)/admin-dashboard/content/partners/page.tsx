@@ -46,7 +46,10 @@ export default function PartnersManagementPage() {
   // Fetch partners
   const fetchPartners = async () => {
     try {
-      const response = await fetch('/api/admin/partners');
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/admin/partners`, {
+        credentials: 'include',
+      });
       const data = await response.json();
       setPartners(data.partners || []);
     } catch (error) {
@@ -73,8 +76,10 @@ export default function PartnersManagementPage() {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('/api/admin/upload', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/admin/upload`, {
         method: 'POST',
+        credentials: 'include',
         body: formData,
       });
 
@@ -101,9 +106,11 @@ export default function PartnersManagementPage() {
 
     try {
       const method = editingPartner ? 'PUT' : 'POST';
-      const response = await fetch('/api/admin/partners', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/admin/partners`, {
         method,
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(formData),
       });
 
@@ -126,8 +133,10 @@ export default function PartnersManagementPage() {
     if (!confirm('Are you sure you want to delete this partner?')) return;
 
     try {
-      const response = await fetch(`/api/admin/partners?id=${id}`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/admin/partners?id=${id}`, {
         method: 'DELETE',
+        credentials: 'include',
       });
 
       if (!response.ok) {
@@ -144,9 +153,11 @@ export default function PartnersManagementPage() {
   // Handle toggle active
   const handleToggleActive = async (partner: Partner) => {
     try {
-      const response = await fetch('/api/admin/partners', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/admin/partners`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ id: partner.id, active: !partner.active }),
       });
 

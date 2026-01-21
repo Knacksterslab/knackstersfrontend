@@ -30,7 +30,10 @@ export default function TalentManagementPage() {
   useEffect(() => {
     async function fetchApplications() {
       try {
-        const response = await fetch('/api/admin/talent');
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+        const response = await fetch(`${apiUrl}/api/admin/talent`, {
+          credentials: 'include',
+        });
         if (response.ok) {
           const data = await response.json();
           if (data.success) {

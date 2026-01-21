@@ -26,7 +26,10 @@ export default function NotificationBell() {
   // Fetch notifications
   const fetchNotifications = async () => {
     try {
-      const response = await fetch('/api/admin/notifications?limit=10');
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/admin/notifications?limit=10`, {
+        credentials: 'include',
+      });
       if (response.ok) {
         const data = await response.json();
         if (data.success) {
@@ -41,7 +44,10 @@ export default function NotificationBell() {
   // Fetch unread count
   const fetchUnreadCount = async () => {
     try {
-      const response = await fetch('/api/admin/notifications/count');
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/admin/notifications/count`, {
+        credentials: 'include',
+      });
       if (response.ok) {
         const data = await response.json();
         if (data.success) {
@@ -56,8 +62,10 @@ export default function NotificationBell() {
   // Mark notification as read
   const markAsRead = async (notificationId: string) => {
     try {
-      const response = await fetch(`/api/admin/notifications/${notificationId}/read`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/admin/notifications/${notificationId}/read`, {
         method: 'PATCH',
+        credentials: 'include',
       });
       
       if (response.ok) {
@@ -75,8 +83,10 @@ export default function NotificationBell() {
   const markAllAsRead = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/admin/notifications/read-all', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/admin/notifications/read-all`, {
         method: 'PATCH',
+        credentials: 'include',
       });
       
       if (response.ok) {
