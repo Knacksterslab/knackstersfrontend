@@ -152,9 +152,11 @@ export default function TalentNetworkForm() {
       
       // #region agent log
       // Hypothesis D: Log talent form submission
-      if (typeof window !== 'undefined') {
-        fetch('http://127.0.0.1:7243/ingest/b64e0ab6-7d71-4fbd-bdcc-a8b7f534a7a1',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'TalentNetworkForm.tsx:153',message:'Talent form submitting',data:{email:formData.email,currentUrl:window.location.href},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'D'})}).catch(()=>{});
-      }
+      console.log('[DEBUG] Talent form submitting', {
+        email: formData.email,
+        currentUrl: window.location.href,
+        timestamp: new Date().toISOString()
+      });
       // #endregion
       
       const response = await talentApplicationApi.apply({
@@ -171,9 +173,11 @@ export default function TalentNetworkForm() {
       
       // #region agent log
       // Hypothesis D: Log successful response
-      if (typeof window !== 'undefined') {
-        fetch('http://127.0.0.1:7243/ingest/b64e0ab6-7d71-4fbd-bdcc-a8b7f534a7a1',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'TalentNetworkForm.tsx:172',message:'API response received',data:{success:response.success,hasProfileId:!!response.data?.profileId},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'D'})}).catch(()=>{});
-      }
+      console.log('[DEBUG] API response received', {
+        success: response.success,
+        hasProfileId: !!response.data?.profileId,
+        timestamp: new Date().toISOString()
+      });
       // #endregion
       
       if (response.success && response.data?.profileId) {
@@ -188,9 +192,12 @@ export default function TalentNetworkForm() {
     } catch (err: any) {
       // #region agent log
       // Hypothesis D & E: Log error details
-      if (typeof window !== 'undefined') {
-        fetch('http://127.0.0.1:7243/ingest/b64e0ab6-7d71-4fbd-bdcc-a8b7f534a7a1',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'TalentNetworkForm.tsx:182',message:'API call failed',data:{errorMessage:err.message,errorType:err.name,errorString:String(err)},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'D,E'})}).catch(()=>{});
-      }
+      console.error('[DEBUG] API call failed', {
+        errorMessage: err.message,
+        errorType: err.name,
+        errorString: String(err),
+        timestamp: new Date().toISOString()
+      });
       // #endregion
       setError(err.message || 'Failed to submit application');
     } finally {
