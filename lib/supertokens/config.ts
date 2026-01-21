@@ -1,6 +1,6 @@
 export const appInfo = {
   appName: "Knacksters",
-  apiDomain: process.env.NEXT_PUBLIC_API_DOMAIN || "http://localhost:5000",
+  apiDomain: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000",
   websiteDomain: process.env.NEXT_PUBLIC_WEBSITE_DOMAIN || "http://localhost:3000",
   apiBasePath: "/api/auth",
   websiteBasePath: "/auth"
