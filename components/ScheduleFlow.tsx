@@ -314,8 +314,6 @@ export default function ScheduleFlow() {
             {/* Cal.com Booking Button */}
             <div className="mb-8">
               <button
-                data-cal-link={getCalLink()}
-                data-cal-config='{"layout":"month_view","theme":"light"}'
                 onClick={(e) => {
                   e.preventDefault();
                   setShowCalModal(true);
