@@ -5,6 +5,13 @@
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
+// #region agent log
+// Hypothesis B: Log the API_URL value at module initialization (client-side only)
+if (typeof window !== 'undefined') {
+  fetch('http://127.0.0.1:7243/ingest/b64e0ab6-7d71-4fbd-bdcc-a8b7f534a7a1',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'lib/api/client.ts:9',message:'API_URL initialized',data:{API_URL,envVar:process.env.NEXT_PUBLIC_API_URL,hasWindow:true},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'B'})}).catch(()=>{});
+}
+// #endregion
+
 interface ApiResponse<T = any> {
   success: boolean;
   data?: T;
@@ -17,6 +24,13 @@ interface ApiResponse<T = any> {
  */
 async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = `${API_URL}${endpoint}`;
+  
+  // #region agent log
+  // Hypothesis E: Log the actual URL being called before fetch
+  if (typeof window !== 'undefined') {
+    fetch('http://127.0.0.1:7243/ingest/b64e0ab6-7d71-4fbd-bdcc-a8b7f534a7a1',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'lib/api/client.ts:29',message:'apiFetch called',data:{endpoint,API_URL,constructedUrl:url,method:options.method||'GET'},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'E'})}).catch(()=>{});
+  }
+  // #endregion
   
   const headers: any = {
     'Content-Type': 'application/json',
