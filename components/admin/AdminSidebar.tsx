@@ -11,7 +11,8 @@ import {
   Settings, 
   Image as ImageIcon,
   LogOut,
-  MessageSquare
+  MessageSquare,
+  UserCheck
 } from 'lucide-react';
 
 export default function AdminSidebar() {
@@ -23,6 +24,12 @@ export default function AdminSidebar() {
       label: 'Dashboard',
       icon: LayoutDashboard,
       path: '/admin-dashboard',
+    },
+    {
+      id: 'talent',
+      label: 'Talent Applications',
+      icon: UserCheck,
+      path: '/admin-dashboard/talent',
     },
     {
       id: 'content',

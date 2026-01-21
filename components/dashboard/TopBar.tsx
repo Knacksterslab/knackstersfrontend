@@ -1,8 +1,9 @@
 'use client'
 
 import React from 'react'
-import { Search, Bell, Settings } from 'lucide-react'
+import { Search } from 'lucide-react'
 import ProfileDropdown from './ProfileDropdown'
+import NotificationBell from '@/components/admin/NotificationBell'
 
 export default function TopBar() {
   return (
@@ -27,18 +28,8 @@ export default function TopBar() {
 
         {/* Right - Actions and Profile */}
         <div className="flex items-center gap-1 sm:gap-3">
-          {/* Notification Bell with Badge */}
-          <button className="relative p-2 hover:bg-gray-100 rounded-lg">
-            <Bell size={20} className="text-gray-700" />
-            <span className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 w-4 h-4 sm:w-5 sm:h-5 bg-blue-600 text-white text-[10px] sm:text-xs rounded-full flex items-center justify-center font-semibold">
-              4
-            </span>
-          </button>
-
-          {/* Settings - Hidden on mobile */}
-          <button className="hidden sm:block p-2 hover:bg-gray-100 rounded-lg">
-            <Settings size={20} className="text-gray-700" />
-          </button>
+          {/* Notification Bell */}
+          <NotificationBell />
 
           {/* User Profile Dropdown */}
           <ProfileDropdown />

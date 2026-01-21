@@ -3,9 +3,20 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
-import { Calendar, ExternalLink, CheckCircle, Clock, Video } from 'lucide-react';
+import { Calendar, CheckCircle, Clock, Video } from 'lucide-react';
 import KnackstersButton from '@/components/svg/knacksters-button';
 import KnackstersOutlineButton from '@/components/svg/knacksters-outline-button';
+
+// TypeScript declarations for Cal.com
+declare global {
+  interface Window {
+    Cal?: {
+      (command: string, ...args: any[]): void;
+      q?: any[];
+    };
+    __calScriptLoaded?: boolean;
+  }
+}
 
 interface BookingDetails {
   bookingId: string;
@@ -25,6 +36,112 @@ export default function ScheduleFlow() {
   const [bookingCompleted, setBookingCompleted] = useState(false);
   const [bookingDetails, setBookingDetails] = useState<BookingDetails | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showCalModal, setShowCalModal] = useState(false);
+
+  // Load Cal.com embed script ONCE using Cal.com's official method
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    // Use global flag to prevent multiple loads
+    if (window.__calScriptLoaded) {
+      return;
+    }
+
+    // Check if already loaded in DOM
+    if (document.querySelector('script[src*="cal.com/embed"]')) {
+      window.__calScriptLoaded = true;
+      return;
+    }
+
+    // Mark as loading
+    window.__calScriptLoaded = true;
+    
+    // Use Cal.com's official embed snippet (IIFE) to prevent "Cal is not defined" error
+    (function (C: any, A: string, L: string) {
+      let d = C.document;
+      
+      // Pre-initialize Cal namespace with queue
+      C.Cal = C.Cal || function () {
+        let cal = C.Cal;
+        if (!cal.q) {
+          cal.q = [];
+        }
+        cal.q.push(arguments);
+      };
+      C.Cal.q = C.Cal.q || [];
+      
+      // Create and load script
+      let t = d.createElement(A);
+      let s = d.getElementsByTagName(A)[0];
+      t.async = 1;
+      t.src = L;
+      
+      t.onload = () => {
+        console.log('✅ Cal.com embed loaded');
+        
+        // Initialize Cal.com explicitly after script loads
+        setTimeout(() => {
+          if (window.Cal) {
+            try {
+              window.Cal('init', { origin: 'https://app.cal.com' });
+              console.log('✅ Cal.com initialized');
+            } catch (error: any) {
+              console.error('Cal.com init error:', error);
+            }
+          }
+        }, 100);
+      };
+      
+      t.onerror = () => {
+        console.error('❌ Failed to load Cal.com');
+        window.__calScriptLoaded = false;
+      };
+      
+      s.parentNode.insertBefore(t, s);
+    })(window, 'script', 'https://app.cal.com/embed/embed.js');
+  }, []);
+
+  // Listen for booking success events from Cal.com iframe
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleMessage = (event: MessageEvent) => {
+      // Check if message is from Cal.com
+      if (event.origin !== 'https://cal.com' && event.origin !== 'https://app.cal.com') {
+        return;
+      }
+
+      const data = event.data;
+      
+      // Cal.com sends { type: 'bookingSuccessful', ... } on successful booking
+      if (data?.type === 'bookingSuccessful') {
+        console.log('🎉 Booking successful!', data);
+        
+        setBookingCompleted(true);
+        setShowCalModal(false);
+        
+        // Extract booking details if available
+        if (data.data) {
+          setBookingDetails({
+            bookingId: data.data.uid || data.data.id || '',
+            meetingLink: data.data.metadata?.videoCallUrl || null,
+            startTime: data.data.startTime || '',
+            endTime: data.data.endTime || '',
+            attendeeName: data.data.attendees?.[0]?.name || null,
+            timezone: data.data.timeZone || null,
+            status: 'confirmed'
+          });
+        }
+      }
+    };
+
+    // Listen for postMessage events from Cal.com iframe
+    window.addEventListener('message', handleMessage);
+    
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
+  }, []);
 
   useEffect(() => {
     // Load profile ID from sessionStorage (for talent flow)
@@ -40,56 +157,46 @@ export default function ScheduleFlow() {
         setIsClientFlow(true);
       }
 
-      // Check if user was redirected back from Cal.com
+      // Check for booking success from URL parameters (Cal.com redirects here after booking)
       const bookingConfirmed = searchParams.get('bookingConfirmed');
-      if (bookingConfirmed === 'true') {
-        // Mark as completed immediately (webhooks will update DB in background)
+      const uid = searchParams.get('uid');
+      const attendeeName = searchParams.get('attendeeName');
+      const startTime = searchParams.get('startTime');
+      const endTime = searchParams.get('endTime');
+
+      if (bookingConfirmed === 'true' && uid) {
         setBookingCompleted(true);
-        // Try to fetch booking details if webhook already processed
-        if (id) {
-          fetchBookingDetails(id);
-        }
+        setBookingDetails({
+          bookingId: uid,
+          meetingLink: null, // Not provided in URL params
+          startTime: startTime || '',
+          endTime: endTime || '',
+          attendeeName: attendeeName || null,
+          timezone: null,
+          status: 'confirmed'
+        });
       }
     }
   }, [router, searchParams]);
 
-  const fetchBookingDetails = async (id: string) => {
-    setLoading(true);
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/public/booking/${id}`);
-      const data = await response.json();
-      
-      if (data.success && data.data) {
-        setBookingDetails(data.data);
-      } else {
-        // Booking not in DB yet (webhook hasn't fired or no webhook configured)
-        // This is fine - user can still complete the flow
-        console.log('Booking details not available yet');
-      }
-    } catch (error) {
-      // Silent fail - booking details are optional
-      console.error('Failed to fetch booking details:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleOpenCalendar = () => {
+  const getCalLink = () => {
     // Use client or talent URL based on flow type
     const calUrl = isClientFlow 
       ? process.env.NEXT_PUBLIC_CAL_CLIENT_URL 
       : process.env.NEXT_PUBLIC_CAL_TALENT_URL;
     
-    if (calUrl) {
-      // Open Cal.com booking page
-      window.open(calUrl, '_blank', 'noopener,noreferrer');
-      // Mark as completed after opening
-      setTimeout(() => {
-        setBookingCompleted(true);
-      }, 1000);
-    } else {
-      alert('Calendar booking URL not configured. Please contact support.');
+    if (!calUrl) {
+      return '';
     }
+    
+    // Extract the Cal.com username/event-slug from the full URL
+    // Expected format: https://cal.com/username/event-slug or https://app.cal.com/username/event-slug
+    const result = calUrl
+      .replace('https://cal.com/', '')
+      .replace('https://app.cal.com/', '')
+      .replace(/^\/+/, ''); // Remove leading slashes
+    
+    return result;
   };
 
   const handleComplete = () => {
@@ -98,12 +205,13 @@ export default function ScheduleFlow() {
       sessionStorage.removeItem('talentProfileId');
     }
     
-    // Redirect based on flow type
+    // Only redirect for client flow
+    // For talent, the button is hidden after booking, but as a safety measure,
+    // we don't navigate them anywhere if this is called
     if (isClientFlow) {
       router.push('/client-dashboard');
-    } else {
-      router.push('/');
     }
+    // For talent: do nothing, stay on page
   };
 
   const handleBack = () => {
@@ -172,10 +280,6 @@ export default function ScheduleFlow() {
             <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-900 text-white font-semibold">
               2
             </div>
-            <div className="w-16 h-0.5 bg-gray-300"></div>
-            <div className="flex items-center justify-center w-10 h-10 rounded-full border-2 border-gray-300 text-gray-400 font-semibold">
-              3
-            </div>
           </div>
 
           {/* Form Container */}
@@ -188,7 +292,7 @@ export default function ScheduleFlow() {
                   {isClientFlow ? 'Schedule Your Onboarding Call' : 'Schedule Your Interview'}
                 </h4>
                 <p className="text-sm text-gray-700 mb-4">
-                  Click the button below to open our booking calendar. You'll be able to:
+                  Click the button below to open our booking calendar in a popup. You'll be able to:
                 </p>
                 <ul className="text-sm text-gray-600 space-y-2 ml-4">
                   <li className="flex items-start gap-2">
@@ -210,7 +314,12 @@ export default function ScheduleFlow() {
             {/* Cal.com Booking Button */}
             <div className="mb-8">
               <button
-                onClick={handleOpenCalendar}
+                data-cal-link={getCalLink()}
+                data-cal-config='{"layout":"month_view","theme":"light"}'
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowCalModal(true);
+                }}
                 style={{
                   width: '100%',
                   padding: '24px 32px',
@@ -241,10 +350,9 @@ export default function ScheduleFlow() {
               >
                 <Calendar className="w-6 h-6" />
                 <span>Open Booking Calendar</span>
-                <ExternalLink className="w-5 h-5" />
               </button>
               <p className="text-xs text-gray-500 text-center mt-3">
-                Opens in a new window • Book your preferred time slot
+                Opens as a popup • Select your preferred time slot
               </p>
             </div>
 
@@ -390,31 +498,54 @@ export default function ScheduleFlow() {
 
             {/* Action Buttons */}
             <div className="flex gap-4">
-              {/* Back Button */}
-              <div className="flex-1">
-                <KnackstersOutlineButton
-                  text="Back"
-                  fullWidth={true}
-                  onClick={handleBack}
-                />
-              </div>
-              {/* Complete Button */}
-              <div className="flex-1">
-                <KnackstersButton
-                  text="Complete"
-                  fullWidth={true}
-                  onClick={handleComplete}
-                  disabled={!bookingCompleted}
-                />
-              </div>
+              {/* Back Button - Hide if booking completed */}
+              {!bookingCompleted && (
+                <div className="flex-1">
+                  <KnackstersOutlineButton
+                    text="Back"
+                    fullWidth={true}
+                    onClick={handleBack}
+                  />
+                </div>
+              )}
+              
+              {/* Complete Button - Only show for clients OR if booking not completed */}
+              {(isClientFlow || !bookingCompleted) && (
+                <div className="flex-1">
+                  <KnackstersButton
+                    text="Complete"
+                    fullWidth={true}
+                    onClick={handleComplete}
+                    disabled={!bookingCompleted}
+                  />
+                </div>
+              )}
             </div>
 
-            {!bookingCompleted && (
+            {/* Talent booking complete message */}
+            {!isClientFlow && bookingCompleted && (
+              <div className="text-center mt-6">
+                <p className="text-lg font-semibold text-green-700 mb-2">
+                  You're all set! ✨
+                </p>
+                <p className="text-sm text-gray-600">
+                  We'll send you a reminder 24 hours before your interview.
+                  Feel free to close this page.
+                </p>
+              </div>
+            )}
+
+            {/* Client booking incomplete message */}
+            {isClientFlow && !bookingCompleted && (
               <p className="text-xs text-gray-500 text-center mt-4">
-                {isClientFlow 
-                  ? 'After booking your meeting, click "Complete" to access your dashboard'
-                  : 'After booking your meeting, click "Complete" to finish your application'
-                }
+                After booking your meeting, click "Complete" to access your dashboard
+              </p>
+            )}
+
+            {/* Talent booking incomplete message */}
+            {!isClientFlow && !bookingCompleted && (
+              <p className="text-xs text-gray-500 text-center mt-4">
+                After booking your meeting, you'll see your confirmation details above
               </p>
             )}
           </div>
@@ -437,6 +568,46 @@ export default function ScheduleFlow() {
           </div>
         </div>
       </div>
+
+      {/* Custom Cal.com Modal */}
+      {showCalModal && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          onClick={() => {
+            setShowCalModal(false);
+          }}
+        >
+          <div 
+            className="bg-white rounded-lg shadow-2xl w-full max-w-5xl h-[90vh] flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+              <h2 className="text-xl font-bold text-gray-900">
+                {isClientFlow ? 'Schedule Your Onboarding Call' : 'Schedule Your Interview'}
+              </h2>
+              <button
+                onClick={() => {
+                  setShowCalModal(false);
+                }}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Body with iframe */}
+            <div className="flex-1 overflow-hidden">
+              <iframe
+                src={`https://cal.com/${getCalLink()}?embed=true&theme=light&layout=month_view`}
+                className="w-full h-full border-0"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
