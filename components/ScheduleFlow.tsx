@@ -199,20 +199,20 @@ export default function ScheduleFlow() {
   }, [router, searchParams]);
 
   // Fix localhost redirect in production
-  // This handles the case where Cal.com event type is configured with localhost redirect URL
+  // When Cal.com redirects to localhost with booking params, redirect back to production
   useEffect(() => {
     // #region agent log - Redirect useEffect entry
     console.log('🔍 [ScheduleFlow] Redirect useEffect running', {
       hostname: window.location.hostname,
       href: window.location.href,
-      hasLocalhostInUrl: window.location.href.includes('localhost:3000'),
-      hostnameNotLocalhost: window.location.hostname !== 'localhost'
+      isLocalhost: window.location.hostname === 'localhost',
+      hasBookingParams: searchParams.get('bookingConfirmed') === 'true'
     });
     // #endregion
     
     if (typeof window !== 'undefined' && 
-        window.location.hostname !== 'localhost' && 
-        window.location.href.includes('localhost:3000')) {
+        window.location.hostname === 'localhost' && 
+        searchParams.get('bookingConfirmed') === 'true') {
       // #region agent log - Before redirect
       const newUrl = window.location.href.replace('http://localhost:3000', 'https://www.knacksters.co');
       console.log('✅ [ScheduleFlow] Redirect condition MATCHED - executing redirect', {
@@ -231,13 +231,12 @@ export default function ScheduleFlow() {
       console.log('❌ [ScheduleFlow] Redirect condition NOT matched', {
         hostname: window.location.hostname,
         isLocalhost: window.location.hostname === 'localhost',
-        href: window.location.href,
-        hasLocalhost3000: window.location.href.includes('localhost:3000'),
-        reason: window.location.hostname === 'localhost' ? 'hostname IS localhost' : 'URL does not contain localhost:3000'
+        bookingConfirmed: searchParams.get('bookingConfirmed'),
+        reason: window.location.hostname !== 'localhost' ? 'Not on localhost' : 'No booking params'
       });
       // #endregion
     }
-  }, []);
+  }, [searchParams]);
 
   const getCalLink = () => {
     // Use client or talent URL based on flow type
