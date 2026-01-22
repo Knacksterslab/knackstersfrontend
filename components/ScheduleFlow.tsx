@@ -179,6 +179,17 @@ export default function ScheduleFlow() {
     }
   }, [router, searchParams]);
 
+  // Fix localhost redirect in production
+  // This handles the case where Cal.com event type is configured with localhost redirect URL
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 
+        window.location.hostname !== 'localhost' && 
+        window.location.href.includes('localhost:3000')) {
+      const newUrl = window.location.href.replace('http://localhost:3000', 'https://www.knacksters.co');
+      window.location.replace(newUrl);
+    }
+  }, []);
+
   const getCalLink = () => {
     // Use client or talent URL based on flow type
     const calUrl = isClientFlow 
@@ -599,7 +610,7 @@ export default function ScheduleFlow() {
             {/* Modal Body with iframe */}
             <div className="flex-1 overflow-hidden">
               <iframe
-                src={`https://cal.com/${getCalLink()}?embed=true&theme=light&layout=month_view`}
+                src={`https://cal.com/${getCalLink()}?embed=true&theme=light&layout=month_view&name=&email=`}
                 className="w-full h-full border-0"
               />
             </div>

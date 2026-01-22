@@ -228,13 +228,9 @@ export default function TalentNetworkForm() {
             <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-900 text-white font-semibold text-sm sm:text-base">
               1
             </div>
-            <div className="w-12 sm:w-16 h-0.5 bg-gray-300"></div>
-            <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-gray-300 text-gray-400 font-semibold text-sm sm:text-base">
+            <div className="w-12 sm:w-16 h-0.5 bg-gray-900"></div>
+            <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-900 text-white font-semibold text-sm sm:text-base">
               2
-            </div>
-            <div className="w-16 h-0.5 bg-gray-300"></div>
-            <div className="flex items-center justify-center w-10 h-10 rounded-full border-2 border-gray-300 text-gray-400 font-semibold">
-              3
             </div>
           </div>
 
