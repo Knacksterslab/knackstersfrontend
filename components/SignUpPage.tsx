@@ -148,28 +148,7 @@ export default function SignUpPage() {
         <div className={`w-full flex items-center justify-center px-4 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-10 lg:py-12 relative ${
           currentStep === 1 ? 'lg:w-1/2' : 'lg:w-full max-w-6xl mx-auto'
         }`}>
-          <div className="w-full max-w-lg">
-
-          {/* Progress Indicator */}
-          <div className="mb-6">
-            <div className="flex items-center justify-center gap-2">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold ${
-                currentStep >= 1 ? 'bg-gradient-to-r from-[#E9414C] to-[#FC8838] text-white' : 'bg-gray-200 text-gray-600'
-              }`}>
-                1
-              </div>
-              <div className={`h-1 w-16 ${currentStep >= 2 ? 'bg-gradient-to-r from-[#E9414C] to-[#FC8838]' : 'bg-gray-200'}`}></div>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold ${
-                currentStep >= 2 ? 'bg-gradient-to-r from-[#E9414C] to-[#FC8838] text-white' : 'bg-gray-200 text-gray-600'
-              }`}>
-                2
-              </div>
-            </div>
-            <div className="flex justify-between mt-2 px-4">
-              <span className="text-xs text-gray-600">Account Details</span>
-              <span className="text-xs text-gray-600">Your Needs</span>
-            </div>
-          </div>
+          <div className={`w-full ${currentStep === 1 ? 'max-w-lg' : 'max-w-6xl'}`}>
 
           {/* Back Button (Step 2) */}
           {currentStep === 2 && (

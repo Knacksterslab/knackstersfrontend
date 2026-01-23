@@ -3,7 +3,7 @@
  * Handles all API requests to the backend
  */
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 interface ApiResponse<T = any> {
   success: boolean;
@@ -113,6 +113,13 @@ export const notificationsApi = {
     return apiFetch<ApiResponse>(`/api/client/notifications/${id}`, {
       method: 'DELETE',
     });
+  },
+
+  /**
+   * Get unread count
+   */
+  getUnreadCount: async () => {
+    return apiFetch<ApiResponse>('/api/client/notifications/count');
   },
 };
 

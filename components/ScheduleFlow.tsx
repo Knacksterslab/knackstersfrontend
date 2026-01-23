@@ -38,17 +38,6 @@ export default function ScheduleFlow() {
   const [loading, setLoading] = useState(false);
   const [showCalModal, setShowCalModal] = useState(false);
 
-  // #region agent log - Component mount
-  useEffect(() => {
-    console.log('🔍 [ScheduleFlow] Component mounted', {
-      hostname: window.location.hostname,
-      href: window.location.href,
-      hasLocalhost: window.location.href.includes('localhost:3000'),
-      hasBookingParams: window.location.href.includes('bookingConfirmed=true')
-    });
-  }, []);
-  // #endregion
-
   // Load Cal.com embed script ONCE using Cal.com's official method
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -155,14 +144,6 @@ export default function ScheduleFlow() {
   }, []);
 
   useEffect(() => {
-    // #region agent log - URL parsing useEffect
-    console.log('🔍 [ScheduleFlow] URL parsing useEffect', {
-      href: window.location.href,
-      bookingConfirmed: searchParams.get('bookingConfirmed'),
-      uid: searchParams.get('uid')
-    });
-    // #endregion
-    
     // Load profile ID from sessionStorage (for talent flow)
     if (typeof window !== 'undefined') {
       const id = sessionStorage.getItem('talentProfileId');
@@ -201,40 +182,11 @@ export default function ScheduleFlow() {
   // Fix localhost redirect in production
   // When Cal.com redirects to localhost with booking params, redirect back to production
   useEffect(() => {
-    // #region agent log - Redirect useEffect entry
-    console.log('🔍 [ScheduleFlow] Redirect useEffect running', {
-      hostname: window.location.hostname,
-      href: window.location.href,
-      isLocalhost: window.location.hostname === 'localhost',
-      hasBookingParams: searchParams.get('bookingConfirmed') === 'true'
-    });
-    // #endregion
-    
     if (typeof window !== 'undefined' && 
         window.location.hostname === 'localhost' && 
         searchParams.get('bookingConfirmed') === 'true') {
-      // #region agent log - Before redirect
       const newUrl = window.location.href.replace('http://localhost:3000', 'https://www.knacksters.co');
-      console.log('✅ [ScheduleFlow] Redirect condition MATCHED - executing redirect', {
-        oldUrl: window.location.href,
-        newUrl: newUrl
-      });
-      // #endregion
-      
       window.location.replace(newUrl);
-      
-      // #region agent log - After replace (should not reach here)
-      console.log('❌ [ScheduleFlow] AFTER replace - this should not log');
-      // #endregion
-    } else {
-      // #region agent log - Condition not matched
-      console.log('❌ [ScheduleFlow] Redirect condition NOT matched', {
-        hostname: window.location.hostname,
-        isLocalhost: window.location.hostname === 'localhost',
-        bookingConfirmed: searchParams.get('bookingConfirmed'),
-        reason: window.location.hostname !== 'localhost' ? 'Not on localhost' : 'No booking params'
-      });
-      // #endregion
     }
   }, [searchParams]);
 

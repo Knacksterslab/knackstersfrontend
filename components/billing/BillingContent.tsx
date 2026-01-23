@@ -1,12 +1,14 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Clock, CreditCard, MoreVertical } from 'lucide-react'
 import { useBilling, useInvoices } from '@/hooks/useBilling'
 
 export default function BillingContent() {
   const { summary, subscription, loading: billingLoading } = useBilling()
   const { invoices, loading: invoicesLoading, payInvoice } = useInvoices()
+  const [paymentMethods, setPaymentMethods] = useState<any[]>([])
+  const [loadingPaymentMethods, setLoadingPaymentMethods] = useState(true)
 
   const loading = billingLoading || invoicesLoading
 
@@ -51,6 +53,26 @@ export default function BillingContent() {
     }
     return types[type] || type
   }
+
+  useEffect(() => {
+    const fetchPaymentMethods = async () => {
+      try {
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
+        const response = await fetch(`${API_URL}/api/client/stripe/payment-methods`, {
+          credentials: 'include',
+        })
+        const data = await response.json()
+        if (data.success && data.data?.paymentMethods) {
+          setPaymentMethods(data.data.paymentMethods)
+        }
+      } catch (err) {
+        console.error('Failed to fetch payment methods:', err)
+      } finally {
+        setLoadingPaymentMethods(false)
+      }
+    }
+    fetchPaymentMethods()
+  }, [])
 
   if (loading) {
     return (
@@ -140,24 +162,46 @@ export default function BillingContent() {
           </div>
           
           <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <CreditCard size={24} className="text-gray-600" />
+            {loadingPaymentMethods ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
               </div>
-              <div className="flex-1">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-semibold text-gray-900">Visa</h3>
-                  <button className="p-1 hover:bg-gray-100 rounded">
-                    <MoreVertical size={18} className="text-gray-400" />
-                  </button>
-                </div>
-                <p className="text-sm text-gray-600 mb-3">•••• 5432</p>
-                <div className="flex items-center gap-4 text-xs text-gray-500">
-                  <span>Expires 12/2025</span>
-                  <span className="px-2 py-1 bg-blue-50 text-blue-600 font-medium rounded">Primary</span>
-                </div>
+            ) : paymentMethods.length === 0 ? (
+              <div className="text-center py-8">
+                <CreditCard size={48} className="text-gray-300 mx-auto mb-3" />
+                <p className="text-gray-500 text-sm">No payment method on file</p>
+                <button className="mt-3 text-sm text-blue-600 hover:text-blue-700 font-medium">
+                  Add Payment Method
+                </button>
               </div>
-            </div>
+            ) : (
+              paymentMethods.map((method) => (
+                <div key={method.id} className="flex items-start gap-4 mb-4 last:mb-0">
+                  <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <CreditCard size={24} className="text-gray-600" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-lg font-semibold text-gray-900 capitalize">
+                        {method.cardBrand || method.type}
+                      </h3>
+                      <button className="p-1 hover:bg-gray-100 rounded">
+                        <MoreVertical size={18} className="text-gray-400" />
+                      </button>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-3">•••• {method.cardLastFour || method.last4}</p>
+                    <div className="flex items-center gap-4 text-xs text-gray-500">
+                      {method.cardExpMonth && method.cardExpYear && (
+                        <span>Expires {method.cardExpMonth}/{method.cardExpYear}</span>
+                      )}
+                      {method.isDefault && (
+                        <span className="px-2 py-1 bg-blue-50 text-blue-600 font-medium rounded">Primary</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
@@ -238,7 +282,7 @@ export default function BillingContent() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-sm font-semibold text-gray-900">
-                        {formatAmount(invoice.amount)}
+                        {formatAmount(invoice.total)}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-600">
                         {invoice.paymentMethod

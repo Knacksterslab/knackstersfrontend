@@ -43,7 +43,8 @@ export default function PaymentMethodForm({ clientSecret, onSuccess }: PaymentMe
 
       if (setupIntent && setupIntent.status === 'succeeded') {
         // Notify backend that payment method was saved
-        const response = await fetch('http://localhost:5000/api/client/stripe/confirm-payment-method', {
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
+        const response = await fetch(`${API_URL}/api/client/stripe/confirm-payment-method`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

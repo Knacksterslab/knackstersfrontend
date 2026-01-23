@@ -1,7 +1,10 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Clock, MoreVertical } from 'lucide-react'
+import CalBookingModal, { BookingDetails } from '../shared/CalBookingModal'
+import CancelBookingDialog from '../shared/CancelBookingDialog'
 
 interface TaskSummaryProps {
   tasks: Array<{
@@ -17,10 +20,46 @@ interface TaskSummaryProps {
     dueDate?: Date | null
     loggedMinutes: number
   }>
+  hasActiveSubscription?: boolean
+  upcomingMeeting?: {
+    id: string
+    scheduledAt: Date
+    bookingId?: string
+  } | null
 }
 
-export default function TaskSummary({ tasks = [] }: TaskSummaryProps) {
+export default function TaskSummary({ tasks = [], hasActiveSubscription = false, upcomingMeeting = null }: TaskSummaryProps) {
+  const router = useRouter()
   const [activeTab, setActiveTab] = useState('active')
+  const [showModal, setShowModal] = useState(false)
+  const [showCancelDialog, setShowCancelDialog] = useState(false)
+
+  const handleBookingComplete = (details: BookingDetails) => {
+    setShowModal(false)
+    router.refresh()
+  }
+
+  const handleCancelMeeting = async () => {
+    if (!upcomingMeeting?.bookingId) return
+
+    try {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
+      const response = await fetch(`${API_URL}/api/client/meetings/${upcomingMeeting.bookingId}/cancel`, {
+        method: 'DELETE',
+        credentials: 'include',
+      })
+
+      if (response.ok) {
+        router.refresh()
+      } else {
+        console.error('Failed to cancel meeting')
+        alert('Failed to cancel meeting. Please try again.')
+      }
+    } catch (error) {
+      console.error('Error cancelling meeting:', error)
+      alert('An error occurred while cancelling the meeting.')
+    }
+  }
 
   const tabs = [
     { id: 'active', label: 'Active', count: tasks.length },
@@ -96,22 +135,72 @@ export default function TaskSummary({ tasks = [] }: TaskSummaryProps) {
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Your tasks will appear here</h3>
             <p className="text-sm text-gray-500 mb-6 max-w-sm mx-auto">
-              Once you have active tasks, they'll show up here with progress tracking, deadlines, and assigned Knacksters.
+              {hasActiveSubscription 
+                ? "Once you have active tasks, they'll show up here with progress tracking, deadlines, and assigned Knacksters."
+                : "Schedule a strategy call to choose your plan and start requesting work from expert Knacksters."}
             </p>
-            <button 
-              onClick={() => {
-                // Trigger request new task action
-                const requestButton = document.querySelector('[data-action="request-task"]') as HTMLElement;
-                if (requestButton) {
-                  requestButton.click();
-                } else {
-                  window.location.href = '/dashboard#request-task';
-                }
-              }}
-              className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold text-sm"
-            >
-              Request New Task
-            </button>
+            {hasActiveSubscription ? (
+              <button 
+                onClick={() => {
+                  // Trigger request new task action
+                  const requestButton = document.querySelector('[data-action="request-task"]') as HTMLElement;
+                  if (requestButton) {
+                    requestButton.click();
+                  } else {
+                    window.location.href = '/dashboard#request-task';
+                  }
+                }}
+                className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold text-sm"
+              >
+                Request New Task
+              </button>
+            ) : upcomingMeeting ? (
+              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg inline-block">
+                <div className="flex items-center gap-4">
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">
+                      Strategy Call: {new Date(upcomingMeeting.scheduledAt).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}
+                    </p>
+                    <p className="text-xs text-gray-600 mt-1">
+                      {new Date(upcomingMeeting.scheduledAt).toLocaleTimeString('en-US', {
+                        hour: 'numeric',
+                        minute: '2-digit',
+                        hour12: true
+                      })}
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setShowModal(true)}
+                      className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                    >
+                      Reschedule
+                    </button>
+                    <span className="text-gray-300">|</span>
+                    <button
+                      onClick={() => setShowCancelDialog(true)}
+                      className="text-sm text-red-600 hover:text-red-700 font-medium"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <button 
+                onClick={() => setShowModal(true)}
+                className="px-6 py-2.5 bg-gradient-to-r from-[#E9414C] to-[#FC8838] text-white rounded-lg hover:opacity-90 transition-opacity font-semibold text-sm flex items-center gap-2"
+              >
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" className="flex-shrink-0">
+                  <path d="M6 2h8M6 18h8M10 6v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+                Schedule Strategy Call
+              </button>
+            )}
           </div>
         ) : (
           tasks.map((task) => (
@@ -174,6 +263,28 @@ export default function TaskSummary({ tasks = [] }: TaskSummaryProps) {
           ))
         )}
       </div>
+
+      {/* Booking/Reschedule Modal */}
+      <CalBookingModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        calUrl={process.env.NEXT_PUBLIC_CAL_CLIENT_URL || ''}
+        title={upcomingMeeting ? "Reschedule Your Strategy Call" : "Schedule Your Strategy Call"}
+        mode={upcomingMeeting ? 'reschedule' : 'book'}
+        existingBookingUid={upcomingMeeting?.bookingId}
+        onBookingComplete={handleBookingComplete}
+      />
+
+      {/* Cancel Dialog */}
+      <CancelBookingDialog
+        isOpen={showCancelDialog}
+        onClose={() => setShowCancelDialog(false)}
+        bookingDetails={upcomingMeeting && upcomingMeeting.bookingId ? {
+          startTime: new Date(upcomingMeeting.scheduledAt).toISOString(),
+          bookingId: upcomingMeeting.bookingId
+        } : null}
+        onConfirmCancel={handleCancelMeeting}
+      />
     </div>
   )
 }

@@ -3,7 +3,7 @@
 import React from 'react'
 import { Search } from 'lucide-react'
 import ProfileDropdown from './ProfileDropdown'
-import NotificationBell from '@/components/admin/NotificationBell'
+import NotificationBell from '@/components/shared/NotificationBell'
 
 export default function TopBar() {
   return (
@@ -28,7 +28,7 @@ export default function TopBar() {
 
         {/* Right - Actions and Profile */}
         <div className="flex items-center gap-1 sm:gap-3">
-          {/* Notification Bell */}
+          {/* Notification Bell - Role-aware, shows for all users */}
           <NotificationBell />
 
           {/* User Profile Dropdown */}

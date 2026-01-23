@@ -11,12 +11,12 @@ export function initSuperTokensFrontend() {
     // Get API domain - prioritize NEXT_PUBLIC_API_URL, then NEXT_PUBLIC_API_DOMAIN
     const apiDomain = process.env.NEXT_PUBLIC_API_URL || 
                      process.env.NEXT_PUBLIC_API_DOMAIN || 
-                     'http://localhost:5000';
+                     'http://localhost:3000';
     
     // Get website domain - use current origin in browser, fallback to env var
     const websiteDomain = typeof window !== 'undefined' 
       ? window.location.origin 
-      : (process.env.NEXT_PUBLIC_WEBSITE_DOMAIN || 'http://localhost:3000');
+      : (process.env.NEXT_PUBLIC_WEBSITE_DOMAIN || 'http://localhost:3001');
 
     // Extract domain for session cookies
     // For localhost, use 'localhost', for production use the root domain

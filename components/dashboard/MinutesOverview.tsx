@@ -27,23 +27,9 @@ export default function MinutesOverview({ hoursBalance }: MinutesOverviewProps) 
               <Clock className="w-8 h-8 text-blue-600" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-2">Start Tracking Your Hours</h3>
-            <p className="text-gray-600 mb-6">
-              Choose a subscription plan to unlock hour tracking, task management, and access to our talent network.
+            <p className="text-gray-600">
+              Choose a subscription plan below to unlock hour tracking, task management, and access to our talent network.
             </p>
-            <button 
-              onClick={() => {
-                // Scroll to plans section if it exists, otherwise navigate
-                const plansSection = document.getElementById('plans-section');
-                if (plansSection) {
-                  plansSection.scrollIntoView({ behavior: 'smooth' });
-                } else {
-                  window.location.href = '/dashboard#plans';
-                }
-              }}
-              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-semibold hover:opacity-90 transition-opacity shadow-lg"
-            >
-              View Plans
-            </button>
           </div>
         </div>
       </div>
