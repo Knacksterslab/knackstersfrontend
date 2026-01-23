@@ -164,7 +164,16 @@ export default function ScheduleFlow() {
       const startTime = searchParams.get('startTime');
       const endTime = searchParams.get('endTime');
 
+      // #region agent log
+      const allParams = Array.from(searchParams.entries()).reduce((acc, [key, val]) => ({...acc, [key]: val}), {});
+      fetch('http://127.0.0.1:7243/ingest/b64e0ab6-7d71-4fbd-bdcc-a8b7f534a7a1',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'ScheduleFlow.tsx:161',message:'URL params extracted',data:{bookingConfirmed,uid,attendeeName,startTime,endTime,allParams,currentUrl:window.location.href,hostname:window.location.hostname,search:window.location.search},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A1,A2,B1,B2'})}).catch(()=>{});
+      // #endregion
+
       if (bookingConfirmed === 'true' && uid) {
+        // #region agent log
+        fetch('http://127.0.0.1:7243/ingest/b64e0ab6-7d71-4fbd-bdcc-a8b7f534a7a1',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'ScheduleFlow.tsx:168',message:'Booking confirmed - before setBookingDetails',data:{startTime,startTimeType:typeof startTime,endTime,isValidDate:startTime?!isNaN(new Date(startTime).getTime()):false},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A1,A2'})}).catch(()=>{});
+        // #endregion
+        
         setBookingCompleted(true);
         setBookingDetails({
           bookingId: uid,
@@ -181,11 +190,33 @@ export default function ScheduleFlow() {
 
   // Fix localhost redirect in production
   // When Cal.com redirects to localhost with booking params, redirect back to production
+  // This only runs in production when users are sent to localhost by mistake
   useEffect(() => {
-    if (typeof window !== 'undefined' && 
-        window.location.hostname === 'localhost' && 
-        searchParams.get('bookingConfirmed') === 'true') {
-      const newUrl = window.location.href.replace('http://localhost:3000', 'https://www.knacksters.co');
+    if (typeof window === 'undefined') return;
+    
+    // #region agent log
+    const nodeEnv = process.env.NODE_ENV;
+    const isProduction = nodeEnv === 'production';
+    fetch('http://127.0.0.1:7243/ingest/b64e0ab6-7d71-4fbd-bdcc-a8b7f534a7a1',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'ScheduleFlow.tsx:185',message:'Localhost redirect check',data:{hostname:window.location.hostname,origin:window.location.origin,nodeEnv,isProduction,isLocalhost:window.location.hostname==='localhost',bookingConfirmed:searchParams.get('bookingConfirmed'),hasUid:!!searchParams.get('uid')},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'B1,B2,B3'})}).catch(()=>{});
+    // #endregion
+    
+    // ONLY redirect if:
+    // 1. We're in production build (NODE_ENV === 'production')
+    // 2. User landed on localhost hostname
+    // 3. URL has booking parameters from Cal.com
+    const isLocalhost = window.location.hostname === 'localhost';
+    const hasBookingParams = searchParams.get('bookingConfirmed') === 'true' || searchParams.get('uid');
+    const shouldRedirect = isProduction && isLocalhost && hasBookingParams;
+    
+    if (shouldRedirect) {
+      // Replace localhost origin with production origin (supports any port)
+      const productionOrigin = 'https://www.knacksters.co';
+      const newUrl = window.location.href.replace(window.location.origin, productionOrigin);
+      
+      // #region agent log
+      fetch('http://127.0.0.1:7243/ingest/b64e0ab6-7d71-4fbd-bdcc-a8b7f534a7a1',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'ScheduleFlow.tsx:203',message:'Redirecting to production',data:{oldUrl:window.location.href,oldOrigin:window.location.origin,newUrl,productionOrigin},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'B2'})}).catch(()=>{});
+      // #endregion
+      
       window.location.replace(newUrl);
     }
   }, [searchParams]);
@@ -366,7 +397,7 @@ export default function ScheduleFlow() {
             </div>
 
             {/* Booking Completed - Show Details or Generic Confirmation */}
-            {bookingCompleted && (bookingDetails ? (
+            {bookingCompleted && (bookingDetails && bookingDetails.startTime ? (
               <div className="mb-8 p-6 bg-green-50 border-2 border-green-200 rounded-xl">
                 <div className="flex items-start gap-3 mb-4">
                   <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" />
@@ -385,15 +416,23 @@ export default function ScheduleFlow() {
                     <div>
                       <p className="text-xs text-gray-500">Date & Time</p>
                       <p className="text-sm font-semibold text-gray-900">
-                        {new Date(bookingDetails.startTime).toLocaleString('en-US', {
-                          weekday: 'long',
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                          hour: 'numeric',
-                          minute: '2-digit',
-                          timeZoneName: 'short',
-                        })}
+                        {(() => {
+                          // #region agent log
+                          const dateObj = new Date(bookingDetails.startTime);
+                          const isValidDate = !isNaN(dateObj.getTime());
+                          const formattedDate = isValidDate ? dateObj.toLocaleString('en-US', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            timeZoneName: 'short',
+                          }) : 'Invalid Date';
+                          fetch('http://127.0.0.1:7243/ingest/b64e0ab6-7d71-4fbd-bdcc-a8b7f534a7a1',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'ScheduleFlow.tsx:395',message:'Rendering date',data:{startTime:bookingDetails.startTime,dateObj:dateObj.toString(),isValidDate,formattedDate,timestamp:Date.now()},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A1,A2,A3'})}).catch(()=>{});
+                          return formattedDate;
+                          // #endregion
+                        })()}
                       </p>
                     </div>
                   </div>
