@@ -490,12 +490,7 @@ export default function FAQPage() {
                 gradientId="paint0_linear_faq_cta_bottom"
               />
             </Link>
-            <Link
-              href="/support"
-              className="inline-block px-8 py-4 border-2 border-white text-white rounded-lg font-semibold hover:bg-white hover:text-gray-900 transition-colors"
-            >
-              Contact Support
-            </Link>
+            {/* Contact Support button removed - footer already has Support Chat via Crisp widget */}
           </div>
         </div>
       </section>

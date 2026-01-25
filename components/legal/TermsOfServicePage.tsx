@@ -192,7 +192,7 @@ export default function TermsOfServicePage() {
       subsections: [
         {
           title: "14.1 Informal Resolution",
-          content: "Before filing any formal claim, you agree to first contact us to attempt informal resolution. Email legal@knacksters.com with a detailed description of the dispute."
+          content: "Before filing any formal claim, you agree to first contact us to attempt informal resolution. Email connect@knacksters.co with a detailed description of the dispute."
         },
         {
           title: "14.2 Binding Arbitration",
@@ -244,9 +244,8 @@ export default function TermsOfServicePage() {
       title: "17. Contact Information",
       content: `If you have questions about these Terms, please contact us at:
 
-**Email:** legal@knacksters.com  
-**Support:** support@knacksters.com  
-**Address:** [Your Company Address]
+**Email:** connect@knacksters.co  
+**Support:** connect@knacksters.co
 
 For general inquiries, visit our website at knacksters.com or contact your dedicated Business Manager.`
     }
@@ -381,13 +380,7 @@ For general inquiries, visit our website at knacksters.com or contact your dedic
               >
                 Get Started
               </Link>
-              <Link
-                href="/support"
-                className="px-6 py-3 rounded-lg font-bold transition-all bg-white border-2 hover:bg-gray-50"
-                style={{ borderColor: '#5A1568', color: '#5A1568' }}
-              >
-                Contact Support
-              </Link>
+              {/* Contact Support button removed - use Crisp chat widget in footer */}
             </div>
           </div>
         </div>

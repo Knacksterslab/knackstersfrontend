@@ -14,12 +14,7 @@ export default function DashboardFooter() {
 
           {/* Right side - Links */}
           <div className="flex items-center gap-6 text-gray-600">
-            <Link 
-              href="/support" 
-              className="hover:text-orange-500 transition-colors font-lato"
-            >
-              Support
-            </Link>
+            {/* Support link removed - use Crisp chat widget instead */}
             <Link 
               href="/faq" 
               className="hover:text-orange-500 transition-colors font-lato"

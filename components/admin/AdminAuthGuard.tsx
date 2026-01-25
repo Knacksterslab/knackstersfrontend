@@ -156,7 +156,7 @@ export default function AdminAuthGuard({ children }: { children: React.ReactNode
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="admin@knacksters.co"
+                      placeholder="connect@knacksters.co"
                       required
                       disabled={isLoggingIn}
                       autoFocus

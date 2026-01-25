@@ -1,26 +1,41 @@
+'use client'
+
 import Link from "next/link";
 import Logo from "../ui/logo";
 import { Instagram, Twitter, Facebook } from "lucide-react";
 import { FaInstagram, FaYoutube, FaDiscord, FaLinkedin } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 
+interface FooterLink {
+  label: string;
+  href: string;
+  onClick?: () => void;
+}
+
 export default function Footer() {
+  // Function to open Tawk.to chat widget
+  const openTawkChat = () => {
+    if (typeof window !== 'undefined' && (window as any).Tawk_API) {
+      (window as any).Tawk_API.maximize()
+    }
+  }
+
   // Data for link sections using mapping
   const linkSections = [
     {
       title: "Quick Links",
       links: [
-        { label: "Home", href: "#" },
+        { label: "Home", href: "/" },
         // { label: "Tasks / Projects", href: "#" },
         // { label: "Minutes Utilisation", href: "#" },
         // { label: "Billing & Subscription", href: "#" },
-        { label: "User Dashboard", href: "#userdashboard" },
+        { label: "User Dashboard", href: "/client-dashboard" },
       ],
     },
     {
       title: "Help",
       links: [
-        { label: "Support Chat", href: "#" },
+        { label: "Support Chat", href: "#", onClick: openTawkChat },
         { label: "FAQ", href: "/faq" },
       ],
     },
@@ -37,27 +52,27 @@ export default function Footer() {
     {
       icon: <FaXTwitter className="h-4 w-4" />,
       label: "X (Twitter)",
-      href: "#",
+      href: "https://twitter.com/knackstersco",
     },
     {
       icon: <FaYoutube className="h-4 w-4" />,
       label: "YouTube",
-      href: "#",
+      href: "https://www.youtube.com/@KnackstersLab",
     },
     {
       icon: <FaInstagram className="h-4 w-4" />,
       label: "Instagram",
-      href: "#",
+      href: "#", // TODO: Add your Instagram URL
     },
     {
       icon: <FaDiscord className="h-4 w-4" />,
       label: "Discord",
-      href: "#",
+      href: "#", // TODO: Add your Discord URL
     },
     {
       icon: <FaLinkedin className="h-4 w-4" />,
       label: "LinkedIn",
-      href: "#",
+      href: "#", // TODO: Add your LinkedIn URL
     },
   ];
   
@@ -86,12 +101,21 @@ export default function Footer() {
                 <ul className="space-y-2 text-zinc-400 flex flex-col gap-5">
                   {section.links.map((link, linkIndex) => (
                     <li key={linkIndex}>
-                      <Link
-                        href={link.href}
-                        className="transition-colors hover:text-[#fc882f] font-lato"
-                      >
-                        {link.label}
-                      </Link>
+                      {link.onClick ? (
+                        <button
+                          onClick={link.onClick}
+                          className="transition-colors hover:text-[#fc882f] font-lato text-left"
+                        >
+                          {link.label}
+                        </button>
+                      ) : (
+                        <Link
+                          href={link.href}
+                          className="transition-colors hover:text-[#fc882f] font-lato"
+                        >
+                          {link.label}
+                        </Link>
+                      )}
                     </li>
                   ))}
                 </ul>

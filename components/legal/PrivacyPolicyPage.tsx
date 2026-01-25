@@ -160,7 +160,7 @@ By using our Services, you agree to the collection and use of information in acc
         },
         {
           title: "7.4 How to Exercise Rights",
-          content: "To exercise any of these rights, contact us at privacy@knacksters.com. We'll respond within 30 days. We may need to verify your identity before processing requests."
+          content: "To exercise any of these rights, contact us at connect@knacksters.co. We'll respond within 30 days. We may need to verify your identity before processing requests."
         }
       ]
     },
@@ -242,16 +242,15 @@ By using our Services, you agree to the collection and use of information in acc
       title: "14. Contact Us & Data Protection Officer",
       content: `If you have questions, concerns, or requests regarding this Privacy Policy or our data practices:
 
-**Email:** privacy@knacksters.com  
-**Data Protection Officer:** dpo@knacksters.com  
-**Support:** support@knacksters.com  
-**Address:** [Your Company Address]
+**Email:** connect@knacksters.co  
+**Data Protection Officer:** connect@knacksters.co  
+**Support:** connect@knacksters.co
 
 **For EEA Residents:**  
-Our EU Representative: [EU Representative Details]
+Our EU Representative: connect@knacksters.co
 
 **For UK Residents:**  
-Our UK Representative: [UK Representative Details]
+Our UK Representative: connect@knacksters.co
 
 We aim to respond to all legitimate requests within 30 days. Occasionally it may take longer if your request is complex; we'll notify you if this is the case.`
     }
@@ -413,7 +412,7 @@ We aim to respond to all legitimate requests within 30 days. Occasionally it may
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <a
-                href="mailto:privacy@knacksters.com"
+                href="mailto:connect@knacksters.co"
                 className="px-6 py-3 rounded-lg font-bold transition-all text-white"
                 style={{ backgroundColor: '#5A1568' }}
               >

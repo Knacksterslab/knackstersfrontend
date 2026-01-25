@@ -3,6 +3,7 @@ import { Inter, Public_Sans, Space_Mono, Lato } from 'next/font/google'
 import './globals.css'
 import ToastProvider from '@/components/providers/ToastProvider'
 import SuperTokensProvider from '@/components/providers/SuperTokensProvider'
+import TawkToChat from '@/components/shared/TawkToChat'
 
 const inter = Inter({ subsets: ['latin'] })
 const publicSans = Public_Sans({ 
@@ -44,6 +45,7 @@ export default function RootLayout({
         <SuperTokensProvider>
           {children}
           <ToastProvider />
+          <TawkToChat />
         </SuperTokensProvider>
       </body>
     </html>
