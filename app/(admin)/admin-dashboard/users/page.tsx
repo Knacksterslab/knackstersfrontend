@@ -322,93 +322,9 @@ export default function UsersManagementPage() {
         </div>
       </div>
 
-      {/* Users Table */}
+      {/* Users */}
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  User
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Role
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Created
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {users.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div>
-                      <div className="text-sm font-medium text-gray-900">{user.fullName}</div>
-                      <div className="text-sm text-gray-500">{user.email}</div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div>
-                      {getRoleBadge(user.role)}
-                      {user.role === 'MANAGER' && user.specializations && user.specializations.length > 0 && (
-                        <div className="mt-1 text-xs text-gray-500">
-                          {user.specializations.map(s => s.replace(/_/g, ' ')).join(', ')}
-                        </div>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {user.status === 'ACTIVE' ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium">
-                        <Eye className="w-3 h-3" />
-                        Active
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-medium">
-                        <EyeOff className="w-3 h-3" />
-                        Inactive
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {new Date(user.createdAt).toLocaleDateString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <div className="flex items-center justify-end gap-2">
-                      <button
-                        onClick={() => openEditModal(user)}
-                        className="px-3 py-1 text-blue-600 hover:bg-blue-50 rounded transition-colors"
-                        title="Edit user"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleToggleStatus(user.id, user.status === 'ACTIVE')}
-                        className={`px-3 py-1.5 text-xs font-medium rounded transition-colors ${
-                          user.status === 'ACTIVE'
-                            ? 'text-gray-600 hover:bg-gray-100'
-                            : 'text-green-600 hover:bg-green-50'
-                        }`}
-                      >
-                        {user.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Empty State */}
-        {users.length === 0 && (
+        {users.length === 0 ? (
           <div className="text-center py-12">
             <UsersIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
             <p className="text-gray-600 mb-4">No users found</p>
@@ -425,11 +341,155 @@ export default function UsersManagementPage() {
               </button>
             )}
           </div>
+        ) : (
+          <>
+            {/* Desktop Table View */}
+            <div className="hidden lg:block overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b border-gray-200">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      User
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Role
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Created
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {users.map((user) => (
+                    <tr key={user.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">{user.fullName}</div>
+                          <div className="text-sm text-gray-500">{user.email}</div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div>
+                          {getRoleBadge(user.role)}
+                          {user.role === 'MANAGER' && user.specializations && user.specializations.length > 0 && (
+                            <div className="mt-1 text-xs text-gray-500">
+                              {user.specializations.map(s => s.replace(/_/g, ' ')).join(', ')}
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {user.status === 'ACTIVE' ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium">
+                            <Eye className="w-3 h-3" />
+                            Active
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-medium">
+                            <EyeOff className="w-3 h-3" />
+                            Inactive
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {new Date(user.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => openEditModal(user)}
+                            className="px-3 py-1 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                            title="Edit user"
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleToggleStatus(user.id, user.status === 'ACTIVE')}
+                            className={`px-3 py-1.5 text-xs font-medium rounded transition-colors ${
+                              user.status === 'ACTIVE'
+                                ? 'text-gray-600 hover:bg-gray-100'
+                                : 'text-green-600 hover:bg-green-50'
+                            }`}
+                          >
+                            {user.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="lg:hidden divide-y divide-gray-200">
+              {users.map((user) => (
+                <div key={user.id} className="p-4 hover:bg-gray-50 transition-colors">
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-900">{user.fullName}</h3>
+                      <p className="text-sm text-gray-500">{user.email}</p>
+                    </div>
+                    {user.status === 'ACTIVE' ? (
+                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium">
+                        <Eye className="w-3 h-3" />
+                        Active
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-medium">
+                        <EyeOff className="w-3 h-3" />
+                        Inactive
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-3 mb-3">
+                    {getRoleBadge(user.role)}
+                    {user.role === 'MANAGER' && user.specializations && user.specializations.length > 0 && (
+                      <span className="text-xs text-gray-500">
+                        {user.specializations.map(s => s.replace(/_/g, ' ')).join(', ')}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="text-xs text-gray-500 mb-4">
+                    Created {new Date(user.createdAt).toLocaleDateString()}
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => openEditModal(user)}
+                      className="flex-1 px-3 py-2 text-blue-600 border border-blue-600 hover:bg-blue-50 rounded-lg transition-colors text-sm font-medium flex items-center justify-center gap-2"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleToggleStatus(user.id, user.status === 'ACTIVE')}
+                      className={`flex-1 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                        user.status === 'ACTIVE'
+                          ? 'text-gray-600 border border-gray-300 hover:bg-gray-100'
+                          : 'text-green-600 border border-green-600 hover:bg-green-50'
+                      }`}
+                    >
+                      {user.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+          <div className="px-4 sm:px-6 py-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-sm text-gray-500">
               Showing {((currentPage - 1) * usersPerPage) + 1} to {Math.min(currentPage * usersPerPage, total)} of {total} users
             </div>

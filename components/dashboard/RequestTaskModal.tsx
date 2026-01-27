@@ -89,7 +89,7 @@ export default function RequestTaskModal({ isOpen, onClose, onSuccess }: Request
   if (showSuccess) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-lg shadow-2xl max-w-md w-full p-8 text-center">
+        <div className="bg-white rounded-lg shadow-2xl max-w-md w-full p-4 sm:p-6 md:p-8 text-center">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-8 h-8 text-green-600" />
           </div>
@@ -129,7 +129,7 @@ export default function RequestTaskModal({ isOpen, onClose, onSuccess }: Request
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 sticky top-0 bg-white z-10">
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 sticky top-0 bg-white z-10">
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Request New Task</h2>
             <p className="text-sm text-gray-600 mt-1">
@@ -147,7 +147,7 @@ export default function RequestTaskModal({ isOpen, onClose, onSuccess }: Request
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6">
           {/* Description */}
           <div className="mb-6">
             <label className="block text-sm font-semibold text-gray-900 mb-2">

@@ -81,7 +81,7 @@ export default function Header() {
 
     <header className="w-full bg-white font-sans sticky top-0 z-[1100] flex-shrink-0 shadow-none py-3 sm:py-4 md:py-3  border-b border-[rgb(245,245,245)] text-[rgb(38,38,38)] transition-[box-shadow] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]">
 
-      <div className="mx-auto px-4 sm:px-6 min-[1266px]:max-w-[1300px]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <div className="flex items-center justify-between">
 

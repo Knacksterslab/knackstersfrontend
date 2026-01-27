@@ -134,9 +134,9 @@ export default function TalentTimesheetPage() {
                 </button>
               </div>
 
-              <div className="overflow-x-auto -mx-4 sm:mx-0">
-                <div className="inline-block min-w-full align-middle px-4 sm:px-0">
-                  <table className="w-full min-w-[640px]">
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full">
                   <thead>
                     <tr className="border-b border-gray-200">
                       <th className="text-left text-xs font-semibold text-gray-600 px-6 py-4">Date</th>
@@ -171,8 +171,35 @@ export default function TalentTimesheetPage() {
                       </tr>
                     ))}
                   </tbody>
-                  </table>
-                </div>
+                </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden divide-y divide-gray-200">
+                {timeEntries.map((entry) => (
+                  <div key={entry.id} className="p-4 hover:bg-gray-50 transition-colors">
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-900 mb-1">{entry.task}</h3>
+                        <p className="text-sm text-gray-500">{entry.project}</p>
+                      </div>
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(entry.status)}`}>
+                        {entry.status}
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-center gap-6 text-sm">
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <Calendar size={16} />
+                        <span>{entry.date}</span>
+                      </div>
+                      <div className="flex items-center gap-2 font-semibold text-gray-900">
+                        <Clock size={16} />
+                        <span>{entry.hours}h</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 

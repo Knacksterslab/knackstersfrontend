@@ -137,15 +137,16 @@ export default function TalentEarningsPage() {
 
             {/* Payment History */}
             <div className="bg-white rounded-xl border border-gray-200">
-              <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-6 border-b border-gray-200">
                 <h2 className="text-xl font-bold text-gray-900">Payment History</h2>
-                <button className="px-4 py-2 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors flex items-center gap-2">
+                <button className="px-4 py-2 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors flex items-center gap-2 text-sm">
                   <Download size={18} />
                   Export
                 </button>
               </div>
 
-              <div className="overflow-x-auto">
+              {/* Desktop Table View */}
+              <div className="hidden lg:block overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-gray-200">
@@ -176,6 +177,42 @@ export default function TalentEarningsPage() {
                     ))}
                   </tbody>
                 </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="lg:hidden divide-y divide-gray-200">
+                {paymentHistory.map((payment) => (
+                  <div key={payment.id} className="p-4 hover:bg-gray-50 transition-colors">
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-900 mb-1">{payment.project}</h3>
+                        <p className="text-sm text-gray-500">{payment.period}</p>
+                      </div>
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(payment.status)}`}>
+                        {payment.status}
+                      </span>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                      <div>
+                        <span className="text-gray-500">Amount</span>
+                        <p className="font-semibold text-gray-900">${payment.amount.toFixed(2)}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Date</span>
+                        <p className="text-gray-900">{payment.date}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Hours</span>
+                        <p className="text-gray-900">{payment.hours}h</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Rate</span>
+                        <p className="text-gray-900">${payment.rate}/hr</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 

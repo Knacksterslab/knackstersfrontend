@@ -41,7 +41,7 @@ export default function CancelBookingDialog({
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg shadow-2xl w-full max-w-md p-6"
+        className="bg-white rounded-lg shadow-2xl w-full max-w-md p-4 sm:p-6"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
