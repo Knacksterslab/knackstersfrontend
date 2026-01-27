@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import Image from 'next/image';
-import { Calendar, CheckCircle, Clock, Video } from 'lucide-react';
+import { Calendar, CheckCircle, Clock, Video, AlertCircle } from 'lucide-react';
 import KnackstersButton from '@/components/svg/knacksters-button';
 import KnackstersOutlineButton from '@/components/svg/knacksters-outline-button';
 
@@ -28,7 +29,11 @@ interface BookingDetails {
   status: string;
 }
 
-export default function ScheduleFlow() {
+interface ScheduleFlowProps {
+  flowType: 'client' | 'talent';
+}
+
+export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [profileId, setProfileId] = useState<string | null>(null);
@@ -37,6 +42,9 @@ export default function ScheduleFlow() {
   const [bookingDetails, setBookingDetails] = useState<BookingDetails | null>(null);
   const [loading, setLoading] = useState(false);
   const [showCalModal, setShowCalModal] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
+  const [redirectCountdown, setRedirectCountdown] = useState(2);
+  const [bookingError, setBookingError] = useState<string | null>(null);
 
   // Load Cal.com embed script ONCE using Cal.com's official method
   useEffect(() => {
@@ -144,49 +152,80 @@ export default function ScheduleFlow() {
   }, []);
 
   useEffect(() => {
-    // Load profile ID from sessionStorage (for talent flow)
-    if (typeof window !== 'undefined') {
+    // Set flow based on explicit prop instead of sessionStorage
+    setIsClientFlow(flowType === 'client');
+    
+    // For talent flow, load profileId from sessionStorage if available
+    if (flowType === 'talent' && typeof window !== 'undefined') {
       const id = sessionStorage.getItem('talentProfileId');
-      
       if (id) {
-        // This is a talent interview flow
         setProfileId(id);
-        setIsClientFlow(false);
-      } else {
-        // This is a client onboarding flow (coming from signup)
-        setIsClientFlow(true);
       }
+    }
 
-      // Check for booking success from URL parameters (Cal.com redirects here after booking)
+    // Check for booking success from URL parameters (Cal.com redirects here after booking)
+    // This runs for BOTH client and talent flows
+    if (typeof window !== 'undefined') {
       const bookingConfirmed = searchParams.get('bookingConfirmed');
       const uid = searchParams.get('uid');
       const attendeeName = searchParams.get('attendeeName');
       const startTime = searchParams.get('startTime');
       const endTime = searchParams.get('endTime');
 
-      // #region agent log
-      const allParams = Array.from(searchParams.entries()).reduce((acc, [key, val]) => ({...acc, [key]: val}), {});
-      fetch('http://127.0.0.1:7243/ingest/b64e0ab6-7d71-4fbd-bdcc-a8b7f534a7a1',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'ScheduleFlow.tsx:161',message:'URL params extracted',data:{bookingConfirmed,uid,attendeeName,startTime,endTime,allParams,currentUrl:window.location.href,hostname:window.location.hostname,search:window.location.search},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A1,A2,B1,B2'})}).catch(()=>{});
-      // #endregion
-
       if (bookingConfirmed === 'true' && uid) {
-        // #region agent log
-        fetch('http://127.0.0.1:7243/ingest/b64e0ab6-7d71-4fbd-bdcc-a8b7f534a7a1',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'ScheduleFlow.tsx:168',message:'Booking confirmed - before setBookingDetails',data:{startTime,startTimeType:typeof startTime,endTime,isValidDate:startTime?!isNaN(new Date(startTime).getTime()):false},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A1,A2'})}).catch(()=>{});
-        // #endregion
         
         setBookingCompleted(true);
+        
+        const title = searchParams.get('title');
+        const description = searchParams.get('description');
+        const location = searchParams.get('location');
+        
         setBookingDetails({
           bookingId: uid,
-          meetingLink: null, // Not provided in URL params
+          meetingLink: location || null,
           startTime: startTime || '',
           endTime: endTime || '',
           attendeeName: attendeeName || null,
           timezone: null,
           status: 'confirmed'
         });
+
+        // Save booking to backend (only for client flow)
+        if (flowType === 'client') {
+          (async () => {
+            try {
+              const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+              const response = await fetch(`${API_URL}/api/client/meetings/calcom-booking`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  bookingId: uid,
+                  scheduledAt: startTime,
+                  endTime: endTime,
+                  videoCallUrl: location,
+                  title: title || 'Onboarding Call',
+                  description: description || 'Client onboarding strategy call',
+                }),
+              });
+
+              if (!response.ok) {
+                console.error('Failed to save booking to backend');
+                setBookingError('Failed to save your booking. Please click "Complete" to try again.');
+              } else {
+                console.log('Booking saved successfully');
+                // Start auto-redirect countdown
+                setIsRedirecting(true);
+              }
+            } catch (error) {
+              console.error('Error saving booking:', error);
+              setBookingError('Failed to save your booking. Please click "Complete" to try again.');
+            }
+          })();
+        }
       }
     }
-  }, [router, searchParams]);
+  }, [flowType, searchParams]);
 
   // Fix localhost redirect in production
   // When Cal.com redirects to localhost with booking params, redirect back to production
@@ -221,9 +260,24 @@ export default function ScheduleFlow() {
     }
   }, [searchParams]);
 
+  // Auto-redirect countdown for client flow
+  useEffect(() => {
+    if (!isRedirecting || flowType !== 'client') return;
+
+    if (redirectCountdown > 0) {
+      const timer = setTimeout(() => {
+        setRedirectCountdown(prev => prev - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else {
+      // Countdown reached 0, redirect to dashboard
+      router.push('/client-dashboard');
+    }
+  }, [isRedirecting, redirectCountdown, flowType, router]);
+
   const getCalLink = () => {
     // Use client or talent URL based on flow type
-    const calUrl = isClientFlow 
+    const calUrl = flowType === 'client'
       ? process.env.NEXT_PUBLIC_CAL_CLIENT_URL 
       : process.env.NEXT_PUBLIC_CAL_TALENT_URL;
     
@@ -250,14 +304,14 @@ export default function ScheduleFlow() {
     // Only redirect for client flow
     // For talent, the button is hidden after booking, but as a safety measure,
     // we don't navigate them anywhere if this is called
-    if (isClientFlow) {
+    if (flowType === 'client') {
       router.push('/client-dashboard');
     }
     // For talent: do nothing, stay on page
   };
 
   const handleBack = () => {
-    if (isClientFlow) {
+    if (flowType === 'client') {
       router.push('/signup');
     } else {
       router.push('/talent-network');
@@ -444,26 +498,14 @@ export default function ScheduleFlow() {
                       <p className="text-sm font-semibold text-gray-900">30 minutes</p>
                     </div>
                   </div>
-                  
-                  {bookingDetails.meetingLink && (
-                    <div className="flex items-center gap-3">
-                      <Video className="w-5 h-5 text-gray-600" />
-                      <div>
-                        <p className="text-xs text-gray-500">Meeting Link</p>
-                        <a
-                          href={bookingDetails.meetingLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-sm font-semibold text-blue-600 hover:text-blue-700 underline"
-                        >
-                          Join Video Call
-                        </a>
-                      </div>
-                    </div>
-                  )}
                 </div>
 
-                <p className="text-xs text-gray-600 mt-4 text-center">
+                <p className="text-sm text-gray-700 mt-4 text-center flex items-center justify-center gap-2">
+                  <Video className="w-4 h-4 text-gray-600" />
+                  Meeting link sent to your email
+                </p>
+                
+                <p className="text-xs text-gray-500 mt-2 text-center">
                   A confirmation email has been sent to your inbox with all the details.
                 </p>
               </div>
@@ -557,8 +599,8 @@ export default function ScheduleFlow() {
                 </div>
               )}
               
-              {/* Complete Button - Only show for clients OR if booking not completed */}
-              {(isClientFlow || !bookingCompleted) && (
+              {/* Complete Button - Only show if booking failed OR for talent flow */}
+              {(bookingError || (!isClientFlow && !bookingCompleted)) && (
                 <div className="flex-1">
                   <KnackstersButton
                     text="Complete"
@@ -569,6 +611,42 @@ export default function ScheduleFlow() {
                 </div>
               )}
             </div>
+
+            {/* Client auto-redirect message */}
+            {isClientFlow && bookingCompleted && isRedirecting && !bookingError && (
+              <div className="text-center mt-6">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+                  <CheckCircle className="w-8 h-8 text-green-600" />
+                </div>
+                <p className="text-lg font-semibold text-green-700 mb-2">
+                  Booking Confirmed! 🎉
+                </p>
+                <p className="text-sm text-gray-600 mb-2">
+                  Redirecting to your dashboard in {redirectCountdown} second{redirectCountdown !== 1 ? 's' : ''}...
+                </p>
+                <div className="w-32 h-1 bg-gray-200 rounded-full mx-auto overflow-hidden">
+                  <div 
+                    className="h-full bg-green-600 transition-all duration-1000 ease-linear"
+                    style={{ width: `${((2 - redirectCountdown) / 2) * 100}%` }}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Client booking error message */}
+            {isClientFlow && bookingCompleted && bookingError && (
+              <div className="text-center mt-6">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4">
+                  <AlertCircle className="w-8 h-8 text-red-600" />
+                </div>
+                <p className="text-lg font-semibold text-red-700 mb-2">
+                  Booking Issue
+                </p>
+                <p className="text-sm text-gray-600 mb-4">
+                  {bookingError}
+                </p>
+              </div>
+            )}
 
             {/* Talent booking complete message */}
             {!isClientFlow && bookingCompleted && (
@@ -586,7 +664,7 @@ export default function ScheduleFlow() {
             {/* Client booking incomplete message */}
             {isClientFlow && !bookingCompleted && (
               <p className="text-xs text-gray-500 text-center mt-4">
-                After booking your meeting, click "Complete" to access your dashboard
+                After booking your meeting, you'll be automatically redirected to your dashboard
               </p>
             )}
 
@@ -605,14 +683,13 @@ export default function ScheduleFlow() {
         <div className="max-w-4xl mx-auto px-6 flex justify-between items-center text-sm">
           <p>
             This site is protected by{' '}
-            <a href="#" className="underline hover:text-gray-300">
+            <Link href="/privacy" className="underline hover:text-gray-300">
               Privacy Policy
-            </a>
+            </Link>
           </p>
           <div className="flex gap-8">
-            <a href="#" className="hover:text-gray-300">Terms and Conditions</a>
-            <a href="#" className="hover:text-gray-300">Privacy policy</a>
-            <a href="#" className="hover:text-gray-300">CA Privacy Notice</a>
+            <Link href="/terms" className="hover:text-gray-300">Terms and Conditions</Link>
+            <Link href="/privacy" className="hover:text-gray-300">Privacy Policy</Link>
           </div>
         </div>
       </div>
@@ -649,7 +726,7 @@ export default function ScheduleFlow() {
             {/* Modal Body with iframe */}
             <div className="flex-1 overflow-hidden">
               <iframe
-                src={`https://cal.com/${getCalLink()}?embed=true&theme=light&layout=month_view&name=&email=`}
+                src={`https://cal.com/${getCalLink()}?embed=true&theme=light&layout=month_view&name=&email=&redirectUrl=${encodeURIComponent(typeof window !== 'undefined' ? `${window.location.origin}/schedule/${flowType}` : '')}`}
                 className="w-full h-full border-0"
               />
             </div>

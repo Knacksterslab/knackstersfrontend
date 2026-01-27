@@ -13,15 +13,8 @@ interface FooterLink {
 }
 
 export default function Footer() {
-  // Function to open Tawk.to chat widget
-  const openTawkChat = () => {
-    if (typeof window !== 'undefined' && (window as any).Tawk_API) {
-      (window as any).Tawk_API.maximize()
-    }
-  }
-
   // Data for link sections using mapping
-  const linkSections = [
+  const linkSections: { title: string; links: FooterLink[] }[] = [
     {
       title: "Quick Links",
       links: [
@@ -35,7 +28,6 @@ export default function Footer() {
     {
       title: "Help",
       links: [
-        { label: "Support Chat", href: "#", onClick: openTawkChat },
         { label: "FAQ", href: "/faq" },
       ],
     },

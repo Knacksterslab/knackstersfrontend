@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { ChevronDown, ChevronRight, Clock, MoreVertical, Plus } from 'lucide-react'
+import { ChevronDown, ChevronRight, Clock, MoreVertical, Folder, CheckSquare, User, Calendar } from 'lucide-react'
 import { useProjects } from '@/hooks/useProjects'
 
 export default function ProjectsList() {
@@ -86,17 +86,11 @@ export default function ProjectsList() {
       <div className="max-w-7xl mx-auto p-6">
         {/* Header */}
         <div className="mb-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">
-                Projects & Tasks
-              </h1>
-              <p className="text-sm text-gray-500">Manage your projects and tasks</p>
-            </div>
-            <button className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
-              <Plus size={20} />
-              <span>New Project</span>
-            </button>
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">
+              Projects & Tasks
+            </h1>
+            <p className="text-sm text-gray-500">Manage your projects and tasks - use "Request New Task" from your dashboard to create new work requests</p>
           </div>
         </div>
 
@@ -137,10 +131,21 @@ export default function ProjectsList() {
           <div className="space-y-4">
             {projects.length === 0 ? (
               <div className="bg-white rounded-lg p-12 text-center">
-                <p className="text-gray-500 mb-4">No projects yet</p>
-                <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                  Create Your First Project
-                </button>
+                <div className="max-w-md mx-auto">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Folder size={32} className="text-gray-400" />
+                  </div>
+                  <p className="text-lg font-semibold text-gray-900 mb-2">No work requests yet</p>
+                  <p className="text-sm text-gray-500 mb-6">
+                    Start by requesting a new task from your dashboard. Your account manager will review and create a project for you.
+                  </p>
+                  <button 
+                    onClick={() => window.location.href = '/client-dashboard'}
+                    className="px-6 py-3 bg-[#FF9634] text-white rounded-lg hover:bg-[#E88530] transition-colors"
+                  >
+                    Go to Dashboard
+                  </button>
+                </div>
               </div>
             ) : (
               projects.map((project: any) => {
@@ -294,10 +299,88 @@ export default function ProjectsList() {
 
         {/* All Tasks View */}
         {activeTab === 'tasks' && (
-          <div className="bg-white rounded-lg p-6">
-            <p className="text-gray-500">
-              All tasks view - Coming soon or use existing TasksKanban component
-            </p>
+          <div className="space-y-4">
+            {(() => {
+              // Flatten all tasks from all projects
+              const allTasks = projects.flatMap(project => 
+                project.tasks.map((task: any) => ({
+                  ...task,
+                  projectTitle: project.title,
+                  projectNumber: project.projectNumber,
+                  projectId: project.id
+                }))
+              )
+
+              if (allTasks.length === 0) {
+                return (
+                  <div className="bg-white rounded-lg p-12 text-center">
+                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <CheckSquare size={32} className="text-gray-400" />
+                    </div>
+                    <p className="text-lg font-semibold text-gray-900 mb-2">No tasks yet</p>
+                    <p className="text-sm text-gray-500">
+                      Tasks will appear here when your account manager assigns work to you
+                    </p>
+                  </div>
+                )
+              }
+
+              return allTasks.map((task) => (
+                <div key={task.id} className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow">
+                  <div className="flex items-start justify-between gap-4 mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="text-base font-semibold text-gray-900">{task.name}</h3>
+                        <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                          task.status === 'PENDING' ? 'bg-orange-100 text-orange-700' :
+                          task.status === 'IN_PROGRESS' ? 'bg-blue-100 text-blue-700' :
+                          task.status === 'COMPLETED' ? 'bg-green-100 text-green-700' :
+                          task.status === 'ON_HOLD' ? 'bg-yellow-100 text-yellow-700' :
+                          'bg-gray-100 text-gray-700'
+                        }`}>
+                          {task.status.replace('_', ' ')}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                        <span className="font-mono">{task.taskNumber}</span>
+                        <span>•</span>
+                        <span className="text-gray-500">{task.projectTitle}</span>
+                      </div>
+                      {task.description && (
+                        <p className="text-sm text-gray-600 line-clamp-2 mb-2">{task.description}</p>
+                      )}
+                    </div>
+                    <span className={`px-2 py-1 rounded text-xs font-medium ${
+                      task.priority === 'URGENT' ? 'bg-red-100 text-red-700' :
+                      task.priority === 'HIGH' ? 'bg-orange-100 text-orange-700' :
+                      task.priority === 'MEDIUM' ? 'bg-blue-100 text-blue-700' :
+                      'bg-gray-100 text-gray-700'
+                    }`}>
+                      {task.priority}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-4 text-xs text-gray-500">
+                    {task.assignedTo && (
+                      <div className="flex items-center gap-1.5">
+                        <User size={14} />
+                        <span>{task.assignedTo.fullName}</span>
+                      </div>
+                    )}
+                    {task.dueDate && (
+                      <div className="flex items-center gap-1.5">
+                        <Calendar size={14} />
+                        <span>{new Date(task.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-1.5">
+                      <Clock size={14} />
+                      <span>{task.loggedMinutes ? `${Math.floor(task.loggedMinutes / 60)}h ${task.loggedMinutes % 60}m logged` : 'No time logged'}</span>
+                    </div>
+                  </div>
+                </div>
+              ))
+            })()}
           </div>
         )}
       </div>

@@ -8,10 +8,12 @@ import {
   Video, 
   Activity,
   Paperclip,
-  AlertCircle
+  AlertCircle,
+  CheckCircle
 } from 'lucide-react'
 import KnackstersButton from '@/components/svg/knacksters-button'
 import AccountManager from '@/components/dashboard/AccountManager'
+import { supportApi } from '@/lib/api/client'
 
 export default function SupportContent() {
   const [ticketForm, setTicketForm] = useState({
@@ -21,12 +23,17 @@ export default function SupportContent() {
     description: '',
     attachment: null as File | null
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [ticketNumber, setTicketNumber] = useState<string | null>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setTicketForm({
       ...ticketForm,
       [e.target.name]: e.target.value
     })
+    setError(null)
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,16 +45,63 @@ export default function SupportContent() {
     }
   }
 
-  const handleSubmit = () => {
-    console.log('Support ticket submitted:', ticketForm)
-    // Reset form
-    setTicketForm({
-      subject: '',
-      category: '',
-      priority: '',
-      description: '',
-      attachment: null
-    })
+  const handleSubmit = async () => {
+    // Validation
+    if (!ticketForm.subject.trim()) {
+      setError('Please enter a subject')
+      return
+    }
+    if (!ticketForm.category) {
+      setError('Please select a category')
+      return
+    }
+    if (!ticketForm.priority) {
+      setError('Please select a priority')
+      return
+    }
+    if (!ticketForm.description.trim()) {
+      setError('Please enter a description')
+      return
+    }
+
+    try {
+      setIsSubmitting(true)
+      setError(null)
+
+      const response = await supportApi.createTicket({
+        subject: ticketForm.subject,
+        description: ticketForm.description,
+        category: ticketForm.category,
+        priority: ticketForm.priority,
+      })
+
+      if (response.success && response.data) {
+        setTicketNumber(response.data.ticketNumber)
+        setShowSuccess(true)
+        
+        // Reset form
+        setTicketForm({
+          subject: '',
+          category: '',
+          priority: '',
+          description: '',
+          attachment: null
+        })
+
+        // Hide success message after 5 seconds
+        setTimeout(() => {
+          setShowSuccess(false)
+          setTicketNumber(null)
+        }, 5000)
+      } else {
+        setError(response.error || 'Failed to submit ticket')
+      }
+    } catch (err: any) {
+      console.error('Submit ticket error:', err)
+      setError(err.message || 'An error occurred while submitting your ticket')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const quickLinks = [
@@ -55,25 +109,29 @@ export default function SupportContent() {
       icon: BookOpen,
       title: 'FAQ',
       description: 'Find answers to common questions',
-      color: 'blue'
+      color: 'blue',
+      url: '/faq'
     },
     {
       icon: FileText,
       title: 'Documentation',
       description: 'Detailed guides and tutorials',
-      color: 'green'
+      color: 'green',
+      url: 'https://docs.knacksters.co' // External docs (placeholder)
     },
     {
       icon: Video,
       title: 'Video Tutorials',
       description: 'Learn through video content',
-      color: 'purple'
+      color: 'purple',
+      url: 'https://www.youtube.com/@knacksters' // YouTube channel (placeholder)
     },
     {
       icon: Activity,
       title: 'System Status',
       description: 'Check platform health',
-      color: 'orange'
+      color: 'orange',
+      url: 'https://status.knacksters.co' // Status page (placeholder)
     }
   ]
 
@@ -109,6 +167,32 @@ export default function SupportContent() {
               </div>
             </div>
 
+            {/* Success Message */}
+            {showSuccess && (
+              <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <CheckCircle size={20} className="text-green-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-green-900 text-sm mb-1">Ticket Submitted Successfully!</h4>
+                    <p className="text-sm text-green-700">
+                      Your support ticket <span className="font-mono font-semibold">{ticketNumber}</span> has been created. 
+                      We'll get back to you within 24 hours.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Error Message */}
+            {error && (
+              <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <AlertCircle size={20} className="text-red-600 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-red-700">{error}</p>
+                </div>
+              </div>
+            )}
+
             <div className="space-y-5">
               {/* Subject */}
               <div>
@@ -121,7 +205,8 @@ export default function SupportContent() {
                   value={ticketForm.subject}
                   onChange={handleChange}
                   placeholder="Brief description of your issue"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                  disabled={isSubmitting}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
                 />
               </div>
 
@@ -135,7 +220,8 @@ export default function SupportContent() {
                     name="category"
                     value={ticketForm.category}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent bg-white"
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent bg-white disabled:bg-gray-50 disabled:text-gray-500"
                   >
                     <option value="">Select category</option>
                     <option value="technical">Technical Issue</option>
@@ -154,7 +240,8 @@ export default function SupportContent() {
                     name="priority"
                     value={ticketForm.priority}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent bg-white"
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent bg-white disabled:bg-gray-50 disabled:text-gray-500"
                   >
                     <option value="">Select priority</option>
                     <option value="low">Low</option>
@@ -176,7 +263,8 @@ export default function SupportContent() {
                   onChange={handleChange}
                   placeholder="Please provide detailed information about your issue or question..."
                   rows={6}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent resize-none"
+                  disabled={isSubmitting}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent resize-none disabled:bg-gray-50 disabled:text-gray-500"
                 />
               </div>
 
@@ -204,9 +292,10 @@ export default function SupportContent() {
 
               {/* Submit Button */}
               <KnackstersButton 
-                text="Submit Ticket" 
+                text={isSubmitting ? "Submitting..." : "Submit Ticket"} 
                 onClick={handleSubmit}
                 fullWidth={true}
+                disabled={isSubmitting}
               />
             </div>
           </div>
@@ -220,9 +309,13 @@ export default function SupportContent() {
             <div className="space-y-3">
               {quickLinks.map((link, index) => {
                 const Icon = link.icon
+                const isExternal = link.url.startsWith('http')
                 return (
-                  <button
+                  <a
                     key={index}
+                    href={link.url}
+                    target={isExternal ? '_blank' : undefined}
+                    rel={isExternal ? 'noopener noreferrer' : undefined}
                     className="w-full flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all text-left"
                   >
                     <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${getColorClasses(link.color)}`}>
@@ -232,7 +325,7 @@ export default function SupportContent() {
                       <p className="font-semibold text-gray-900 text-sm">{link.title}</p>
                       <p className="text-xs text-gray-600">{link.description}</p>
                     </div>
-                  </button>
+                  </a>
                 )
               })}
             </div>

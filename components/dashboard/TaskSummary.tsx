@@ -3,8 +3,6 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Clock, MoreVertical } from 'lucide-react'
-import CalBookingModal, { BookingDetails } from '../shared/CalBookingModal'
-import CancelBookingDialog from '../shared/CancelBookingDialog'
 
 interface TaskSummaryProps {
   tasks: Array<{
@@ -30,42 +28,27 @@ interface TaskSummaryProps {
 
 export default function TaskSummary({ tasks = [], hasActiveSubscription = false, upcomingMeeting = null }: TaskSummaryProps) {
   const router = useRouter()
-  const [activeTab, setActiveTab] = useState('active')
-  const [showModal, setShowModal] = useState(false)
-  const [showCancelDialog, setShowCancelDialog] = useState(false)
-
-  const handleBookingComplete = (details: BookingDetails) => {
-    setShowModal(false)
-    router.refresh()
-  }
-
-  const handleCancelMeeting = async () => {
-    if (!upcomingMeeting?.bookingId) return
-
-    try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
-      const response = await fetch(`${API_URL}/api/client/meetings/${upcomingMeeting.bookingId}/cancel`, {
-        method: 'DELETE',
-        credentials: 'include',
-      })
-
-      if (response.ok) {
-        router.refresh()
-      } else {
-        console.error('Failed to cancel meeting')
-        alert('Failed to cancel meeting. Please try again.')
-      }
-    } catch (error) {
-      console.error('Error cancelling meeting:', error)
-      alert('An error occurred while cancelling the meeting.')
-    }
-  }
+  
+  // Categorize tasks by status
+  const pendingTasks = tasks.filter(task => task.status === 'PENDING')
+  const activeTasks = tasks.filter(task => task.status === 'ACTIVE' || task.status === 'IN_REVIEW')
+  const completedTasks = tasks.filter(task => task.status === 'COMPLETED')
+  
+  // Set initial tab based on what tasks exist
+  const [activeTab, setActiveTab] = useState(
+    pendingTasks.length > 0 ? 'pending' : activeTasks.length > 0 ? 'active' : 'all'
+  )
 
   const tabs = [
-    { id: 'active', label: 'Active', count: tasks.length },
-    { id: 'pending', label: 'Pending', count: 0 },
-    { id: 'completed', label: 'Completed', count: 0 }
+    { id: 'all', label: 'All', count: tasks.length },
+    { id: 'pending', label: 'Pending Review', count: pendingTasks.length },
+    { id: 'active', label: 'Active', count: activeTasks.length },
   ]
+  
+  // Filter tasks based on active tab
+  const displayedTasks = activeTab === 'all' ? tasks 
+    : activeTab === 'pending' ? pendingTasks
+    : activeTasks
 
   const getInitials = (name: string) => {
     return name
@@ -100,7 +83,7 @@ export default function TaskSummary({ tasks = [], hasActiveSubscription = false,
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
       <div className="flex items-center justify-between mb-4 sm:mb-6">
-        <h2 className="text-lg sm:text-xl font-bold text-gray-900">Active Task Summary</h2>
+        <h2 className="text-lg sm:text-xl font-bold text-gray-900">Task Summary</h2>
         <button className="text-xs sm:text-sm text-blue-600 hover:text-blue-700 font-medium whitespace-nowrap">
           View all
         </button>
@@ -128,82 +111,20 @@ export default function TaskSummary({ tasks = [], hasActiveSubscription = false,
 
       {/* Task List */}
       <div className="space-y-4">
-        {tasks.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Clock size={32} className="text-gray-400" />
+        {displayedTasks.length === 0 ? (
+          <div className="text-center py-8">
+            <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Clock size={24} className="text-gray-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Your tasks will appear here</h3>
-            <p className="text-sm text-gray-500 mb-6 max-w-sm mx-auto">
-              {hasActiveSubscription 
-                ? "Once you have active tasks, they'll show up here with progress tracking, deadlines, and assigned Knacksters."
-                : "Schedule a strategy call to choose your plan and start requesting work from expert Knacksters."}
+            <h3 className="text-base font-semibold text-gray-900 mb-1">Your tasks will appear here</h3>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              {activeTab === 'pending' && 'No pending requests.'}
+              {activeTab === 'active' && (hasActiveSubscription ? "Once you have active tasks, they'll show up here with progress tracking, deadlines, and assigned Knacksters." : "After your strategy call and plan selection, you can start requesting work from expert Knacksters.")}
+              {activeTab === 'all' && 'No tasks yet. Request your first task to get started!'}
             </p>
-            {hasActiveSubscription ? (
-              <button 
-                onClick={() => {
-                  // Trigger request new task action
-                  const requestButton = document.querySelector('[data-action="request-task"]') as HTMLElement;
-                  if (requestButton) {
-                    requestButton.click();
-                  } else {
-                    window.location.href = '/dashboard#request-task';
-                  }
-                }}
-                className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold text-sm"
-              >
-                Request New Task
-              </button>
-            ) : upcomingMeeting ? (
-              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg inline-block">
-                <div className="flex items-center gap-4">
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900">
-                      Strategy Call: {new Date(upcomingMeeting.scheduledAt).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric'
-                      })}
-                    </p>
-                    <p className="text-xs text-gray-600 mt-1">
-                      {new Date(upcomingMeeting.scheduledAt).toLocaleTimeString('en-US', {
-                        hour: 'numeric',
-                        minute: '2-digit',
-                        hour12: true
-                      })}
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => setShowModal(true)}
-                      className="text-sm text-blue-600 hover:text-blue-700 font-medium"
-                    >
-                      Reschedule
-                    </button>
-                    <span className="text-gray-300">|</span>
-                    <button
-                      onClick={() => setShowCancelDialog(true)}
-                      className="text-sm text-red-600 hover:text-red-700 font-medium"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <button 
-                onClick={() => setShowModal(true)}
-                className="px-6 py-2.5 bg-gradient-to-r from-[#E9414C] to-[#FC8838] text-white rounded-lg hover:opacity-90 transition-opacity font-semibold text-sm flex items-center gap-2"
-              >
-                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" className="flex-shrink-0">
-                  <path d="M6 2h8M6 18h8M10 6v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                </svg>
-                Schedule Strategy Call
-              </button>
-            )}
           </div>
         ) : (
-          tasks.map((task) => (
+          displayedTasks.map((task) => (
             <div key={task.id} className="border border-gray-200 rounded-lg p-4 hover:border-gray-300 hover:shadow-sm transition-all group">
               <div className="flex items-start justify-between mb-3">
                 {/* Left: Checkbox + Task Info */}
@@ -213,9 +134,16 @@ export default function TaskSummary({ tasks = [], hasActiveSubscription = false,
                   </div>
                   <div>
                     <p className="text-xs text-gray-500 mb-1">{task.projectName}</p>
-                    <h3 className="text-base font-semibold text-gray-900 mb-2">
-                      {task.name} <span className="text-sm text-gray-500">#{task.taskNumber}</span>
-                    </h3>
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="text-base font-semibold text-gray-900">
+                        {task.name} <span className="text-sm text-gray-500">#{task.taskNumber}</span>
+                      </h3>
+                      {task.status === 'PENDING' && (
+                        <span className="px-2 py-0.5 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full whitespace-nowrap">
+                          Pending Review
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
                 
@@ -230,16 +158,23 @@ export default function TaskSummary({ tasks = [], hasActiveSubscription = false,
                 {/* Knackster */}
                 <div>
                   <p className="text-xs text-gray-500 mb-2">Knackster</p>
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
-                      <span className="text-white text-xs font-semibold">
-                        {task.assignedTo ? getInitials(task.assignedTo.fullName) : 'NA'}
-                      </span>
+                  {task.status === 'PENDING' ? (
+                    <div className="flex items-center gap-2">
+                      <Clock size={16} className="text-yellow-600 flex-shrink-0" />
+                      <p className="text-sm font-medium text-yellow-700">Awaiting assignment</p>
                     </div>
-                    <p className="text-sm font-medium text-gray-900">
-                      {task.assignedTo?.fullName || 'Unassigned'}
-                    </p>
-                  </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span className="text-white text-xs font-semibold">
+                          {task.assignedTo ? getInitials(task.assignedTo.fullName) : 'NA'}
+                        </span>
+                      </div>
+                      <p className="text-sm font-medium text-gray-900">
+                        {task.assignedTo?.fullName || 'Unassigned'}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Hours Logged */}
@@ -263,28 +198,6 @@ export default function TaskSummary({ tasks = [], hasActiveSubscription = false,
           ))
         )}
       </div>
-
-      {/* Booking/Reschedule Modal */}
-      <CalBookingModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        calUrl={process.env.NEXT_PUBLIC_CAL_CLIENT_URL || ''}
-        title={upcomingMeeting ? "Reschedule Your Strategy Call" : "Schedule Your Strategy Call"}
-        mode={upcomingMeeting ? 'reschedule' : 'book'}
-        existingBookingUid={upcomingMeeting?.bookingId}
-        onBookingComplete={handleBookingComplete}
-      />
-
-      {/* Cancel Dialog */}
-      <CancelBookingDialog
-        isOpen={showCancelDialog}
-        onClose={() => setShowCancelDialog(false)}
-        bookingDetails={upcomingMeeting && upcomingMeeting.bookingId ? {
-          startTime: new Date(upcomingMeeting.scheduledAt).toISOString(),
-          bookingId: upcomingMeeting.bookingId
-        } : null}
-        onConfirmCancel={handleCancelMeeting}
-      />
     </div>
   )
 }

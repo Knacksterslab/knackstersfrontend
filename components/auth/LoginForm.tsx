@@ -87,7 +87,7 @@ export default function LoginForm({
 
     try {
       // Redirect to Google OAuth endpoint
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
       const redirectUrl = `${backendUrl}/api/auth/google?userType=${userType}`;
       
       window.location.href = redirectUrl;

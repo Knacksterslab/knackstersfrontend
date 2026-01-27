@@ -167,7 +167,7 @@ export default function TalentNetworkForm() {
         if (typeof window !== 'undefined') {
           sessionStorage.setItem('talentProfileId', response.data.profileId);
         }
-        router.push('/schedule');
+        router.push('/schedule/talent');
       } else {
         setError(response.error || 'Failed to submit application');
       }

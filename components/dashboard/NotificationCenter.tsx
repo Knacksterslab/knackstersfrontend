@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { AlertCircle, CheckCircle, AlertTriangle, Info } from 'lucide-react'
 
 interface NotificationCenterProps {
@@ -16,6 +16,31 @@ interface NotificationCenterProps {
 }
 
 export default function NotificationCenter({ notifications = [], onRefresh }: NotificationCenterProps) {
+  const [showAll, setShowAll] = useState(false)
+  
+  // Deduplicate notifications by ID and content
+  const uniqueNotifications = React.useMemo(() => {
+    const seenIds = new Set<string>()
+    const seenContent = new Set<string>()
+    
+    return notifications.filter(notification => {
+      // Check by ID first
+      if (seenIds.has(notification.id)) {
+        return false
+      }
+      
+      // Also check by content fingerprint (title + message + type)
+      const contentFingerprint = `${notification.type}:${notification.title}:${notification.message}`
+      if (seenContent.has(contentFingerprint)) {
+        return false
+      }
+      
+      seenIds.add(notification.id)
+      seenContent.add(contentFingerprint)
+      return true
+    })
+  }, [notifications])
+
   const getIcon = (type: string) => {
     switch (type.toLowerCase()) {
       case 'warning':
@@ -45,17 +70,32 @@ export default function NotificationCenter({ notifications = [], onRefresh }: No
     return 'Just now'
   }
 
+  // Limit to 3 notifications by default, show all when expanded
+  const displayedNotifications = showAll ? uniqueNotifications : uniqueNotifications.slice(0, 3)
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
       <div className="flex items-center justify-between mb-4 sm:mb-6 gap-2">
-        <h2 className="text-base sm:text-lg font-bold text-gray-900">Notifications & Alerts</h2>
-        <button className="text-xs sm:text-sm text-blue-600 hover:text-blue-700 font-medium whitespace-nowrap">
-          View all
-        </button>
+        <h2 className="text-base sm:text-lg font-bold text-gray-900">
+          Notifications & Alerts
+          {uniqueNotifications.length > 0 && (
+            <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-600 text-xs font-semibold rounded-full">
+              {uniqueNotifications.length}
+            </span>
+          )}
+        </h2>
+        {uniqueNotifications.length > 3 && (
+          <button 
+            onClick={() => setShowAll(!showAll)}
+            className="text-xs sm:text-sm text-blue-600 hover:text-blue-700 font-medium whitespace-nowrap"
+          >
+            {showAll ? 'Show less' : `View all (${uniqueNotifications.length})`}
+          </button>
+        )}
       </div>
 
       <div className="space-y-3">
-        {notifications.length === 0 ? (
+        {uniqueNotifications.length === 0 ? (
           <div className="text-center py-8">
             <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
               <Info size={24} className="text-gray-400" />
@@ -66,7 +106,7 @@ export default function NotificationCenter({ notifications = [], onRefresh }: No
             </p>
           </div>
         ) : (
-          notifications.map((notification) => {
+          displayedNotifications.map((notification) => {
             const { Icon, color, bgColor } = getIcon(notification.type)
             return (
               <div key={notification.id} className={`p-3 ${bgColor} rounded-lg`}>

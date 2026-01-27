@@ -6,7 +6,7 @@ export async function middleware(request: NextRequest) {
   
   // Public routes that should NOT require authentication (even though in (app) group)
   const publicPaths = [
-    '/schedule',      // Public booking flow
+    '/schedule',      // Public booking flows (includes /schedule/client and /schedule/talent)
     '/signup',        // Registration page
     '/talent-network', // Talent application form
   ]

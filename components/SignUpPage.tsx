@@ -87,13 +87,13 @@ export default function SignUpPage() {
       });
 
       if (response.status === 'OK') {
-        toast.success('Account created successfully! Your dedicated manager will contact you soon.');
+        toast.success('Account created successfully! Let\'s schedule your onboarding call.');
         
         // Wait for session to be fully established
         await new Promise(resolve => setTimeout(resolve, 1000));
         
-        // Redirect to client dashboard
-        router.push('/client-dashboard');
+        // Redirect to schedule page to book onboarding call
+        router.push('/schedule/client');
       } else if (response.status === 'FIELD_ERROR') {
         const fieldErrors = response.formFields
           .filter((f: any) => f.error)

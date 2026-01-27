@@ -5,7 +5,7 @@ import RoleGuard from '@/components/auth/RoleGuard';
 import Sidebar from './Sidebar';
 import TopBar from './TopBar';
 import MinutesOverview from './MinutesOverview';
-import TaskSummary from './TaskSummary';
+import RequestSummary from './RequestSummary';
 import AccountManager from './AccountManager';
 import BillingSummary from './BillingSummary';
 import PlanSelection from './PlanSelection';
@@ -15,6 +15,7 @@ import DashboardFooter from './DashboardFooter';
 import NewUserTip, { NewUserTipCompact } from './NewUserTip';
 import CalBookingModal, { BookingDetails } from '../shared/CalBookingModal';
 import CancelBookingDialog from '../shared/CancelBookingDialog';
+import RequestTaskModal from './RequestTaskModal';
 import { Menu } from 'lucide-react';
 import { useDashboard } from '@/hooks/useDashboard';
 
@@ -22,6 +23,7 @@ export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [showRequestTaskModal, setShowRequestTaskModal] = useState(false);
   const { data, loading, error, refresh } = useDashboard();
 
   const handleBookingComplete = (details: BookingDetails) => {
@@ -33,7 +35,7 @@ export default function DashboardLayout() {
     if (!data?.upcomingMeeting?.bookingId) return;
 
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
       const response = await fetch(`${API_URL}/api/client/meetings/${data.upcomingMeeting.bookingId}/cancel`, {
         method: 'DELETE',
         credentials: 'include',
@@ -121,10 +123,11 @@ export default function DashboardLayout() {
                       })}
                     </p>
                   </div>
-                  <div className="flex flex-col gap-2 w-full sm:w-auto">
-                    {data.subscription?.status === 'ACTIVE' ? (
+                  {data.subscription?.status === 'ACTIVE' && (
+                    <div className="flex flex-col gap-2 w-full sm:w-auto">
                       <button 
                         data-action="request-task"
+                        onClick={() => setShowRequestTaskModal(true)}
                         className="w-full sm:w-auto px-4 sm:px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 whitespace-nowrap"
                       >
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="flex-shrink-0">
@@ -132,67 +135,24 @@ export default function DashboardLayout() {
                         </svg>
                         <span className="text-sm sm:text-base">Request New Task</span>
                       </button>
-                    ) : data.upcomingMeeting ? (
-                      <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                        <div className="flex items-start justify-between gap-4">
-                          <div>
-                            <p className="text-sm font-semibold text-gray-900 mb-1">
-                              Strategy Call: {new Date(data.upcomingMeeting.scheduledAt).toLocaleDateString('en-US', {
-                                month: 'short',
-                                day: 'numeric',
-                                year: 'numeric'
-                              })}
-                            </p>
-                            <p className="text-xs text-gray-600">
-                              {new Date(data.upcomingMeeting.scheduledAt).toLocaleTimeString('en-US', {
-                                hour: 'numeric',
-                                minute: '2-digit',
-                                hour12: true
-                              })}
-                            </p>
-                          </div>
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => setShowModal(true)}
-                              className="text-sm text-blue-600 hover:text-blue-700 font-medium whitespace-nowrap"
-                            >
-                              Reschedule
-                            </button>
-                            <span className="text-gray-300">|</span>
-                            <button
-                              onClick={() => setShowCancelDialog(true)}
-                              className="text-sm text-red-600 hover:text-red-700 font-medium whitespace-nowrap"
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        </div>
+                      <div className="sm:min-w-[300px]">
+                        <NewUserTipCompact tipId="request-task" variant="tip">
+                          {getTipMessage()}
+                        </NewUserTipCompact>
                       </div>
-                    ) : (
-                      <button 
-                        onClick={() => setShowModal(true)}
-                        className="w-full sm:w-auto px-4 sm:px-6 py-3 bg-gradient-to-r from-[#E9414C] to-[#FC8838] text-white font-semibold rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2 whitespace-nowrap"
-                      >
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="flex-shrink-0">
-                          <path d="M6 2h8M6 18h8M10 6v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                        </svg>
-                        <span className="text-sm sm:text-base">Schedule Strategy Call</span>
-                      </button>
-                    )}
-                    <div className="sm:min-w-[300px]">
-                      <NewUserTipCompact tipId="request-task" variant="tip">
-                        {getTipMessage()}
-                      </NewUserTipCompact>
                     </div>
-                  </div>
+                  )}
                 </div>
 
-                <MinutesOverview hoursBalance={data.hoursBalance} />
-
-                {data.hoursBalance && (
-                  <NewUserTip tipId="hours-overview" title="Track Your Hours" variant="info">
-                    Monitor your monthly hour usage here. Hours reset each billing cycle, and you can purchase additional hours anytime.
-                  </NewUserTip>
+                {data.subscription?.status === 'ACTIVE' && (
+                  <>
+                    <MinutesOverview hoursBalance={data.hoursBalance} />
+                    {data.hoursBalance && (
+                      <NewUserTip tipId="hours-overview" title="Track Your Hours" variant="info">
+                        Monitor your monthly hour usage here. Hours reset each billing cycle, and you can purchase additional hours anytime.
+                      </NewUserTip>
+                    )}
+                  </>
                 )}
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
@@ -201,33 +161,33 @@ export default function DashboardLayout() {
                       Active tasks show real-time progress. Click any task to view details, communicate with your Knackster, and track time logs.
                     </NewUserTip>
                     
-                    <TaskSummary 
-                      tasks={data.recentTasks} 
+                    <RequestSummary 
+                      projects={data.recentProjects} 
                       hasActiveSubscription={data.subscription?.status === 'ACTIVE'}
-                      upcomingMeeting={data.upcomingMeeting}
                     />
                     
                     {!data.subscription ? (
-                      <PlanSelection onSubscriptionComplete={refresh} />
+                      <PlanSelection 
+                        onSubscriptionComplete={refresh} 
+                        hasUpcomingMeeting={!!data.upcomingMeeting}
+                      />
                     ) : (
                       <BillingSummary subscription={data.subscription} />
                     )}
                   </div>
 
                   <div className="space-y-6">
-                    {!data.upcomingMeeting ? (
-                      <UpcomingMeeting 
-                        meeting={data.upcomingMeeting || null} 
-                        accountManager={data.accountManager || null}
-                      />
-                    ) : (
+                    <UpcomingMeeting 
+                      meeting={data.upcomingMeeting || null} 
+                      accountManager={data.accountManager || null}
+                    />
+                    
+                    {data.accountManager && !data.upcomingMeeting && (
                       <>
                         <AccountManager accountManager={data.accountManager} />
-                        {data.accountManager && (
-                          <NewUserTip tipId="account-manager" title="Your Dedicated Support" variant="success">
-                            Your account manager coordinates all experts, ensures quality delivery, and keeps your projects on track. Reach out anytime!
-                          </NewUserTip>
-                        )}
+                        <NewUserTip tipId="account-manager" title="Your Dedicated Support" variant="success">
+                          Your account manager coordinates all experts, ensures quality delivery, and keeps your projects on track. Reach out anytime!
+                        </NewUserTip>
                       </>
                     )}
                     
@@ -263,6 +223,12 @@ export default function DashboardLayout() {
             bookingId: data.upcomingMeeting.bookingId
           } : null}
           onConfirmCancel={handleCancelMeeting}
+        />
+
+        <RequestTaskModal
+          isOpen={showRequestTaskModal}
+          onClose={() => setShowRequestTaskModal(false)}
+          onSuccess={refresh}
         />
       </>
     </RoleGuard>

@@ -31,7 +31,7 @@ export default function PaymentMethodModal({ isOpen, onClose, onSuccess }: Payme
     setError(null)
 
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
       const response = await fetch(`${API_URL}/api/client/stripe/setup-intent`, {
         method: 'POST',
         credentials: 'include',

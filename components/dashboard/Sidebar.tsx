@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import Image from 'next/image'
 import { LayoutDashboard, FolderKanban, Clock, CreditCard, HelpCircle, MessageSquare, LogOut, X } from 'lucide-react'
 import { useUser } from '@/contexts/UserContext'
+import FeedbackModal from '@/components/feedback/FeedbackModal'
 
 interface SidebarProps {
   isOpen?: boolean
@@ -15,6 +16,7 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   const router = useRouter()
   const pathname = usePathname()
   const { logout } = useUser()
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false)
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/client-dashboard' },
@@ -122,7 +124,10 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
             <p className="text-xs text-gray-600 mb-3">
               Feel free to share any feedback or suggestions you have
             </p>
-            <button className="w-full bg-blue-600 text-white text-xs py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+            <button 
+              onClick={() => setShowFeedbackModal(true)}
+              className="w-full bg-blue-600 text-white text-xs py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+            >
               <MessageSquare size={14} />
               Leave Feedback
             </button>
@@ -148,6 +153,9 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
           <span className="text-sm font-medium">Log Out</span>
         </button>
       </div>
+
+      {/* Feedback Modal */}
+      <FeedbackModal isOpen={showFeedbackModal} onClose={() => setShowFeedbackModal(false)} />
     </div>
     </>
   )

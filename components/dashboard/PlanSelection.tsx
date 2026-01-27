@@ -10,9 +10,10 @@ const pricingPlans = getPricingPlansArray('STARTER')
 
 interface PlanSelectionProps {
   onSubscriptionComplete?: () => void
+  hasUpcomingMeeting?: boolean
 }
 
-export default function PlanSelection({ onSubscriptionComplete }: PlanSelectionProps = {}) {
+export default function PlanSelection({ onSubscriptionComplete, hasUpcomingMeeting = false }: PlanSelectionProps = {}) {
   const router = useRouter()
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
@@ -35,7 +36,7 @@ export default function PlanSelection({ onSubscriptionComplete }: PlanSelectionP
 
   const checkPaymentMethod = async () => {
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
       const response = await fetch(`${API_URL}/api/client/stripe/payment-methods`, {
         credentials: 'include',
       })
@@ -61,7 +62,7 @@ export default function PlanSelection({ onSubscriptionComplete }: PlanSelectionP
     setError(null)
 
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
       const response = await fetch(`${API_URL}/api/client/stripe/subscribe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -121,27 +122,29 @@ export default function PlanSelection({ onSubscriptionComplete }: PlanSelectionP
 
   return (
     <div id="plans-section" className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
-      {/* Strategy Call Promotion Banner */}
-      <div className="bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-200 rounded-lg p-4 mb-6">
-        <div className="flex items-start gap-3">
-          <div className="w-10 h-10 bg-gradient-to-r from-[#E9414C] to-[#FF9634] rounded-full flex items-center justify-center flex-shrink-0">
-            <Sparkles size={20} className="text-white" />
-          </div>
-          <div className="flex-1">
-            <h3 className="text-sm font-bold text-gray-900 mb-1">💡 Not sure which plan fits your needs?</h3>
-            <p className="text-xs text-gray-700 mb-3">
-              Schedule a free 15-minute strategy call with your dedicated account manager. 
-              Get expert guidance on choosing the right plan and how to maximize your team's efficiency.
-            </p>
-            <button
-              onClick={handleScheduleCall}
-              className="text-xs font-semibold text-[#E9414C] hover:text-[#FF9634] transition-colors underline"
-            >
-              Schedule Free Strategy Call →
-            </button>
+      {/* Strategy Call Promotion Banner - Only show if no meeting booked */}
+      {!hasUpcomingMeeting && (
+        <div className="bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-200 rounded-lg p-4 mb-6">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 bg-gradient-to-r from-[#E9414C] to-[#FF9634] rounded-full flex items-center justify-center flex-shrink-0">
+              <Sparkles size={20} className="text-white" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-sm font-bold text-gray-900 mb-1">💡 Not sure which plan fits your needs?</h3>
+              <p className="text-xs text-gray-700 mb-3">
+                Schedule a free 15-minute strategy call with your dedicated account manager. 
+                Get expert guidance on choosing the right plan and how to maximize your team's efficiency.
+              </p>
+              <button
+                onClick={handleScheduleCall}
+                className="text-xs font-semibold text-[#E9414C] hover:text-[#FF9634] transition-colors underline"
+              >
+                Schedule Free Strategy Call →
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="flex items-center gap-3 mb-4 sm:mb-6">
         <div className="w-10 h-10 bg-gradient-to-r from-[#E9414C] to-[#FF9634] rounded-lg flex items-center justify-center">

@@ -1,14 +1,18 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Clock, CreditCard, MoreVertical } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { CreditCard, MessageCircle, Sparkles } from 'lucide-react'
 import { useBilling, useInvoices } from '@/hooks/useBilling'
+import PaymentMethodModal from '@/components/dashboard/PaymentMethodModal'
 
 export default function BillingContent() {
-  const { summary, subscription, loading: billingLoading } = useBilling()
-  const { invoices, loading: invoicesLoading, payInvoice } = useInvoices()
+  const router = useRouter()
+  const { summary, subscription, loading: billingLoading, refresh } = useBilling()
+  const { invoices, loading: invoicesLoading } = useInvoices()
   const [paymentMethods, setPaymentMethods] = useState<any[]>([])
   const [loadingPaymentMethods, setLoadingPaymentMethods] = useState(true)
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
 
   const loading = billingLoading || invoicesLoading
 
@@ -54,25 +58,33 @@ export default function BillingContent() {
     return types[type] || type
   }
 
-  useEffect(() => {
-    const fetchPaymentMethods = async () => {
-      try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
-        const response = await fetch(`${API_URL}/api/client/stripe/payment-methods`, {
-          credentials: 'include',
-        })
-        const data = await response.json()
-        if (data.success && data.data?.paymentMethods) {
-          setPaymentMethods(data.data.paymentMethods)
-        }
-      } catch (err) {
-        console.error('Failed to fetch payment methods:', err)
-      } finally {
-        setLoadingPaymentMethods(false)
+  const fetchPaymentMethods = async () => {
+    try {
+      setLoadingPaymentMethods(true)
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
+      const response = await fetch(`${API_URL}/api/client/stripe/payment-methods`, {
+        credentials: 'include',
+      })
+      const data = await response.json()
+      if (data.success && data.data?.paymentMethods) {
+        setPaymentMethods(data.data.paymentMethods)
       }
+    } catch (err) {
+      console.error('Failed to fetch payment methods:', err)
+    } finally {
+      setLoadingPaymentMethods(false)
     }
+  }
+
+  useEffect(() => {
     fetchPaymentMethods()
   }, [])
+
+  const handlePaymentMethodSuccess = () => {
+    setShowPaymentModal(false)
+    fetchPaymentMethods()
+    refresh()
+  }
 
   if (loading) {
     return (
@@ -88,26 +100,18 @@ export default function BillingContent() {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-start justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-1">Billing & Subscription</h1>
-        </div>
-        <button className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
-          <Clock size={20} />
-          Buy Extra Hours
-        </button>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">Billing & Subscription</h1>
+        <p className="text-sm text-gray-600 mt-2">
+          Manage your subscription and payment information
+        </p>
       </div>
 
       {/* Current Plan and Payment Method */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Current Plan */}
         <div>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-gray-900">Current Plan</h2>
-            <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-              Change
-            </button>
-          </div>
+          <h2 className="text-xl font-bold text-gray-900 mb-4">Current Plan</h2>
           
           {subscription ? (
             <div className="bg-white rounded-xl border border-gray-200 p-6">
@@ -154,54 +158,74 @@ export default function BillingContent() {
 
         {/* Payment Method */}
         <div>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-gray-900">Payment Method</h2>
-            <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-              Manage
-            </button>
-          </div>
+          <h2 className="text-xl font-bold text-gray-900 mb-4">Payment Method</h2>
           
           <div className="bg-white rounded-xl border border-gray-200 p-6">
             {loadingPaymentMethods ? (
               <div className="flex items-center justify-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FF9634]"></div>
               </div>
             ) : paymentMethods.length === 0 ? (
               <div className="text-center py-8">
                 <CreditCard size={48} className="text-gray-300 mx-auto mb-3" />
-                <p className="text-gray-500 text-sm">No payment method on file</p>
-                <button className="mt-3 text-sm text-blue-600 hover:text-blue-700 font-medium">
+                <p className="text-gray-600 text-sm mb-4">No payment method on file</p>
+                <button 
+                  onClick={() => setShowPaymentModal(true)}
+                  className="px-6 py-2.5 bg-[#FF9634] text-white font-semibold rounded-lg hover:bg-[#E88530] transition-colors"
+                >
                   Add Payment Method
                 </button>
               </div>
             ) : (
-              paymentMethods.map((method) => (
-                <div key={method.id} className="flex items-start gap-4 mb-4 last:mb-0">
-                  <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <CreditCard size={24} className="text-gray-600" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-lg font-semibold text-gray-900 capitalize">
+              <div>
+                {paymentMethods.map((method) => (
+                  <div key={method.id} className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <CreditCard size={24} className="text-gray-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-gray-900 capitalize mb-1">
                         {method.cardBrand || method.type}
                       </h3>
-                      <button className="p-1 hover:bg-gray-100 rounded">
-                        <MoreVertical size={18} className="text-gray-400" />
-                      </button>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-3">•••• {method.cardLastFour || method.last4}</p>
-                    <div className="flex items-center gap-4 text-xs text-gray-500">
-                      {method.cardExpMonth && method.cardExpYear && (
-                        <span>Expires {method.cardExpMonth}/{method.cardExpYear}</span>
-                      )}
-                      {method.isDefault && (
-                        <span className="px-2 py-1 bg-blue-50 text-blue-600 font-medium rounded">Primary</span>
-                      )}
+                      <p className="text-sm text-gray-600 mb-2">•••• {method.cardLastFour || method.last4}</p>
+                      <div className="flex items-center gap-4 text-xs text-gray-500">
+                        {method.cardExpMonth && method.cardExpYear && (
+                          <span>Expires {method.cardExpMonth}/{method.cardExpYear}</span>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))
+                ))}
+                <button 
+                  onClick={() => setShowPaymentModal(true)}
+                  className="mt-4 w-full px-4 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Replace Payment Method
+                </button>
+              </div>
             )}
+          </div>
+        </div>
+      </div>
+
+      {/* Account Manager CTA */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 mb-8">
+        <div className="flex flex-col sm:flex-row items-start gap-4">
+          <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+            <MessageCircle size={24} className="text-[#FF9634]" />
+          </div>
+          <div className="flex-1">
+            <h3 className="text-lg font-bold text-gray-900 mb-2">Need to adjust your plan or purchase extra hours?</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Your account manager can help you upgrade, downgrade, or add additional hours based on your needs.
+            </p>
+            <button 
+              onClick={() => router.push('/support')}
+              className="px-6 py-2.5 bg-[#FF9634] text-white font-semibold rounded-lg hover:bg-[#E88530] transition-colors flex items-center gap-2"
+            >
+              <MessageCircle size={18} />
+              Contact Account Manager
+            </button>
           </div>
         </div>
       </div>
@@ -226,7 +250,7 @@ export default function BillingContent() {
 
       {/* Invoices Table */}
       <div>
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Invoices</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-4">Invoice History</h2>
         
         <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
           <div className="overflow-x-auto">
@@ -234,33 +258,36 @@ export default function BillingContent() {
               <thead>
                 <tr className="bg-gray-50 border-b border-gray-200">
                   <th className="text-left text-xs font-semibold text-gray-600 uppercase tracking-wider px-6 py-4">
-                    Transaction Type
+                    Description
                   </th>
                   <th className="text-left text-xs font-semibold text-gray-600 uppercase tracking-wider px-6 py-4">
                     Date
                   </th>
                   <th className="text-left text-xs font-semibold text-gray-600 uppercase tracking-wider px-6 py-4">
-                    Invoice ID
+                    Invoice #
+                  </th>
+                  <th className="text-left text-xs font-semibold text-gray-600 uppercase tracking-wider px-6 py-4">
+                    Amount
                   </th>
                   <th className="text-left text-xs font-semibold text-gray-600 uppercase tracking-wider px-6 py-4">
                     Status
                   </th>
                   <th className="text-left text-xs font-semibold text-gray-600 uppercase tracking-wider px-6 py-4">
-                    Paid Amount
-                  </th>
-                  <th className="text-left text-xs font-semibold text-gray-600 uppercase tracking-wider px-6 py-4">
-                    Method
-                  </th>
-                  <th className="text-right text-xs font-semibold text-gray-600 uppercase tracking-wider px-6 py-4">
-                    Actions
+                    Payment Method
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {invoices.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
-                      No invoices found
+                    <td colSpan={6} className="px-6 py-12 text-center">
+                      <div className="flex flex-col items-center">
+                        <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+                          <Sparkles size={24} className="text-gray-400" />
+                        </div>
+                        <p className="text-gray-600 text-sm">No invoices yet</p>
+                        <p className="text-gray-500 text-xs mt-1">Your invoices will appear here</p>
+                      </div>
                     </td>
                   </tr>
                 ) : (
@@ -273,26 +300,21 @@ export default function BillingContent() {
                       <td className="px-6 py-4 text-sm text-gray-600">
                         {formatDate(invoice.createdAt)}
                       </td>
-                      <td className="px-6 py-4 text-sm font-mono text-gray-900">
+                      <td className="px-6 py-4 text-sm font-mono text-gray-600">
                         {invoice.invoiceNumber}
+                      </td>
+                      <td className="px-6 py-4 text-sm font-semibold text-gray-900">
+                        {formatAmount(invoice.total)}
                       </td>
                       <td className="px-6 py-4">
                         <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${getStatusBadge(invoice.status)}`}>
                           {getStatusText(invoice.status)}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-sm font-semibold text-gray-900">
-                        {formatAmount(invoice.total)}
-                      </td>
                       <td className="px-6 py-4 text-sm text-gray-600">
                         {invoice.paymentMethod
                           ? `${invoice.paymentMethod.cardBrand || invoice.paymentMethod.type} •••• ${invoice.paymentMethod.last4}`
                           : 'N/A'}
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">
-                          Download
-                        </button>
                       </td>
                     </tr>
                   ))
@@ -302,6 +324,13 @@ export default function BillingContent() {
           </div>
         </div>
       </div>
+
+      {/* Payment Method Modal */}
+      <PaymentMethodModal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        onSuccess={handlePaymentMethodSuccess}
+      />
     </div>
   )
 }

@@ -87,60 +87,11 @@ export function useInvoices(status?: string) {
     fetchInvoices();
   };
 
-  const payInvoice = async (invoiceId: string, paymentMethodId?: string) => {
-    try {
-      const response = await billingApi.payInvoice(invoiceId, paymentMethodId);
-      if (response.success) {
-        await fetchInvoices(); // Refresh list
-        return response.data;
-      }
-      throw new Error(response.error || 'Failed to pay invoice');
-    } catch (err: any) {
-      throw new Error(err.message || 'Failed to pay invoice');
-    }
-  };
-
   return {
     invoices,
     loading,
     error,
     refresh,
-    payInvoice,
   };
 }
 
-export function usePaymentHistory(limit?: number) {
-  const [history, setHistory] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchHistory = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const response = await billingApi.getPaymentHistory(limit);
-
-        if (response.success && response.data) {
-          setHistory(response.data);
-        } else {
-          setError('Failed to load payment history');
-        }
-      } catch (err: any) {
-        console.error('Payment history fetch error:', err);
-        setError(err.message || 'An error occurred');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchHistory();
-  }, [limit]);
-
-  return {
-    history,
-    loading,
-    error,
-  };
-}

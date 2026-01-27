@@ -317,65 +317,10 @@ export const billingApi = {
   },
 
   /**
-   * Purchase extra hours
-   */
-  purchaseExtraHours: async (hours: number, paymentMethodId?: string) => {
-    return apiFetch<ApiResponse>('/api/client/billing/extra-hours', {
-      method: 'POST',
-      body: JSON.stringify({ hours, paymentMethodId }),
-    });
-  },
-
-  /**
-   * Pay invoice
-   */
-  payInvoice: async (id: string, paymentMethodId?: string) => {
-    return apiFetch<ApiResponse>(`/api/client/billing/invoices/${id}/pay`, {
-      method: 'POST',
-      body: JSON.stringify({ paymentMethodId }),
-    });
-  },
-
-  /**
-   * Get payment history
-   */
-  getPaymentHistory: async (limit?: number) => {
-    const query = limit ? `?limit=${limit}` : '';
-    return apiFetch<ApiResponse>(`/api/client/billing/history${query}`);
-  },
-
-  /**
    * Get current subscription
    */
   getSubscription: async () => {
     return apiFetch<ApiResponse>('/api/client/billing/subscription');
-  },
-
-  /**
-   * Upgrade subscription
-   */
-  upgradeSubscription: async (newPlan: string) => {
-    return apiFetch<ApiResponse>('/api/client/billing/subscription/upgrade', {
-      method: 'POST',
-      body: JSON.stringify({ newPlan }),
-    });
-  },
-
-  /**
-   * Cancel subscription
-   */
-  cancelSubscription: async (reason?: string) => {
-    return apiFetch<ApiResponse>('/api/client/billing/subscription/cancel', {
-      method: 'POST',
-      body: JSON.stringify({ reason }),
-    });
-  },
-
-  /**
-   * Download invoice
-   */
-  downloadInvoice: async (id: string) => {
-    return apiFetch<ApiResponse>(`/api/client/billing/invoices/${id}/download`);
   },
 };
 
@@ -473,6 +418,48 @@ export const meetingsApi = {
       durationMinutes: durationMinutes.toString(),
     });
     return apiFetch<ApiResponse>(`/api/client/meetings/slots/available?${params}`);
+  },
+};
+
+/**
+ * Support Ticket API
+ */
+export const supportApi = {
+  /**
+   * Create a new support ticket
+   */
+  createTicket: async (data: {
+    subject: string;
+    description: string;
+    category?: string;
+    priority?: string;
+  }) => {
+    return apiFetch<ApiResponse>('/api/client/support/tickets', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  /**
+   * Get user's support tickets
+   */
+  getTickets: async (status?: string) => {
+    const query = status ? `?status=${status}` : '';
+    return apiFetch<ApiResponse>(`/api/client/support/tickets${query}`);
+  },
+
+  /**
+   * Get ticket by ID
+   */
+  getTicketById: async (id: string) => {
+    return apiFetch<ApiResponse>(`/api/client/support/tickets/${id}`);
+  },
+
+  /**
+   * Get ticket statistics
+   */
+  getStats: async () => {
+    return apiFetch<ApiResponse>('/api/client/support/stats');
   },
 };
 

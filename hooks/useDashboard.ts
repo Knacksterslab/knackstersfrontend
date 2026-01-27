@@ -11,7 +11,7 @@ interface DashboardData {
   user: any;
   subscription: any;
   hoursBalance: any;
-  recentTasks: any[];
+  recentProjects: any[];
   notifications: any[];
   accountManager: any;
   upcomingMeeting?: any;

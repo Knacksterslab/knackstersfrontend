@@ -9,7 +9,7 @@ import CancelBookingDialog from '../shared/CancelBookingDialog'
 interface UpcomingMeetingProps {
   meeting: {
     id: string
-    scheduledAt: Date
+    scheduledAt: Date | string
     durationMinutes: number
     videoRoomUrl?: string | null
     title?: string
@@ -38,7 +38,7 @@ export default function UpcomingMeeting({ meeting, accountManager }: UpcomingMee
     if (!meeting?.bookingId) return
 
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
       const response = await fetch(`${API_URL}/api/client/meetings/${meeting.bookingId}/cancel`, {
         method: 'DELETE',
         credentials: 'include',
@@ -62,8 +62,11 @@ export default function UpcomingMeeting({ meeting, accountManager }: UpcomingMee
       <>
         <div className="bg-white rounded-xl border border-gray-200">
           <div className="flex items-center justify-between p-4 border-b border-gray-200">
-            <h2 className="text-base font-semibold text-gray-900">Strategy Call</h2>
-            <button className="text-xs text-blue-600 hover:text-blue-700 font-medium">
+            <h2 className="text-base font-semibold text-gray-900">Account Manager Call</h2>
+            <button 
+              onClick={() => router.push('/meetings')}
+              className="text-xs text-blue-600 hover:text-blue-700 font-medium"
+            >
               View all
             </button>
           </div>
@@ -92,7 +95,7 @@ export default function UpcomingMeeting({ meeting, accountManager }: UpcomingMee
             )}
 
             <p className="text-sm text-gray-600 leading-relaxed mb-4">
-              Schedule a 15-minute strategy call to discuss your needs, choose the right plan, and activate your subscription. Your account manager will help match you with the perfect experts.
+              Schedule a call with your account manager to discuss projects, match with experts, or get support with your subscription.
             </p>
 
             <div className="flex gap-2">
@@ -151,8 +154,11 @@ export default function UpcomingMeeting({ meeting, accountManager }: UpcomingMee
     <>
       <div className="bg-white rounded-xl border border-gray-200">
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
-          <h2 className="text-base font-semibold text-gray-900">Strategy Call</h2>
-          <button className="text-xs text-blue-600 hover:text-blue-700 font-medium">
+          <h2 className="text-base font-semibold text-gray-900">Upcoming Call</h2>
+          <button 
+            onClick={() => router.push('/meetings')}
+            className="text-xs text-blue-600 hover:text-blue-700 font-medium"
+          >
             View all
           </button>
         </div>
@@ -186,21 +192,15 @@ export default function UpcomingMeeting({ meeting, accountManager }: UpcomingMee
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm font-semibold text-gray-900 mb-1">
-                  Strategy Call: {formatDate(meetingDate)}
+                  {meeting.title || 'Upcoming Call'}: {formatDate(meetingDate)}
                 </p>
                 <p className="text-xs text-gray-600">
                   {formatTime(meetingDate)} • {meeting.durationMinutes} min
                 </p>
-                {meeting.videoRoomUrl && (
-                  <a
-                    href={meeting.videoRoomUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-blue-600 hover:text-blue-700 underline mt-2 inline-block"
-                  >
-                    Join Meeting
-                  </a>
-                )}
+                <p className="text-xs text-gray-600 mt-2 flex items-center gap-1">
+                  <span className="inline-block w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                  Meeting link sent to your email
+                </p>
               </div>
               <div className="flex gap-2">
                 <button
@@ -244,7 +244,9 @@ export default function UpcomingMeeting({ meeting, accountManager }: UpcomingMee
         isOpen={showCancelDialog}
         onClose={() => setShowCancelDialog(false)}
         bookingDetails={meeting.bookingId ? {
-          startTime: meeting.scheduledAt.toISOString(),
+          startTime: typeof meeting.scheduledAt === 'string' 
+            ? meeting.scheduledAt 
+            : meeting.scheduledAt.toISOString(),
           bookingId: meeting.bookingId
         } : null}
         onConfirmCancel={handleCancelMeeting}
