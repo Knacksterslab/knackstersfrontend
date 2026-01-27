@@ -123,16 +123,11 @@ export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
       
       // Cal.com sends { type: 'bookingSuccessful', ... } on successful booking
       if (data?.type === 'bookingSuccessful') {
-        console.log('🎉 Booking successful!', data);
-        
-        // #region agent log
-        const isWindowDefined = typeof window !== 'undefined';
-        const currentOrigin = isWindowDefined ? window.location.origin : 'undefined';
-        const currentHref = isWindowDefined ? window.location.href : 'undefined';
-        const searchParamsStr = searchParams.toString();
-        
-        fetch('http://127.0.0.1:7243/ingest/b64e0ab6-7d71-4fbd-bdcc-a8b7f534a7a1',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'ScheduleFlow.tsx:125',message:'Cal.com booking successful event received',data:{isWindowDefined,currentOrigin,currentHref,flowType,eventData:data,searchParamsStr},timestamp:Date.now(),sessionId:'debug-session',runId:'initial',hypothesisId:'A,B,C'})}).catch(()=>{});
-        // #endregion
+        console.log('🎉 Booking successful!', {
+          data,
+          currentOrigin: window.location.origin,
+          currentHref: window.location.href
+        });
         
         setBookingCompleted(true);
         setShowCalModal(false);
@@ -175,20 +170,18 @@ export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
     // Check for booking success from URL parameters (Cal.com redirects here after booking)
     // This runs for BOTH client and talent flows
     if (typeof window !== 'undefined') {
-      // #region agent log
-      const currentUrl = window.location.href;
-      const currentOrigin = window.location.origin;
-      const currentHostname = window.location.hostname;
-      const allSearchParams = Object.fromEntries(searchParams.entries());
-      
-      fetch('http://127.0.0.1:7243/ingest/b64e0ab6-7d71-4fbd-bdcc-a8b7f534a7a1',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'ScheduleFlow.tsx:177',message:'URL params check - component load',data:{currentUrl,currentOrigin,currentHostname,allSearchParams,flowType},timestamp:Date.now(),sessionId:'debug-session',runId:'initial',hypothesisId:'C,D'})}).catch(()=>{});
-      // #endregion
-      
       const bookingConfirmed = searchParams.get('bookingConfirmed');
       const uid = searchParams.get('uid');
       const attendeeName = searchParams.get('attendeeName');
       const startTime = searchParams.get('startTime');
       const endTime = searchParams.get('endTime');
+
+      console.log('🔍 Checking URL params on load:', {
+        currentUrl: window.location.href,
+        currentOrigin: window.location.origin,
+        bookingConfirmed,
+        uid: uid ? 'present' : 'missing'
+      });
 
       if (bookingConfirmed === 'true' && uid) {
         
@@ -251,19 +244,24 @@ export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     
-    // #region agent log
-    const nodeEnv = process.env.NODE_ENV;
-    const isProduction = nodeEnv === 'production';
-    fetch('http://127.0.0.1:7243/ingest/b64e0ab6-7d71-4fbd-bdcc-a8b7f534a7a1',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'ScheduleFlow.tsx:185',message:'Localhost redirect check',data:{hostname:window.location.hostname,origin:window.location.origin,nodeEnv,isProduction,isLocalhost:window.location.hostname==='localhost',bookingConfirmed:searchParams.get('bookingConfirmed'),hasUid:!!searchParams.get('uid')},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'B1,B2,B3'})}).catch(()=>{});
-    // #endregion
-    
     // ONLY redirect if:
     // 1. We're in production build (NODE_ENV === 'production')
     // 2. User landed on localhost hostname
     // 3. URL has booking parameters from Cal.com
+    const nodeEnv = process.env.NODE_ENV;
+    const isProduction = nodeEnv === 'production';
     const isLocalhost = window.location.hostname === 'localhost';
     const hasBookingParams = searchParams.get('bookingConfirmed') === 'true' || searchParams.get('uid');
     const shouldRedirect = isProduction && isLocalhost && hasBookingParams;
+    
+    console.log('🔄 Localhost redirect check:', {
+      hostname: window.location.hostname,
+      nodeEnv,
+      isProduction,
+      isLocalhost,
+      hasBookingParams,
+      shouldRedirect
+    });
     
     if (shouldRedirect) {
       // Replace localhost origin with production origin (supports any port)
@@ -430,17 +428,11 @@ export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
               <button
                 onClick={(e) => {
                   e.preventDefault();
-                  // #region agent log
-                  const isWindowDefined = typeof window !== 'undefined';
-                  const origin = isWindowDefined ? window.location.origin : 'undefined';
-                  const href = isWindowDefined ? window.location.href : 'undefined';
-                  const nodeEnv = process.env.NODE_ENV;
-                  const nextPublicUrl = process.env.NEXT_PUBLIC_WEBSITE_DOMAIN;
-                  const calClientUrl = process.env.NEXT_PUBLIC_CAL_CLIENT_URL;
-                  const calTalentUrl = process.env.NEXT_PUBLIC_CAL_TALENT_URL;
-                  
-                  fetch('http://127.0.0.1:7243/ingest/b64e0ab6-7d71-4fbd-bdcc-a8b7f534a7a1',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'ScheduleFlow.tsx:413',message:'Open Cal.com modal button clicked',data:{isWindowDefined,origin,href,flowType,nodeEnv,nextPublicUrl,calClientUrl,calTalentUrl,isClientFlow},timestamp:Date.now(),sessionId:'debug-session',runId:'initial',hypothesisId:'B,C'})}).catch(()=>{});
-                  // #endregion
+                  console.log('🗓️ Opening Cal.com modal:', {
+                    origin: window.location.origin,
+                    flowType,
+                    nodeEnv: process.env.NODE_ENV
+                  });
                   setShowCalModal(true);
                 }}
                 style={{
@@ -754,24 +746,30 @@ export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
 
             {/* Modal Body with iframe */}
             <div className="flex-1 overflow-hidden">
-              <iframe
-                src={(() => {
-                  // #region agent log
-                  const isWindowDefined = typeof window !== 'undefined';
-                  const origin = isWindowDefined ? window.location.origin : '';
-                  const href = isWindowDefined ? window.location.href : '';
-                  const hostname = isWindowDefined ? window.location.hostname : '';
-                  const redirectUrl = isWindowDefined ? `${window.location.origin}/schedule/${flowType}` : '';
-                  const calLink = getCalLink();
-                  const fullUrl = `https://cal.com/${calLink}?embed=true&theme=light&layout=month_view&name=&email=&redirectUrl=${encodeURIComponent(redirectUrl)}`;
-                  
-                  fetch('http://127.0.0.1:7243/ingest/b64e0ab6-7d71-4fbd-bdcc-a8b7f534a7a1',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'ScheduleFlow.tsx:729',message:'Cal.com iframe URL construction',data:{isWindowDefined,origin,href,hostname,redirectUrl,calLink,fullUrl,flowType,encodedRedirectUrl:encodeURIComponent(redirectUrl)},timestamp:Date.now(),sessionId:'debug-session',runId:'initial',hypothesisId:'A,B,E'})}).catch(()=>{});
-                  // #endregion
-                  
-                  return fullUrl;
-                })()}
-                className="w-full h-full border-0"
-              />
+              {typeof window !== 'undefined' && (
+                <iframe
+                  src={(() => {
+                    // Use production URL as fallback if window.location isn't available
+                    const redirectUrl = `${window.location.origin}/schedule/${flowType}`;
+                    const calLink = getCalLink();
+                    const fullUrl = `https://cal.com/${calLink}?embed=true&theme=light&layout=month_view&name=&email=&redirectUrl=${encodeURIComponent(redirectUrl)}`;
+                    
+                    console.log('📋 Cal.com iframe URL:', {
+                      origin: window.location.origin,
+                      redirectUrl,
+                      fullUrl
+                    });
+                    
+                    return fullUrl;
+                  })()}
+                  className="w-full h-full border-0"
+                />
+              )}
+              {typeof window === 'undefined' && (
+                <div className="flex items-center justify-center h-full">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
+                </div>
+              )}
             </div>
           </div>
         </div>
