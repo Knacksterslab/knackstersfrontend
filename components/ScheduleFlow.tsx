@@ -171,6 +171,7 @@ export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
     // This runs for BOTH client and talent flows
     if (typeof window !== 'undefined') {
       const bookingConfirmed = searchParams.get('bookingConfirmed');
+      const isSuccessBookingPage = searchParams.get('isSuccessBookingPage');
       const uid = searchParams.get('uid');
       const attendeeName = searchParams.get('attendeeName');
       const startTime = searchParams.get('startTime');
@@ -180,10 +181,15 @@ export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
         currentUrl: window.location.href,
         currentOrigin: window.location.origin,
         bookingConfirmed,
-        uid: uid ? 'present' : 'missing'
+        isSuccessBookingPage,
+        uid: uid ? 'present' : 'missing',
+        hasBookingParams: (bookingConfirmed === 'true' || isSuccessBookingPage === 'true') && !!uid
       });
 
-      if (bookingConfirmed === 'true' && uid) {
+      // Cal.com can send either bookingConfirmed=true OR isSuccessBookingPage=true
+      const isBookingSuccess = (bookingConfirmed === 'true' || isSuccessBookingPage === 'true') && uid;
+      
+      if (isBookingSuccess) {
         
         setBookingCompleted(true);
         
@@ -251,7 +257,9 @@ export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
     const nodeEnv = process.env.NODE_ENV;
     const isProduction = nodeEnv === 'production';
     const isLocalhost = window.location.hostname === 'localhost';
-    const hasBookingParams = searchParams.get('bookingConfirmed') === 'true' || searchParams.get('uid');
+    const hasBookingParams = searchParams.get('bookingConfirmed') === 'true' || 
+                             searchParams.get('isSuccessBookingPage') === 'true' || 
+                             searchParams.get('uid');
     const shouldRedirect = isProduction && isLocalhost && hasBookingParams;
     
     console.log('🔄 Localhost redirect check:', {
