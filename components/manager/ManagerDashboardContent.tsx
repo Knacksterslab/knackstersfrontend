@@ -20,29 +20,33 @@ import { formatDistanceToNow } from 'date-fns'
 export default function ManagerDashboardContent() {
   const { data, loading, error } = useManagerDashboard()
 
+  // Calculate urgent tasks from real data
+  const lowHoursClients = data?.transformedClients?.filter(c => c.status === 'low-minutes').length || 0
+  const pendingTasks = data?.stats?.activeTasks || 0
+  
   const urgentTasks = [
-    {
+    ...(lowHoursClients > 0 ? [{
       id: '1',
-      title: 'Review pending timesheets',
-      count: 5,
-      priority: 'high',
-      link: '/manager-dashboard/timesheets'
-    },
-    {
-      id: '2',
-      title: 'Assign new tasks',
-      count: 3,
-      priority: 'medium',
-      link: '/manager-dashboard/assignments'
-    },
-    {
-      id: '3',
-      title: 'Client running low on minutes',
-      count: 2,
+      title: 'Clients running low on hours',
+      count: lowHoursClients,
       priority: 'high',
       link: '/manager-dashboard/clients'
-    }
-  ]
+    }] : []),
+    ...(pendingTasks > 0 ? [{
+      id: '2',
+      title: 'Active tasks needing attention',
+      count: pendingTasks,
+      priority: 'medium',
+      link: '/manager-dashboard/assignments'
+    }] : []),
+    ...(data?.stats?.upcomingMeetings > 0 ? [{
+      id: '3',
+      title: 'Upcoming meetings to prepare',
+      count: data.stats.upcomingMeetings,
+      priority: 'medium',
+      link: '/manager-dashboard/meet-greet'
+    }] : [])
+  ].slice(0, 3) // Show max 3 urgent items
 
   const getActivityIcon = (type: string) => {
     switch (type) {
@@ -243,22 +247,21 @@ export default function ManagerDashboardContent() {
 
           <div className="p-6">
             <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <TrendingUp size={20} className="text-blue-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Total Revenue</p>
-                    <p className="text-xl font-bold text-gray-900">$48,500</p>
+              {data?.monthlyStats?.totalRevenue > 0 && (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <TrendingUp size={20} className="text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">Est. Revenue</p>
+                      <p className="text-xl font-bold text-gray-900">
+                        ${data.monthlyStats.totalRevenue.toLocaleString()}
+                      </p>
+                    </div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full font-semibold">
-                    +12%
-                  </span>
-                </div>
-              </div>
+              )}
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -266,14 +269,11 @@ export default function ManagerDashboardContent() {
                     <CheckCircle size={20} className="text-green-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Tasks Completed</p>
-                    <p className="text-xl font-bold text-gray-900">142</p>
+                    <p className="text-sm text-gray-600">Active Clients</p>
+                    <p className="text-xl font-bold text-gray-900">
+                      {data?.monthlyStats?.activeClients || 0}
+                    </p>
                   </div>
-                </div>
-                <div className="text-right">
-                  <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full font-semibold">
-                    +8%
-                  </span>
                 </div>
               </div>
 
@@ -284,13 +284,10 @@ export default function ManagerDashboardContent() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Hours Logged</p>
-                    <p className="text-xl font-bold text-gray-900">1,248h</p>
+                    <p className="text-xl font-bold text-gray-900">
+                      {data?.monthlyStats?.totalHoursLogged.toLocaleString() || 0}h
+                    </p>
                   </div>
-                </div>
-                <div className="text-right">
-                  <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full font-semibold">
-                    +15%
-                  </span>
                 </div>
               </div>
 
@@ -300,13 +297,22 @@ export default function ManagerDashboardContent() {
                     <DollarSign size={20} className="text-orange-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Avg. Hourly Rate</p>
-                    <p className="text-xl font-bold text-gray-900">$82/hr</p>
+                    <p className="text-sm text-gray-600">Utilization Rate</p>
+                    <p className="text-xl font-bold text-gray-900">
+                      {data?.monthlyStats?.utilizationRate || 0}%
+                    </p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full font-semibold">
-                    Stable
+                  <span className={`text-xs px-2 py-1 rounded-full font-semibold ${
+                    (data?.monthlyStats?.utilizationRate || 0) > 75 
+                      ? 'text-green-600 bg-green-50'
+                      : (data?.monthlyStats?.utilizationRate || 0) > 50
+                        ? 'text-yellow-600 bg-yellow-50'
+                        : 'text-gray-600 bg-gray-100'
+                  }`}>
+                    {(data?.monthlyStats?.utilizationRate || 0) > 75 ? 'Excellent' : 
+                     (data?.monthlyStats?.utilizationRate || 0) > 50 ? 'Good' : 'Low'}
                   </span>
                 </div>
               </div>
@@ -315,43 +321,69 @@ export default function ManagerDashboardContent() {
         </div>
       </div>
 
-      {/* Upcoming Meet & Greets */}
+      {/* Upcoming Meetings */}
       <div className="bg-white rounded-xl border border-gray-200">
         <div className="p-6 border-b border-gray-200 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-gray-900">Upcoming Meet & Greets</h2>
+          <h2 className="text-xl font-bold text-gray-900">Upcoming Meetings</h2>
           <Link href="/manager-dashboard/meet-greet" className="text-sm text-purple-600 hover:text-purple-700 font-medium">
             View all →
           </Link>
         </div>
 
         <div className="p-6">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-4 bg-purple-50 border border-purple-100 rounded-lg">
-              <div className="flex items-center gap-3">
-                <Calendar size={20} className="text-purple-600" />
-                <div>
-                  <p className="font-semibold text-gray-900 text-sm">Jessica Martinez - UI/UX Designer</p>
-                  <p className="text-xs text-gray-600">Tomorrow, 10:00 AM</p>
-                </div>
-              </div>
-              <button className="px-4 py-2 bg-purple-600 text-white text-sm font-semibold rounded-lg hover:bg-purple-700">
-                Join Call
-              </button>
+          {data?.transformedMeetings && data.transformedMeetings.length > 0 ? (
+            <div className="space-y-3">
+              {data.transformedMeetings.slice(0, 3).map((meeting, index) => {
+                const meetingDate = new Date(meeting.scheduledAt)
+                const isToday = meetingDate.toDateString() === new Date().toDateString()
+                const isTomorrow = new Date(meetingDate).setHours(0,0,0,0) === new Date(new Date().setDate(new Date().getDate() + 1)).setHours(0,0,0,0)
+                
+                const dateLabel = isToday 
+                  ? `Today, ${meetingDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`
+                  : isTomorrow
+                    ? `Tomorrow, ${meetingDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`
+                    : meetingDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+                
+                const colorClass = index === 0 ? 'purple' : index === 1 ? 'blue' : 'green'
+                
+                return (
+                  <div key={meeting.id} className={`flex items-center justify-between p-4 bg-${colorClass}-50 border border-${colorClass}-100 rounded-lg`}>
+                    <div className="flex items-center gap-3">
+                      <Calendar size={20} className={`text-${colorClass}-600`} />
+                      <div>
+                        <p className="font-semibold text-gray-900 text-sm">
+                          {meeting.clientName} - {meeting.type.replace('_', ' ')}
+                        </p>
+                        <p className="text-xs text-gray-600">{dateLabel}</p>
+                      </div>
+                    </div>
+                    {meeting.videoUrl ? (
+                      <a 
+                        href={meeting.videoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`px-4 py-2 bg-${colorClass}-600 text-white text-sm font-semibold rounded-lg hover:bg-${colorClass}-700 transition-colors`}
+                      >
+                        Join Call
+                      </a>
+                    ) : (
+                      <button className={`px-4 py-2 border-2 border-${colorClass}-600 text-${colorClass}-600 text-sm font-semibold rounded-lg hover:bg-${colorClass}-50 transition-colors`}>
+                        View Details
+                      </button>
+                    )}
+                  </div>
+                )
+              })}
             </div>
-
-            <div className="flex items-center justify-between p-4 bg-blue-50 border border-blue-100 rounded-lg">
-              <div className="flex items-center gap-3">
-                <Calendar size={20} className="text-blue-600" />
-                <div>
-                  <p className="font-semibold text-gray-900 text-sm">David Kim - Backend Developer</p>
-                  <p className="text-xs text-gray-600">Dec 21, 2:00 PM</p>
-                </div>
-              </div>
-              <button className="px-4 py-2 border-2 border-blue-600 text-blue-600 text-sm font-semibold rounded-lg hover:bg-blue-50">
-                Reschedule
-              </button>
+          ) : (
+            <div className="text-center py-8">
+              <Calendar size={40} className="mx-auto text-gray-400 mb-2" />
+              <p className="text-gray-600 text-sm">No upcoming meetings</p>
+              <p className="text-gray-500 text-xs mt-1">
+                Schedule meetings with your clients to stay connected
+              </p>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

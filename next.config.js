@@ -23,19 +23,6 @@ const nextConfig = {
     ],
   },
   
-  // Proxy /byte-runner to the standalone game deployment
-  async rewrites() {
-    return [
-      {
-        source: '/byte-runner',
-        destination: 'https://byte-runner-seven.vercel.app',
-      },
-      {
-        source: '/byte-runner/:path*',
-        destination: 'https://byte-runner-seven.vercel.app/:path*',
-      },
-    ]
-  },
 }
 
 module.exports = nextConfig

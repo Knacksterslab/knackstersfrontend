@@ -3,8 +3,14 @@
  * Fetches manager dashboard data from backend
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { managerApi } from '@/lib/api/client';
+import {
+  transformClientData,
+  calculateMonthlyStats,
+  transformMeetingData,
+  TransformedClient,
+} from '@/lib/transformers/manager';
 
 interface ManagerDashboardData {
   manager: {
@@ -25,6 +31,19 @@ interface ManagerDashboardData {
   upcomingMeetings: any[];
   recentActivities: any[];
   notifications: any[];
+}
+
+interface TransformedDashboardData extends ManagerDashboardData {
+  transformedClients: TransformedClient[];
+  monthlyStats: {
+    totalRevenue: number;
+    totalHoursLogged: number;
+    totalHoursPurchased: number;
+    activeClients: number;
+    avgHourlyRate: number;
+    utilizationRate: number;
+  };
+  transformedMeetings: any[];
 }
 
 export function useManagerDashboard() {
@@ -50,8 +69,21 @@ export function useManagerDashboard() {
     fetchDashboard();
   }, [fetchDashboard]);
 
+  // Transform data for easier consumption in components
+  const transformedData = useMemo(() => {
+    if (!data) return null;
+
+    return {
+      ...data,
+      transformedClients: data.clients.map(transformClientData),
+      monthlyStats: calculateMonthlyStats(data.clients),
+      transformedMeetings: data.upcomingMeetings.map(transformMeetingData),
+    } as TransformedDashboardData;
+  }, [data]);
+
   return {
-    data,
+    data: transformedData,
+    rawData: data,
     loading,
     error,
     refresh: fetchDashboard,

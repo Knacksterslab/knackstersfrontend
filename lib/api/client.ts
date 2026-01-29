@@ -567,6 +567,195 @@ export const managerApi = {
   getAvailableTalent: async () => {
     return apiFetch<ApiResponse>('/api/manager/talent');
   },
+
+  /**
+   * Assign task to talent
+   */
+  assignTask: async (taskId: string, talentId: string) => {
+    return apiFetch<ApiResponse>(`/api/manager/tasks/${taskId}/assign`, {
+      method: 'PATCH',
+      body: JSON.stringify({ assignedToId: talentId }),
+    });
+  },
+
+  /**
+   * Log hours for talent work
+   */
+  logHours: async (data: {
+    taskId: string;
+    talentId: string;
+    durationMinutes: number;
+    startTime: string;
+    description?: string;
+  }) => {
+    return apiFetch<ApiResponse>('/api/manager/timelogs', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  /**
+   * Get pending time logs for approval
+   */
+  getPendingTimeLogs: async () => {
+    return apiFetch<ApiResponse>('/api/manager/timelogs/pending');
+  },
+
+  /**
+   * Approve a time log
+   */
+  approveTimeLog: async (timeLogId: string) => {
+    return apiFetch<ApiResponse>(`/api/manager/timelogs/${timeLogId}/approve`, {
+      method: 'PATCH',
+    });
+  },
+
+  /**
+   * Reject a time log
+   */
+  rejectTimeLog: async (timeLogId: string, reason: string) => {
+    return apiFetch<ApiResponse>(`/api/manager/timelogs/${timeLogId}/reject`, {
+      method: 'PATCH',
+      body: JSON.stringify({ reason }),
+    });
+  },
+
+  /**
+   * Get approved time logs
+   */
+  getApprovedTimeLogs: async () => {
+    return apiFetch<ApiResponse>('/api/manager/timelogs/approved');
+  },
+
+  /**
+   * Get time logs for a specific client
+   */
+  getClientTimeLogs: async (clientId: string, startDate?: string, endDate?: string) => {
+    const params = new URLSearchParams();
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
+    const query = params.toString();
+    return apiFetch<ApiResponse>(`/api/manager/timelogs/client/${clientId}${query ? `?${query}` : ''}`);
+  },
+
+  /**
+   * Get all meetings
+   */
+  getMeetings: async (filters?: { status?: string; type?: string }) => {
+    const params = new URLSearchParams(filters as any);
+    const query = params.toString();
+    return apiFetch<ApiResponse>(`/api/manager/meetings${query ? `?${query}` : ''}`);
+  },
+
+  /**
+   * Schedule a meeting with a client
+   */
+  scheduleMeeting: async (data: {
+    clientId: string;
+    type: string;
+    scheduledAt: string;
+    durationMinutes: number;
+    title?: string;
+    agenda?: string;
+    location?: string;
+    meetingLink?: string;
+  }) => {
+    return apiFetch<ApiResponse>('/api/manager/meetings/schedule', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  /**
+   * Get meetings for a specific client
+   */
+  getClientMeetings: async (clientId: string) => {
+    return apiFetch<ApiResponse>(`/api/manager/meetings/client/${clientId}`);
+  },
+
+  /**
+   * Complete a meeting
+   */
+  completeMeeting: async (meetingId: string, notes?: string, actionItems?: string[]) => {
+    return apiFetch<ApiResponse>(`/api/manager/meetings/${meetingId}/complete`, {
+      method: 'POST',
+      body: JSON.stringify({ notes, actionItems }),
+    });
+  },
+
+  /**
+   * Update a meeting
+   */
+  updateMeeting: async (meetingId: string, data: any) => {
+    return apiFetch<ApiResponse>(`/api/manager/meetings/${meetingId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+
+  /**
+   * Get all templates
+   */
+  getTemplates: async () => {
+    return apiFetch<ApiResponse>('/api/manager/templates');
+  },
+
+  /**
+   * Get a single template
+   */
+  getTemplate: async (templateId: string) => {
+    return apiFetch<ApiResponse>(`/api/manager/templates/${templateId}`);
+  },
+
+  /**
+   * Create a new template
+   */
+  createTemplate: async (data: {
+    name: string;
+    description?: string;
+    category?: string;
+    isPublic?: boolean;
+    tasks: Array<{
+      name: string;
+      description?: string;
+      priority?: string;
+      estimatedMinutes?: number;
+    }>;
+  }) => {
+    return apiFetch<ApiResponse>('/api/manager/templates', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  /**
+   * Update a template
+   */
+  updateTemplate: async (templateId: string, data: any) => {
+    return apiFetch<ApiResponse>(`/api/manager/templates/${templateId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+
+  /**
+   * Delete a template
+   */
+  deleteTemplate: async (templateId: string) => {
+    return apiFetch<ApiResponse>(`/api/manager/templates/${templateId}`, {
+      method: 'DELETE',
+    });
+  },
+
+  /**
+   * Apply a template to a project
+   */
+  applyTemplate: async (templateId: string, projectId: string) => {
+    return apiFetch<ApiResponse>(`/api/manager/templates/${templateId}/apply`, {
+      method: 'POST',
+      body: JSON.stringify({ projectId }),
+    });
+  },
 };
 
 /**
