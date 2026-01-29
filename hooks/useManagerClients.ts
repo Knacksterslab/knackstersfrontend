@@ -14,6 +14,7 @@ interface ClientDetails {
   phone: string | null;
   avatarUrl: string | null;
   status: string;
+  createdAt?: string;
   subscriptions: any[];
   hoursBalances: any[];
   clientProjects: any[];

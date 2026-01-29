@@ -43,9 +43,11 @@ export default function ManagerAssignmentsPage() {
 
   const handleApplyTemplateClick = () => {
     // Get first project from dashboard data
-    const firstProject = dashboardData?.projects?.[0]
+    // TODO: Add projects to dashboard data or fetch from clients
+    const firstClient = dashboardData?.clients?.[0]
+    const firstProject = firstClient?.clientProjects?.[0]
     if (firstProject) {
-      setSelectedProjectForTemplate({ id: firstProject.id, name: firstProject.title })
+      setSelectedProjectForTemplate({ id: firstProject.id, name: firstProject.name || 'Project' })
       setShowTemplateModal(true)
     }
   }

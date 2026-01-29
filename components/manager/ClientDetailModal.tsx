@@ -208,7 +208,7 @@ export default function ClientDetailModal({
                   <ProjectsTab 
                     projects={projects} 
                     loading={loadingProjects}
-                    onApplyTemplate={(projectId, projectName) => {
+                    onApplyTemplate={(projectId: string, projectName: string) => {
                       setSelectedProjectForTemplate({ id: projectId, name: projectName })
                       setShowTemplateModal(true)
                     }}

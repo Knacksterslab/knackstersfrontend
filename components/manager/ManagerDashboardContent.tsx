@@ -39,10 +39,10 @@ export default function ManagerDashboardContent() {
       priority: 'medium',
       link: '/manager-dashboard/assignments'
     }] : []),
-    ...(data?.stats?.upcomingMeetings > 0 ? [{
+    ...((data?.stats?.upcomingMeetings ?? 0) > 0 ? [{
       id: '3',
       title: 'Upcoming meetings to prepare',
-      count: data.stats.upcomingMeetings,
+      count: data?.stats?.upcomingMeetings ?? 0,
       priority: 'medium',
       link: '/manager-dashboard/meet-greet'
     }] : [])
