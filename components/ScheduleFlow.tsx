@@ -709,17 +709,9 @@ export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
 
       {/* Footer */}
       <div className="bg-gray-900 text-white py-6">
-        <div className="max-w-4xl mx-auto px-6 flex justify-between items-center text-sm">
-          <p>
-            This site is protected by{' '}
-            <Link href="/privacy" className="underline hover:text-gray-300">
-              Privacy Policy
-            </Link>
-          </p>
-          <div className="flex gap-8">
-            <Link href="/terms" className="hover:text-gray-300">Terms and Conditions</Link>
-            <Link href="/privacy" className="hover:text-gray-300">Privacy Policy</Link>
-          </div>
+        <div className="max-w-4xl mx-auto px-6 flex justify-end items-center text-sm gap-8">
+          <Link href="/terms" className="hover:text-gray-300">Terms and Conditions</Link>
+          <Link href="/privacy" className="hover:text-gray-300">Privacy Policy</Link>
         </div>
       </div>
 
