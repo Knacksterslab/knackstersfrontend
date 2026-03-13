@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Mail, Eye, EyeOff, Lock } from 'lucide-react';
 import { signIn } from 'supertokens-auth-react/recipe/emailpassword';
+import { getAuthorisationURLWithQueryParamsAndSetState } from 'supertokens-auth-react/recipe/thirdparty';
 import Session from 'supertokens-auth-react/recipe/session';
 import { userRoles } from '@/lib/supertokens/config';
 
@@ -86,11 +87,11 @@ export default function LoginForm({
     setIsLoading(true);
 
     try {
-      // Redirect to Google OAuth endpoint
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-      const redirectUrl = `${backendUrl}/api/auth/google?userType=${userType}`;
-      
-      window.location.href = redirectUrl;
+      const authUrl = await getAuthorisationURLWithQueryParamsAndSetState({
+        thirdPartyId: 'google',
+        frontendRedirectURI: `${window.location.origin}/auth/callback/google`,
+      });
+      window.location.assign(authUrl);
     } catch (err) {
       setError('Failed to initialize Google sign-in. Please try again.');
       console.error('Google sign-in error:', err);

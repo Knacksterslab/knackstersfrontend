@@ -22,7 +22,11 @@ const lato = Lato({
 })
 
 export const metadata: Metadata = {
-  title: 'Knacksters - 360° On-Demand Cloud Workforce',
+  metadataBase: new URL('https://www.knacksters.co'),
+  title: {
+    default: 'Knacksters - 360° On-Demand Cloud Workforce',
+    template: '%s | Knacksters',
+  },
   description: 'Access a 360° on-demand cloud workforce with pre-vetted professionals across AI, cybersecurity, development, design, marketing, and healthcare.',
   icons: {
     icon: [
@@ -30,6 +34,22 @@ export const metadata: Metadata = {
       { url: '/favicon.ico', sizes: 'any' }
     ],
     apple: '/logo.svg',
+  },
+  openGraph: {
+    type: 'website',
+    siteName: 'Knacksters',
+    title: 'Knacksters - 360° On-Demand Cloud Workforce',
+    description: 'Access a 360° on-demand cloud workforce with pre-vetted professionals across AI, cybersecurity, development, design, marketing, and healthcare.',
+    url: 'https://www.knacksters.co',
+    images: [{ url: '/hero-bg.png', width: 1200, height: 630, alt: 'Knacksters - On-Demand Cloud Workforce' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Knacksters - 360° On-Demand Cloud Workforce',
+    description: 'Access a 360° on-demand cloud workforce with pre-vetted professionals across AI, cybersecurity, development, design, marketing, and healthcare.',
+    images: ['/hero-bg.png'],
+    site: '@knackstersco',
+    creator: '@knackstersco',
   },
 }
 

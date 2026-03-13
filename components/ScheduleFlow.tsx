@@ -227,15 +227,15 @@ export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
               });
 
               if (!response.ok) {
-                console.error('Failed to save booking to backend');
+                const errBody = await response.text().catch(() => '');
+                console.error('Failed to save booking to backend', response.status, errBody);
                 setBookingError('Failed to save your booking. Please click "Complete" to try again.');
               } else {
                 console.log('Booking saved successfully');
-                // Start auto-redirect countdown
                 setIsRedirecting(true);
               }
             } catch (error) {
-              console.error('Error saving booking:', error);
+              console.error('Error saving booking (network):', error);
               setBookingError('Failed to save your booking. Please click "Complete" to try again.');
             }
           })();
@@ -272,14 +272,8 @@ export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
     });
     
     if (shouldRedirect) {
-      // Replace localhost origin with production origin (supports any port)
       const productionOrigin = 'https://www.knacksters.co';
       const newUrl = window.location.href.replace(window.location.origin, productionOrigin);
-      
-      // #region agent log
-      fetch('http://127.0.0.1:7243/ingest/b64e0ab6-7d71-4fbd-bdcc-a8b7f534a7a1',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'ScheduleFlow.tsx:203',message:'Redirecting to production',data:{oldUrl:window.location.href,oldOrigin:window.location.origin,newUrl,productionOrigin},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'B2'})}).catch(()=>{});
-      // #endregion
-      
       window.location.replace(newUrl);
     }
   }, [searchParams]);
@@ -499,11 +493,10 @@ export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
                     <div>
                       <p className="text-xs text-gray-500">Date & Time</p>
                       <p className="text-sm font-semibold text-gray-900">
-                        {(() => {
-                          // #region agent log
+                          {(() => {
                           const dateObj = new Date(bookingDetails.startTime);
                           const isValidDate = !isNaN(dateObj.getTime());
-                          const formattedDate = isValidDate ? dateObj.toLocaleString('en-US', {
+                          return isValidDate ? dateObj.toLocaleString('en-US', {
                             weekday: 'long',
                             year: 'numeric',
                             month: 'long',
@@ -511,10 +504,7 @@ export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
                             hour: 'numeric',
                             minute: '2-digit',
                             timeZoneName: 'short',
-                          }) : 'Invalid Date';
-                          fetch('http://127.0.0.1:7243/ingest/b64e0ab6-7d71-4fbd-bdcc-a8b7f534a7a1',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'ScheduleFlow.tsx:395',message:'Rendering date',data:{startTime:bookingDetails.startTime,dateObj:dateObj.toString(),isValidDate,formattedDate,timestamp:Date.now()},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A1,A2,A3'})}).catch(()=>{});
-                          return formattedDate;
-                          // #endregion
+                          }) : 'Time confirmed — check your email for details';
                         })()}
                       </p>
                     </div>

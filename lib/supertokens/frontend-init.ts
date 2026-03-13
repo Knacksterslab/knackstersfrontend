@@ -1,5 +1,6 @@
 import SuperTokens from 'supertokens-auth-react';
 import EmailPassword from 'supertokens-auth-react/recipe/emailpassword';
+import ThirdParty from 'supertokens-auth-react/recipe/thirdparty';
 import Session from 'supertokens-auth-react/recipe/session';
 
 // Track if we've already initialized to prevent double initialization
@@ -45,6 +46,13 @@ export function initSuperTokensFrontend() {
       },
       recipeList: [
         EmailPassword.init(),
+        ThirdParty.init({
+          signInAndUpFeature: {
+            providers: [
+              { id: 'google', name: 'Google' },
+            ],
+          },
+        }),
         Session.init({
           ...(sessionDomain && { sessionTokenFrontendDomain: sessionDomain }),
         }),

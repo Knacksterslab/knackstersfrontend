@@ -1,0 +1,28 @@
+User-agent: *
+Allow: /
+
+# Public marketing pages
+Allow: /how-it-works
+Allow: /faq
+Allow: /privacy
+Allow: /terms
+Allow: /solutions/
+
+# Disallow private/app routes
+Disallow: /admin-dashboard/
+Disallow: /client-dashboard/
+Disallow: /manager-dashboard/
+Disallow: /talent-dashboard/
+Disallow: /billing/
+Disallow: /schedule/
+Disallow: /tasks-projects/
+Disallow: /talent-network/
+Disallow: /meetings/
+Disallow: /profile/
+Disallow: /settings/
+Disallow: /support/
+Disallow: /signup/
+Disallow: /auth/
+Disallow: /api/
+
+Sitemap: https://www.knacksters.co/sitemap.xml
