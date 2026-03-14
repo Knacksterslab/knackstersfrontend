@@ -43,7 +43,7 @@ export const metadata: Metadata = {
 // Fetch talent cards server-side
 async function getTalentCards() {
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
     
     const response = await fetch(`${apiUrl}/api/public/content/landing-hero`, {
       next: { revalidate: 60 },
