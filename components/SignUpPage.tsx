@@ -98,7 +98,6 @@ export default function SignUpPage() {
           { id: 'email', value: formData.email },
           { id: 'password', value: formData.password },
           { id: 'name', value: `${formData.firstName} ${formData.lastName}` },
-          { id: 'role', value: 'client' },
           { id: 'selectedSolution', value: formData.selectedSolution },
           { id: 'solutionNotes', value: solutionNotes },
         ],
