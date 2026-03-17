@@ -12,6 +12,8 @@ import JsonLd, { organizationSchema, websiteSchema } from "@/components/seo/Json
 
 // Rebuild page every 60 seconds (ISR) instead of disabling cache entirely
 export const revalidate = 60;
+const shouldLogLandingDiagnostics =
+  process.env.NODE_ENV !== "production" || process.env.LANDING_HERO_DEBUG === "true";
 
 export const metadata: Metadata = {
   title: defaultLandingContent.seo.pageTitle,
@@ -49,23 +51,57 @@ async function getTalentCards() {
       next: { revalidate: 60 },
     });
 
-    if (response.ok) {
-      const data = await response.json();
-      
-      if (data.success && data.data?.content?.talentCards) {
-        return data.data.content.talentCards;
-      }
+    if (!response.ok) {
+      console.error('Landing hero API returned non-OK status', {
+        status: response.status,
+        statusText: response.statusText,
+        apiUrl,
+      });
+      return defaultLandingContent.hero.talentCards;
     }
+
+    const data = await response.json();
+    if (data.success && Array.isArray(data.data?.content?.talentCards) && data.data.content.talentCards.length > 0) {
+      if (shouldLogLandingDiagnostics) {
+        console.info("[landing-hero] using API content", {
+          apiUrl,
+          cardsCount: data.data.content.talentCards.length,
+          firstCardName: data.data.content.talentCards[0]?.name || null,
+        });
+      }
+      return data.data.content.talentCards;
+    }
+
+    console.error('Landing hero API returned unexpected payload shape', {
+      apiUrl,
+      hasSuccess: !!data?.success,
+      hasData: !!data?.data,
+      hasContent: !!data?.data?.content,
+      hasTalentCards: Array.isArray(data?.data?.content?.talentCards),
+      talentCardsCount: Array.isArray(data?.data?.content?.talentCards) ? data.data.content.talentCards.length : 0,
+    });
   } catch (error) {
     console.error('Failed to fetch talent cards server-side:', error);
   }
   
   // Return default cards as fallback
+  if (shouldLogLandingDiagnostics) {
+    console.info("[landing-hero] using fallback content", {
+      cardsCount: defaultLandingContent.hero.talentCards.length,
+      firstCardName: defaultLandingContent.hero.talentCards[0]?.name || null,
+    });
+  }
   return defaultLandingContent.hero.talentCards;
 }
 
 export default async function Home() {
   const talentCards = await getTalentCards();
+  if (shouldLogLandingDiagnostics) {
+    console.info("[landing-hero] final render payload", {
+      cardsCount: talentCards.length,
+      firstCardName: talentCards[0]?.name || null,
+    });
+  }
 
   return (
     <>
