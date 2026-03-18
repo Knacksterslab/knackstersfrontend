@@ -105,6 +105,10 @@ export default function SignUpPage() {
 
       if (response.status === 'OK') {
         toast.success('Account created successfully! Let\'s schedule your onboarding call.');
+
+        // Store name and email for Cal.com pre-fill on the next page
+        sessionStorage.setItem('clientName', `${formData.firstName} ${formData.lastName}`);
+        sessionStorage.setItem('clientEmail', formData.email);
         
         // Wait for session to be fully established
         await new Promise(resolve => setTimeout(resolve, 1000));

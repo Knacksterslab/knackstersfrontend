@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Calendar, Clock, User, ArrowLeft, Video, Mail } from 'lucide-react'
+import { Calendar, Clock, User, ArrowLeft, Mail } from 'lucide-react'
 import { meetingsApi } from '@/lib/api/client'
 import CalBookingModal from '../shared/CalBookingModal'
 import CancelBookingDialog from '../shared/CancelBookingDialog'
@@ -43,23 +43,11 @@ export default function MeetingDetailPage({ meetingId }: MeetingDetailPageProps)
 
   const handleCancelMeeting = async () => {
     if (!meeting?.id) return
-
-    try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
-      const response = await fetch(`${API_URL}/api/client/meetings/${meeting.id}/cancel`, {
-        method: 'DELETE',
-        credentials: 'include',
-      })
-
-      if (response.ok) {
-        router.push('/meetings') // Navigate back to list
-      } else {
-        console.error('Failed to cancel meeting')
-        alert('Failed to cancel meeting. Please try again.')
-      }
-    } catch (error) {
-      console.error('Error cancelling meeting:', error)
-      alert('An error occurred while cancelling the meeting.')
+    const result = await meetingsApi.cancel(meeting.id)
+    if (result.success) {
+      router.push('/meetings')
+    } else {
+      throw new Error((result as any).error || 'Failed to cancel meeting. Please try again.')
     }
   }
 
@@ -272,7 +260,7 @@ export default function MeetingDetailPage({ meetingId }: MeetingDetailPageProps)
         calUrl={process.env.NEXT_PUBLIC_CAL_CLIENT_URL || ''}
         title="Reschedule Your Meeting"
         mode="reschedule"
-        existingBookingUid={meeting.bookingId}
+        existingBookingUid={meeting.googleCalendarEventId ?? undefined}
         onBookingComplete={handleBookingComplete}
       />
 
@@ -280,12 +268,12 @@ export default function MeetingDetailPage({ meetingId }: MeetingDetailPageProps)
       <CancelBookingDialog
         isOpen={showCancelDialog}
         onClose={() => setShowCancelDialog(false)}
-        bookingDetails={meeting.bookingId ? {
-          startTime: typeof meeting.scheduledAt === 'string' 
-            ? meeting.scheduledAt 
+        bookingDetails={{
+          startTime: typeof meeting.scheduledAt === 'string'
+            ? meeting.scheduledAt
             : meeting.scheduledAt.toISOString(),
-          bookingId: meeting.bookingId
-        } : null}
+          bookingId: meeting.googleCalendarEventId ?? meeting.id,
+        }}
         onConfirmCancel={handleCancelMeeting}
       />
     </>

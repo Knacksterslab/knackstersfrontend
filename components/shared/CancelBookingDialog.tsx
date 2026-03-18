@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 interface CancelBookingDialogProps {
   isOpen: boolean;
   onClose: () => void;
@@ -7,7 +9,7 @@ interface CancelBookingDialogProps {
     startTime: string;
     bookingId: string;
   } | null;
-  onConfirmCancel: () => void;
+  onConfirmCancel: () => Promise<void>;
 }
 
 export default function CancelBookingDialog({
@@ -16,6 +18,9 @@ export default function CancelBookingDialog({
   bookingDetails,
   onConfirmCancel,
 }: CancelBookingDialogProps) {
+  const [isCancelling, setIsCancelling] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   if (!isOpen || !bookingDetails) return null;
 
   const formatDateTime = (isoString: string) => {
@@ -30,15 +35,28 @@ export default function CancelBookingDialog({
         minute: '2-digit',
         timeZoneName: 'short',
       });
-    } catch (error) {
+    } catch {
       return isoString;
+    }
+  };
+
+  const handleConfirm = async () => {
+    setIsCancelling(true);
+    setError(null);
+    try {
+      await onConfirmCancel();
+      onClose();
+    } catch (err: any) {
+      setError(err?.message || 'Failed to cancel meeting. Please try again.');
+    } finally {
+      setIsCancelling(false);
     }
   };
 
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-      onClick={onClose}
+      onClick={() => { if (!isCancelling) onClose(); }}
     >
       <div
         className="bg-white rounded-lg shadow-2xl w-full max-w-md p-4 sm:p-6"
@@ -52,7 +70,7 @@ export default function CancelBookingDialog({
             </svg>
           </div>
           <div className="flex-1">
-            <h3 className="text-lg font-bold text-gray-900 mb-1">Cancel Strategy Call?</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-1">Cancel Meeting?</h3>
             <p className="text-sm text-gray-600">
               Are you sure you want to cancel this meeting?
             </p>
@@ -79,22 +97,38 @@ export default function CancelBookingDialog({
           </p>
         </div>
 
+        {/* Error */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-sm text-red-700">{error}</p>
+          </div>
+        )}
+
         {/* Action Buttons */}
         <div className="flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 px-4 py-2.5 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-semibold"
+            disabled={isCancelling}
+            className="flex-1 px-4 py-2.5 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Keep Meeting
           </button>
           <button
-            onClick={() => {
-              onConfirmCancel();
-              onClose();
-            }}
-            className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold"
+            onClick={handleConfirm}
+            disabled={isCancelling}
+            className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold disabled:opacity-75 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Cancel Meeting
+            {isCancelling ? (
+              <>
+                <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                Cancelling...
+              </>
+            ) : (
+              'Cancel Meeting'
+            )}
           </button>
         </div>
       </div>

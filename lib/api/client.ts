@@ -386,7 +386,7 @@ export const meetingsApi = {
    */
   cancel: async (id: string, reason?: string) => {
     return apiFetch<ApiResponse>(`/api/client/meetings/${id}/cancel`, {
-      method: 'PATCH',
+      method: 'DELETE',
       body: JSON.stringify({ reason }),
     });
   },

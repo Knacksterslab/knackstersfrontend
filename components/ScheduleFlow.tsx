@@ -54,9 +54,22 @@ export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
     location: string | null; title: string | null; description: string | null;
   } | null>(null);
 
-  // For client flow, pre-fill from the logged-in user's session — only when role is CLIENT
+  // For client flow, pre-fill from sessionStorage (set during signup) or the user context
   useEffect(() => {
-    if (flowType === 'client' && user && user.role === 'CLIENT') {
+    if (flowType !== 'client') return;
+
+    if (typeof window !== 'undefined') {
+      const storedName = sessionStorage.getItem('clientName') || '';
+      const storedEmail = sessionStorage.getItem('clientEmail') || '';
+      if (storedName || storedEmail) {
+        setPrefillName(storedName);
+        setPrefillEmail(storedEmail);
+        return; // sessionStorage wins — came directly from signup
+      }
+    }
+
+    // Fallback: returning client visiting the schedule page directly
+    if (user && user.role === 'CLIENT') {
       setPrefillName(user.fullName || '');
       setPrefillEmail(user.email || '');
     }
@@ -252,6 +265,10 @@ export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
 
     if (!user || user.role !== 'CLIENT') {
       // Admin/non-client testing — show confirmation UI without backend save
+      if (typeof window !== 'undefined') {
+        sessionStorage.removeItem('clientName');
+        sessionStorage.removeItem('clientEmail');
+      }
       setIsRedirecting(true);
       return;
     }
@@ -278,6 +295,10 @@ export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
           console.error('Failed to save booking to backend', response.status, errBody);
           setBookingError('Failed to save your booking. Please click "Complete" to try again.');
         } else {
+          if (typeof window !== 'undefined') {
+            sessionStorage.removeItem('clientName');
+            sessionStorage.removeItem('clientEmail');
+          }
           setIsRedirecting(true);
         }
       } catch (error) {
@@ -361,6 +382,8 @@ export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
       sessionStorage.removeItem('talentProfileId');
       sessionStorage.removeItem('talentName');
       sessionStorage.removeItem('talentEmail');
+      sessionStorage.removeItem('clientName');
+      sessionStorage.removeItem('clientEmail');
     }
     
     // Only redirect for client flow
