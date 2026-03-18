@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -37,7 +37,7 @@ interface ScheduleFlowProps {
 export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user } = useUser();
+  const { user, loading: userLoading } = useUser(); // userLoading gates the pending-booking save effect
   const [profileId, setProfileId] = useState<string | null>(null);
   const [isClientFlow, setIsClientFlow] = useState(false);
   const [bookingCompleted, setBookingCompleted] = useState(false);
@@ -49,14 +49,18 @@ export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
   const [bookingError, setBookingError] = useState<string | null>(null);
   const [prefillName, setPrefillName] = useState('');
   const [prefillEmail, setPrefillEmail] = useState('');
+  const pendingBookingRef = useRef<{
+    uid: string; startTime: string | null; endTime: string | null;
+    location: string | null; title: string | null; description: string | null;
+  } | null>(null);
 
-  // For client flow, pre-fill from the logged-in user's session
+  // For client flow, pre-fill from the logged-in user's session — only when role is CLIENT
   useEffect(() => {
-    if (flowType === 'client' && user) {
+    if (flowType === 'client' && user && user.role === 'CLIENT') {
       setPrefillName(user.fullName || '');
       setPrefillEmail(user.email || '');
     }
-  }, [flowType, user]);
+  }, [flowType, user, userLoading]);
 
   // Load Cal.com embed script ONCE using Cal.com's official method
   useEffect(() => {
@@ -222,42 +226,66 @@ export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
           status: 'confirmed'
         });
 
-        // Save booking to backend (only for client flow)
+        // Store booking data in ref; a separate effect will save once user role is confirmed
         if (flowType === 'client') {
-          (async () => {
-            try {
-              const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-              const response = await fetch(`${API_URL}/api/client/meetings/calcom-booking`, {
-                method: 'POST',
-                credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  bookingId: uid,
-                  scheduledAt: startTime,
-                  endTime: endTime,
-                  videoCallUrl: location,
-                  title: title || 'Onboarding Call',
-                  description: description || 'Client onboarding strategy call',
-                }),
-              });
-
-              if (!response.ok) {
-                const errBody = await response.text().catch(() => '');
-                console.error('Failed to save booking to backend', response.status, errBody);
-                setBookingError('Failed to save your booking. Please click "Complete" to try again.');
-              } else {
-                console.log('Booking saved successfully');
-                setIsRedirecting(true);
-              }
-            } catch (error) {
-              console.error('Error saving booking (network):', error);
-              setBookingError('Failed to save your booking. Please click "Complete" to try again.');
-            }
-          })();
+          pendingBookingRef.current = {
+            uid,
+            startTime: startTime || null,
+            endTime: endTime || null,
+            location: location || null,
+            title: title || null,
+            description: description || null,
+          };
         }
       }
     }
   }, [flowType, searchParams]);
+
+  // Process pending booking save once user context has finished loading
+  useEffect(() => {
+    if (userLoading) return;                    // still fetching session
+    if (!pendingBookingRef.current) return;     // no pending booking
+    if (flowType !== 'client') return;
+
+    const booking = pendingBookingRef.current;
+    pendingBookingRef.current = null;           // prevent re-processing
+
+    if (!user || user.role !== 'CLIENT') {
+      // Admin/non-client testing — show confirmation UI without backend save
+      setIsRedirecting(true);
+      return;
+    }
+
+    (async () => {
+      try {
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+        const response = await fetch(`${API_URL}/api/client/meetings/calcom-booking`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            bookingId: booking.uid,
+            scheduledAt: booking.startTime,
+            endTime: booking.endTime,
+            videoCallUrl: booking.location,
+            title: booking.title || 'Onboarding Call',
+            description: booking.description || 'Client onboarding strategy call',
+          }),
+        });
+
+        if (!response.ok) {
+          const errBody = await response.text().catch(() => '');
+          console.error('Failed to save booking to backend', response.status, errBody);
+          setBookingError('Failed to save your booking. Please click "Complete" to try again.');
+        } else {
+          setIsRedirecting(true);
+        }
+      } catch (error) {
+        console.error('Error saving booking (network):', error);
+        setBookingError('Failed to save your booking. Please click "Complete" to try again.');
+      }
+    })();
+  }, [userLoading, user, flowType]);
 
   // Fix localhost redirect in production
   // When Cal.com redirects to localhost with booking params, redirect back to production
