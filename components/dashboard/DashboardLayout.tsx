@@ -18,6 +18,7 @@ import CancelBookingDialog from '../shared/CancelBookingDialog';
 import RequestTaskModal from './RequestTaskModal';
 import { Menu } from 'lucide-react';
 import { useDashboard } from '@/hooks/useDashboard';
+import { useUser } from '@/contexts/UserContext';
 
 export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -25,6 +26,7 @@ export default function DashboardLayout() {
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showRequestTaskModal, setShowRequestTaskModal] = useState(false);
   const { data, loading, error, refresh } = useDashboard();
+  const { user } = useUser();
 
   const handleBookingComplete = (details: BookingDetails) => {
     setShowModal(false);
@@ -213,6 +215,8 @@ export default function DashboardLayout() {
           mode={data.upcomingMeeting ? 'reschedule' : 'book'}
           existingBookingUid={data.upcomingMeeting?.bookingId}
           onBookingComplete={handleBookingComplete}
+          prefillName={user?.fullName || ''}
+          prefillEmail={user?.email || ''}
         />
 
         <CancelBookingDialog

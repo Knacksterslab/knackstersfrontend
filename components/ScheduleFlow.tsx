@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { Calendar, CheckCircle, Clock, Video, AlertCircle } from 'lucide-react';
 import KnackstersButton from '@/components/svg/knacksters-button';
 import KnackstersOutlineButton from '@/components/svg/knacksters-outline-button';
+import { useUser } from '@/contexts/UserContext';
 
 // TypeScript declarations for Cal.com
 declare global {
@@ -36,6 +37,7 @@ interface ScheduleFlowProps {
 export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { user } = useUser();
   const [profileId, setProfileId] = useState<string | null>(null);
   const [isClientFlow, setIsClientFlow] = useState(false);
   const [bookingCompleted, setBookingCompleted] = useState(false);
@@ -45,6 +47,16 @@ export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [redirectCountdown, setRedirectCountdown] = useState(2);
   const [bookingError, setBookingError] = useState<string | null>(null);
+  const [prefillName, setPrefillName] = useState('');
+  const [prefillEmail, setPrefillEmail] = useState('');
+
+  // For client flow, pre-fill from the logged-in user's session
+  useEffect(() => {
+    if (flowType === 'client' && user) {
+      setPrefillName(user.fullName || '');
+      setPrefillEmail(user.email || '');
+    }
+  }, [flowType, user]);
 
   // Load Cal.com embed script ONCE using Cal.com's official method
   useEffect(() => {
@@ -159,12 +171,15 @@ export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
     // Set flow based on explicit prop instead of sessionStorage
     setIsClientFlow(flowType === 'client');
     
-    // For talent flow, load profileId from sessionStorage if available
     if (flowType === 'talent' && typeof window !== 'undefined') {
       const id = sessionStorage.getItem('talentProfileId');
-      if (id) {
-        setProfileId(id);
-      }
+      if (id) setProfileId(id);
+
+      // Pre-fill the Cal.com form with the talent's own details
+      const name = sessionStorage.getItem('talentName') || '';
+      const email = sessionStorage.getItem('talentEmail') || '';
+      setPrefillName(name);
+      setPrefillEmail(email);
     }
 
     // Check for booking success from URL parameters (Cal.com redirects here after booking)
@@ -314,9 +329,10 @@ export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
   };
 
   const handleComplete = () => {
-    // Clear session storage
     if (typeof window !== 'undefined') {
       sessionStorage.removeItem('talentProfileId');
+      sessionStorage.removeItem('talentName');
+      sessionStorage.removeItem('talentEmail');
     }
     
     // Only redirect for client flow
@@ -773,18 +789,17 @@ export default function ScheduleFlow({ flowType }: ScheduleFlowProps) {
               {typeof window !== 'undefined' && (
                 <iframe
                   src={(() => {
-                    // Use production URL as fallback if window.location isn't available
                     const redirectUrl = `${window.location.origin}/schedule/${flowType}`;
                     const calLink = getCalLink();
-                    const fullUrl = `https://cal.com/${calLink}?embed=true&theme=light&layout=month_view&name=&email=&redirectUrl=${encodeURIComponent(redirectUrl)}`;
-                    
-                    console.log('📋 Cal.com iframe URL:', {
-                      origin: window.location.origin,
+                    const params = new URLSearchParams({
+                      embed: 'true',
+                      theme: 'light',
+                      layout: 'month_view',
+                      name: prefillName,
+                      email: prefillEmail,
                       redirectUrl,
-                      fullUrl
                     });
-                    
-                    return fullUrl;
+                    return `https://cal.com/${calLink}?${params.toString()}`;
                   })()}
                   className="w-full h-full border-0"
                 />

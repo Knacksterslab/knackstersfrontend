@@ -20,6 +20,8 @@ interface CalBookingModalProps {
   mode: 'book' | 'reschedule';
   existingBookingUid?: string;
   onBookingComplete: (details: BookingDetails) => void;
+  prefillName?: string;
+  prefillEmail?: string;
 }
 
 export default function CalBookingModal({
@@ -30,6 +32,8 @@ export default function CalBookingModal({
   mode,
   existingBookingUid,
   onBookingComplete,
+  prefillName = '',
+  prefillEmail = '',
 }: CalBookingModalProps) {
   // Listen for booking success events from Cal.com iframe
   useEffect(() => {
@@ -106,8 +110,8 @@ export default function CalBookingModal({
       params.append('rescheduleUid', existingBookingUid);
     } else {
       params.append('layout', 'month_view');
-      params.append('name', '');
-      params.append('email', '');
+      params.append('name', prefillName);
+      params.append('email', prefillEmail);
     }
 
     return `${baseUrl}?${params.toString()}`;

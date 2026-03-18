@@ -799,13 +799,15 @@ export const adminApi = {
   },
 
   /**
-   * Create user (ADMIN, MANAGER, or TALENT only)
+   * Create user (ADMIN, MANAGER, or TALENT only).
+   * An invite email is sent automatically — no password required from the admin.
    */
   createUser: async (data: {
     email: string;
     firstName: string;
     lastName: string;
     role: 'ADMIN' | 'MANAGER' | 'TALENT';
+    specializations?: string[];
   }) => {
     return apiFetch<ApiResponse>('/api/admin/users', {
       method: 'POST',

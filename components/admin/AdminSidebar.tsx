@@ -10,6 +10,7 @@ import {
   MessageSquare,
   UserCheck,
 } from 'lucide-react';
+import { useUser } from '@/contexts/UserContext';
 import UnifiedSidebar, { sidebarThemes } from '@/components/shared/UnifiedSidebar';
 
 interface AdminSidebarProps {
@@ -18,6 +19,8 @@ interface AdminSidebarProps {
 }
 
 export default function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
+  const { logout } = useUser()
+
   const menuItems = [
     {
       id: 'overview',
@@ -84,9 +87,14 @@ export default function AdminSidebar({ isOpen = false, onClose }: AdminSidebarPr
     },
   ];
 
-  const handleLogout = () => {
-    sessionStorage.removeItem('admin_auth');
-    window.location.reload();
+  const handleLogout = async () => {
+    try {
+      await logout()
+      window.location.href = '/'
+    } catch (error) {
+      console.error('Logout error:', error)
+      window.location.href = '/'
+    }
   };
 
   return (

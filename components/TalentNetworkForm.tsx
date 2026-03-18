@@ -163,9 +163,11 @@ export default function TalentNetworkForm() {
       });
       
       if (response.success && response.data?.profileId) {
-        // Store profile ID for next step
+        // Store profile details for the scheduling step
         if (typeof window !== 'undefined') {
           sessionStorage.setItem('talentProfileId', response.data.profileId);
+          sessionStorage.setItem('talentName', `${formData.firstName} ${formData.lastName}`.trim());
+          sessionStorage.setItem('talentEmail', formData.email);
         }
         router.push('/schedule/talent');
       } else {

@@ -65,7 +65,6 @@ export default function UsersManagementPage() {
     lastName: '',
     role: 'MANAGER' as 'ADMIN' | 'MANAGER' | 'TALENT',
     specializations: [] as string[],
-    password: '',
   });
 
   // Edit user form
@@ -111,12 +110,6 @@ export default function UsersManagementPage() {
     setError('');
     setSuccess('');
 
-    // Validate password
-    if (!formData.password || formData.password.length < 8) {
-      setError('Password must be at least 8 characters');
-      return;
-    }
-
     // Validate manager specializations
     if (formData.role === 'MANAGER' && formData.specializations.length === 0) {
       setError('Please select at least one specialization for managers');
@@ -130,7 +123,7 @@ export default function UsersManagementPage() {
         throw new Error(data.error || 'Failed to create user');
       }
 
-      setSuccess(`User created successfully! They can now log in at ${window.location.origin}/login with email: ${formData.email}`);
+      setSuccess(`User created successfully! An invite email has been sent to ${formData.email} so they can set their own password.`);
       fetchUsers();
       closeModal();
     } catch (error: any) {
@@ -173,7 +166,6 @@ export default function UsersManagementPage() {
       lastName: '',
       role: 'MANAGER',
       specializations: [],
-      password: '',
     });
     setIsModalOpen(true);
   };
@@ -577,24 +569,6 @@ export default function UsersManagementPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Temporary Password *
-                </label>
-                <input
-                  type="password"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Min 8 characters"
-                  required
-                  minLength={8}
-                />
-                <p className="mt-1 text-xs text-gray-500">
-                  User will be able to log in immediately with this password
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Role *
                 </label>
                 <select
@@ -608,7 +582,7 @@ export default function UsersManagementPage() {
                   <option value="ADMIN">Admin</option>
                 </select>
                 <p className="mt-1 text-xs text-gray-500">
-                  Note: CLIENT users sign up through the normal signup flow
+                  An invite email will be sent so the user can set their own password. CLIENT users sign up through the normal signup flow.
                 </p>
               </div>
 
