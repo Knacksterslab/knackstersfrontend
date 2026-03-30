@@ -252,7 +252,7 @@ export default function TalentTasksPage() {
                       </div>
                     )}
 
-                    {/* Business Manager */}
+                    {/* Customer Success Manager */}
                     <div className="bg-gray-50 rounded-lg p-4 border-t border-gray-200 mb-4">
                       <div className="flex items-start gap-3">
                         <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
@@ -261,7 +261,7 @@ export default function TalentTasksPage() {
                         <div className="flex-1">
                           <div className="flex items-center justify-between mb-2">
                             <div>
-                              <p className="text-sm font-semibold text-gray-900">Business Manager</p>
+                              <p className="text-sm font-semibold text-gray-900">Customer Success Manager</p>
                               <p className="text-sm text-gray-700">{task.businessManager.name}</p>
                             </div>
                           </div>

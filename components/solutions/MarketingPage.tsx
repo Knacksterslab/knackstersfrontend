@@ -15,26 +15,27 @@ import {
   Mail,
   Users,
   LineChart,
-  Database,
   Zap,
   Newspaper,
   Video,
   Calendar,
   Globe,
   CheckCircle2,
-  ArrowRight,
-  Rocket,
   Award,
-  DollarSign
+  Heart,
+  RefreshCw,
+  HeartHandshake,
+  Star,
+  Activity,
 } from "lucide-react";
 import PrimaryButton from "../svg/primary-button";
 
 export default function MarketingPage() {
-  const marketingCategories = [
+  const roleCategories = [
     {
       icon: Target,
       title: "Strategy, Leadership & Brand",
-      description: "Vision, positioning, and overall business impact driving marketing excellence.",
+      description: "Vision, positioning, and overall business impact driving growth excellence.",
       roles: [
         "Chief Marketing Officer (CMO)",
         "VP / Director of Marketing",
@@ -79,7 +80,7 @@ export default function MarketingPage() {
     {
       icon: BarChart3,
       title: "Analytics, Technology & Operations",
-      description: "The data and infrastructure backbone powering modern marketing.",
+      description: "The data and infrastructure backbone powering modern growth.",
       roles: [
         "Marketing Analyst / Data Analyst",
         "Marketing Operations (Marketing Ops) Manager",
@@ -88,6 +89,21 @@ export default function MarketingPage() {
         "Conversion Rate Optimization (CRO) Specialist"
       ],
       color: "from-blue-500 to-cyan-600"
+    },
+    {
+      icon: Users,
+      title: "Customer Success & Retention",
+      description: "Onboarding, retention, expansion, and long-term revenue growth.",
+      roles: [
+        "Customer Success Manager (CSM)",
+        "Customer Success Director",
+        "Onboarding Specialist",
+        "Account Expansion Manager",
+        "Customer Retention Specialist",
+        "Revenue Operations (RevOps) Manager",
+        "Customer Experience (CX) Manager"
+      ],
+      color: "from-teal-500 to-cyan-600"
     },
     {
       icon: Radio,
@@ -117,7 +133,7 @@ export default function MarketingPage() {
     {
       icon: Sparkles,
       title: "Emerging & Modern Roles",
-      description: "Cutting-edge marketing for the future of customer engagement.",
+      description: "Cutting-edge growth for the future of customer engagement.",
       roles: [
         "Customer Experience (CX) Marketer",
         "Brand Advocacy Manager",
@@ -128,86 +144,132 @@ export default function MarketingPage() {
     }
   ];
 
-  const marketingSolutions = [
+  const growthServices = [
     {
       icon: Search,
       title: "SEO Optimization",
-      description: "Rank higher and drive organic traffic with strategic search optimization."
+      description: "Rank higher and drive organic traffic with strategic search optimization.",
+      category: "marketing"
     },
     {
       icon: MousePointerClick,
       title: "Paid Advertising (PPC)",
-      description: "Maximize ROI with expertly managed Google Ads, Meta, and LinkedIn campaigns."
+      description: "Maximize ROI with expertly managed Google Ads, Meta, and LinkedIn campaigns.",
+      category: "marketing"
     },
     {
       icon: Share2,
       title: "Social Media Marketing",
-      description: "Build engaged communities and drive conversions across all platforms."
+      description: "Build engaged communities and drive conversions across all platforms.",
+      category: "marketing"
     },
     {
       icon: Mail,
       title: "Email Marketing & Automation",
-      description: "Nurture leads and retain customers with personalized email journeys."
+      description: "Nurture leads and retain customers with personalized email journeys.",
+      category: "marketing"
     },
     {
       icon: PenTool,
       title: "Content Marketing",
-      description: "Create compelling content that attracts, educates, and converts."
+      description: "Create compelling content that attracts, educates, and converts.",
+      category: "marketing"
     },
     {
       icon: Video,
       title: "Video Production",
-      description: "Produce high-impact video content that tells your story and drives action."
+      description: "Produce high-impact video content that tells your story and drives action.",
+      category: "marketing"
     },
     {
       icon: LineChart,
       title: "Marketing Analytics",
-      description: "Turn data into actionable insights and measurable business outcomes."
-    },
-    {
-      icon: Users,
-      title: "Influencer Partnerships",
-      description: "Amplify your reach through authentic creator and influencer collaborations."
+      description: "Turn data into actionable insights and measurable business outcomes.",
+      category: "marketing"
     },
     {
       icon: Target,
       title: "Brand Strategy",
-      description: "Build a distinctive brand that resonates with your target audience."
+      description: "Build a distinctive brand that resonates with your target audience.",
+      category: "marketing"
     },
     {
-      icon: Newspaper,
-      title: "PR & Media Relations",
-      description: "Earn media coverage and manage your public reputation."
+      icon: Heart,
+      title: "Customer Onboarding",
+      description: "Design seamless onboarding experiences that activate users fast and reduce early churn.",
+      category: "success"
     },
     {
-      icon: Calendar,
-      title: "Event Marketing",
-      description: "Create memorable experiences that generate leads and build brand loyalty."
+      icon: RefreshCw,
+      title: "Retention & Churn Reduction",
+      description: "Identify at-risk accounts early and implement proactive strategies to keep customers.",
+      category: "success"
+    },
+    {
+      icon: HeartHandshake,
+      title: "Account Expansion & Upsell",
+      description: "Grow revenue from existing customers through strategic expansion and upsell programmes.",
+      category: "success"
+    },
+    {
+      icon: Activity,
+      title: "Revenue Operations (RevOps)",
+      description: "Align marketing, sales, and success teams around a single revenue engine.",
+      category: "success"
+    },
+    {
+      icon: Star,
+      title: "Customer Health Scoring",
+      description: "Build data-driven health models that predict renewal risk and expansion opportunity.",
+      category: "success"
     },
     {
       icon: Globe,
       title: "Account-Based Marketing (ABM)",
-      description: "Target high-value accounts with personalized, multi-channel campaigns."
-    }
+      description: "Target high-value accounts with personalized, multi-channel campaigns.",
+      category: "marketing"
+    },
+    {
+      icon: Newspaper,
+      title: "PR & Media Relations",
+      description: "Earn media coverage and manage your public reputation.",
+      category: "marketing"
+    },
+    {
+      icon: Calendar,
+      title: "Event Marketing",
+      description: "Create memorable experiences that generate leads and build brand loyalty.",
+      category: "marketing"
+    },
   ];
 
-  const marketingTools = [
+  const allTools = [
+    // Marketing
     "Google Analytics", "HubSpot", "Salesforce", "Marketo",
     "Mailchimp", "SEMrush", "Ahrefs", "Google Ads",
-    "Meta Business Suite", "Hootsuite", "Buffer", "Tableau",
-    "Hotjar", "Optimizely", "Canva", "Adobe Creative Cloud"
+    "Meta Business Suite", "Hootsuite", "Tableau", "Optimizely",
+    // Customer Success
+    "Gainsight", "ChurnZero", "Intercom", "Zendesk",
+    "Totango", "Planhat", "Mixpanel", "Amplitude",
+  ];
+
+  const stats = [
+    { value: "3.5×", label: "Average ROI on growth campaigns" },
+    { value: "40%", label: "Average churn reduction" },
+    { value: "2.8×", label: "Net Revenue Retention improvement" },
+    { value: "< 48hrs", label: "Time to first expert matched" },
   ];
 
   const benefits = [
     {
       icon: TrendingUp,
-      title: "Measurable Growth",
-      description: "Data-driven strategies that deliver trackable ROI and business impact."
+      title: "Full Revenue Lifecycle",
+      description: "From first click to long-term retention — we cover acquisition, activation, and expansion in one domain."
     },
     {
       icon: Target,
       title: "Multi-Channel Expertise",
-      description: "Integrated campaigns across SEO, paid media, social, email, and more."
+      description: "Integrated campaigns across SEO, paid media, social, email, and customer success touchpoints."
     },
     {
       icon: Zap,
@@ -217,23 +279,38 @@ export default function MarketingPage() {
     {
       icon: Award,
       title: "Industry Veterans",
-      description: "Seasoned marketers with proven track records across B2B and B2C."
+      description: "Seasoned marketers and CSMs with proven track records across B2B SaaS, e-commerce, and enterprise."
     }
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 py-20 px-4">
+      <section className="relative overflow-hidden bg-gradient-to-br from-orange-50 via-amber-50 to-teal-50 py-20 px-4">
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="max-w-4xl">
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 font-mono">
-              Marketing That <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-600">Drives Results</span>
+            <div className="inline-flex items-center gap-2 bg-white border border-orange-200 rounded-full px-4 py-2 mb-6 shadow-sm">
+              <TrendingUp className="w-4 h-4 text-orange-500" />
+              <span className="text-sm font-medium text-gray-700 font-sans">Growth & Customer Success</span>
+            </div>
+            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 font-mono leading-tight">
+              Acquire. Retain.{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-teal-500">
+                Grow.
+              </span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-700 mb-8 leading-relaxed font-sans">
-              From brand strategy to performance marketing, our expert marketers deliver measurable growth across every channel. Data-driven, creative, and laser-focused on your business goals.
+              The only domain that covers the full revenue flywheel — expert marketers who win customers and customer success specialists who keep and grow them.
             </p>
+            <div className="flex flex-wrap gap-3 mb-8">
+              {["SEO & Paid Media", "Content Strategy", "Customer Success", "RevOps", "Retention & Churn Reduction", "ABM"].map((tag) => (
+                <span key={tag} className="px-3 py-1.5 bg-white border border-orange-200 rounded-full text-sm font-medium text-gray-700 font-sans shadow-sm">
+                  {tag}
+                </span>
+              ))}
+            </div>
             <div className="flex flex-wrap gap-4">
               <Link href="/signup" className="inline-block">
                 <div style={{ width: '200px' }}>
@@ -241,7 +318,7 @@ export default function MarketingPage() {
                     width="200"
                     height="56"
                     wrapperClassName="primary-button-wrapper"
-                    gradientId="paint0_linear_marketing_hero"
+                    gradientId="paint0_linear_growth_hero"
                   />
                 </div>
               </Link>
@@ -250,33 +327,95 @@ export default function MarketingPage() {
         </div>
       </section>
 
-      {/* Marketing Categories Section */}
+      {/* Stats Bar */}
+      <section className="py-10 px-4 bg-gray-900">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            {stats.map((stat, index) => (
+              <div key={index}>
+                <div className="text-3xl md:text-4xl font-bold text-white font-mono mb-1">{stat.value}</div>
+                <div className="text-sm text-gray-400 font-sans">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* The Two Sides of Growth */}
       <section className="py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 font-mono">
-              Marketing Specializations
+              Two Sides of the Revenue Flywheel
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto font-sans">
-              Access the complete spectrum of marketing expertise—from strategic leadership to tactical execution
+              Most companies optimise for acquisition or retention. We help you do both — because sustainable growth requires both.
             </p>
           </div>
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Growth Marketing side */}
+            <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl p-10 border border-orange-200">
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center mb-6">
+                <TrendingUp className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-3 font-sans">Growth Marketing</h3>
+              <p className="text-gray-600 mb-6 font-sans">Drive awareness, acquisition, and conversion across every digital channel. Turn ad spend into pipeline and content into customers.</p>
+              <ul className="space-y-3">
+                {["SEO & Organic Search", "Paid Media (PPC / Social)", "Content & Brand Strategy", "Email & Marketing Automation", "Analytics & Attribution", "ABM & B2B Demand Generation"].map((item) => (
+                  <li key={item} className="flex items-center gap-3 text-sm text-gray-700 font-sans">
+                    <CheckCircle2 className="w-4 h-4 text-orange-500 flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
 
+            {/* Customer Success side */}
+            <div className="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-2xl p-10 border border-teal-200">
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center mb-6">
+                <Heart className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-3 font-sans">Customer Success</h3>
+              <p className="text-gray-600 mb-6 font-sans">Keep the customers you worked hard to win. Reduce churn, expand accounts, and turn satisfied customers into your biggest growth engine.</p>
+              <ul className="space-y-3">
+                {["Customer Onboarding & Activation", "Health Scoring & Early Warning", "Churn Reduction Programmes", "Upsell & Expansion Playbooks", "Revenue Operations (RevOps)", "NPS & Customer Feedback Loops"].map((item) => (
+                  <li key={item} className="flex items-center gap-3 text-sm text-gray-700 font-sans">
+                    <CheckCircle2 className="w-4 h-4 text-teal-500 flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Role Categories */}
+      <section className="py-20 px-4 bg-gradient-to-br from-gray-50 to-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 font-mono">
+              Specialisations We Cover
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto font-sans">
+              From CMOs to Customer Success Managers — access the complete growth and retention talent spectrum
+            </p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {marketingCategories.map((category, index) => {
+            {roleCategories.map((category, index) => {
               const IconComponent = category.icon;
               return (
                 <div
                   key={index}
                   className="group bg-white rounded-2xl p-8 border border-gray-200 hover:border-orange-300 hover:shadow-xl transition-all duration-300"
                 >
-                  <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                    <IconComponent className="w-8 h-8 text-white" />
+                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform`}>
+                    <IconComponent className="w-7 h-7 text-white" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3 font-sans">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 font-sans">
                     {category.title}
                   </h3>
-                  <p className="text-gray-600 mb-6 font-sans">
+                  <p className="text-sm text-gray-500 mb-5 font-sans">
                     {category.description}
                   </p>
                   <ul className="space-y-2">
@@ -294,58 +433,82 @@ export default function MarketingPage() {
         </div>
       </section>
 
-      {/* Marketing Solutions Grid */}
-      <section className="py-20 px-4 bg-gradient-to-br from-gray-50 to-white">
+      {/* Services Grid */}
+      <section className="py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 font-mono">
-              Marketing Solutions We Deliver
+              Services We Deliver
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto font-sans">
-              Comprehensive services across every channel and stage of the customer journey
+              Comprehensive execution across every stage of the customer journey — from first impression to long-term advocacy
             </p>
           </div>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {marketingSolutions.map((solution, index) => {
-              const IconComponent = solution.icon;
+            {growthServices.map((service, index) => {
+              const IconComponent = service.icon;
+              const isSuccess = service.category === "success";
               return (
                 <div
                   key={index}
-                  className="bg-white rounded-xl p-6 border border-gray-200 hover:border-orange-300 hover:shadow-lg transition-all duration-300 group"
+                  className={`rounded-xl p-6 border transition-all duration-300 group hover:shadow-lg ${
+                    isSuccess
+                      ? "bg-teal-50 border-teal-200 hover:border-teal-400"
+                      : "bg-white border-gray-200 hover:border-orange-300"
+                  }`}
                 >
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <IconComponent className="w-6 h-6 text-orange-600" />
+                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform ${
+                    isSuccess
+                      ? "bg-gradient-to-br from-teal-100 to-cyan-100"
+                      : "bg-gradient-to-br from-orange-100 to-amber-100"
+                  }`}>
+                    <IconComponent className={`w-6 h-6 ${isSuccess ? "text-teal-600" : "text-orange-600"}`} />
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-2 font-sans">
-                    {solution.title}
+                  <h3 className="text-base font-bold text-gray-900 mb-1.5 font-sans">
+                    {service.title}
                   </h3>
                   <p className="text-sm text-gray-600 font-sans">
-                    {solution.description}
+                    {service.description}
                   </p>
+                  {isSuccess && (
+                    <span className="inline-block mt-3 text-xs font-semibold text-teal-700 bg-teal-100 px-2 py-0.5 rounded-full">
+                      Customer Success
+                    </span>
+                  )}
                 </div>
               );
             })}
           </div>
+          {/* Legend */}
+          <div className="flex items-center justify-center gap-6 mt-8">
+            <div className="flex items-center gap-2 text-sm text-gray-600 font-sans">
+              <div className="w-3 h-3 rounded-full bg-orange-400"></div>
+              Growth Marketing
+            </div>
+            <div className="flex items-center gap-2 text-sm text-gray-600 font-sans">
+              <div className="w-3 h-3 rounded-full bg-teal-400"></div>
+              Customer Success
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Marketing Tools */}
-      <section className="py-16 px-4 bg-white">
+      {/* Tools */}
+      <section className="py-16 px-4 bg-gradient-to-br from-gray-50 to-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-mono">
-              Best-in-Class Marketing Stack
+              Best-in-Class Tool Stack
             </h2>
             <p className="text-lg text-gray-600 font-sans">
-              Our marketers leverage the industry's most powerful tools and platforms
+              Our experts are fluent in the industry's most powerful growth and customer success platforms
             </p>
           </div>
-          <div className="flex flex-wrap justify-center gap-4">
-            {marketingTools.map((tool, index) => (
+          <div className="flex flex-wrap justify-center gap-3">
+            {allTools.map((tool, index) => (
               <span
                 key={index}
-                className="px-6 py-3 bg-gradient-to-r from-orange-50 to-amber-50 text-gray-800 rounded-full font-medium text-sm border border-orange-200 hover:border-orange-400 hover:shadow-md transition-all font-sans"
+                className="px-5 py-2.5 bg-white text-gray-800 rounded-full font-medium text-sm border border-gray-200 hover:border-orange-300 hover:shadow-md transition-all font-sans"
               >
                 {tool}
               </span>
@@ -359,23 +522,22 @@ export default function MarketingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-4 font-mono">
-              Why Choose Knacksters Marketing?
+              Why Knacksters for Growth & Customer Success?
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto font-sans">
-              Partner with marketers who combine creativity with analytics to drive sustainable growth
+              We're the only platform where you can hire a growth marketer and a CSM under the same subscription — no switching vendors, no coordination overhead.
             </p>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {benefits.map((benefit, index) => {
               const IconComponent = benefit.icon;
               return (
                 <div key={index} className="text-center">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center mx-auto mb-6">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-500 to-teal-500 flex items-center justify-center mx-auto mb-6">
                     <IconComponent className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-xl font-bold mb-3 font-sans">{benefit.title}</h3>
-                  <p className="text-gray-300 font-sans">{benefit.description}</p>
+                  <p className="text-gray-300 font-sans text-sm leading-relaxed">{benefit.description}</p>
                 </div>
               );
             })}
@@ -384,13 +546,16 @@ export default function MarketingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
+      <section className="py-20 px-4 bg-gradient-to-br from-orange-50 via-amber-50 to-teal-50">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 font-mono">
-            Ready to Accelerate Your Growth?
+            Ready to Grow and Keep Your Customers?
           </h2>
-          <p className="text-xl text-gray-700 mb-8 font-sans">
-            Connect with expert marketers who deliver measurable results across every channel and stage of the customer journey.
+          <p className="text-xl text-gray-700 mb-4 font-sans">
+            Connect with expert growth marketers and customer success managers who deliver results across the full revenue lifecycle.
+          </p>
+          <p className="text-sm text-gray-500 mb-8 font-sans">
+            Start with 50 free hours — no credit card required.
           </p>
           <Link href="/signup" className="inline-block">
             <div style={{ width: '200px' }} className="mx-auto">
@@ -398,7 +563,7 @@ export default function MarketingPage() {
                 width="200"
                 height="56"
                 wrapperClassName="primary-button-wrapper"
-                gradientId="paint0_linear_marketing_cta"
+                gradientId="paint0_linear_growth_cta"
               />
             </div>
           </Link>

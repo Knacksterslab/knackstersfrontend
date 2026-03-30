@@ -331,7 +331,7 @@ export default function SupportContent() {
             </div>
           </div>
 
-          {/* Account Manager - Using shared component */}
+          {/* Customer Success Manager - Using shared component */}
           <AccountManager accountManager={null} />
 
           {/* Response Time Notice */}

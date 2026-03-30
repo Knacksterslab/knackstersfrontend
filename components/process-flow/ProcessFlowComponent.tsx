@@ -29,19 +29,19 @@ const processSteps: ProcessStep[] = [
   {
     number: '01',
     title: 'Get Started with Knacksters',
-    description: 'Sign up and meet your dedicated business manager, who will tailor our services to your goals.',
+    description: 'Sign up and meet your dedicated Customer Success Manager, who will tailor our services to your goals.',
     icon: <LuUserRound />,
   },
   {
     number: '02',
     title: 'Let\'s Strategize Together',
-    description: 'Collaborate with your business manager to share your goals and outline challenges. We\'ll connect you with the right talent for success—deployed in minutes.',
+    description: 'Collaborate with your Customer Success Manager to share your goals and outline challenges. We\'ll connect you with the right talent for success—deployed in minutes.',
     icon: <FaRegChartBar />,
   },
   {
     number: '03',
     title: 'Delegate with Ease',
-    description: 'Outline your requirements or leave it to your business manager to execute your vision efficiently. Spread hours across multiple experts or focus on a single priority.',
+    description: 'Outline your requirements or leave it to your Customer Success Manager to execute your vision efficiently. Spread hours across multiple experts or focus on a single priority.',
     icon: <RiResetLeftLine />,
   },
   {
@@ -71,7 +71,7 @@ const processSteps: ProcessStep[] = [
   {
     number: '08',
     title: 'Your Growth Never Stops',
-    description: 'Partner with your business manager for long-term success. Together, we\'ll keep innovating and achieving.',
+    description: 'Partner with your Customer Success Manager for long-term success. Together, we\'ll keep innovating and achieving.',
     icon: <RiResetLeftLine />,
   },
 ];

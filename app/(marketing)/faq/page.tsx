@@ -29,7 +29,7 @@ const faqSchema = {
       name: 'How does Knacksters work?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Knacksters is a managed talent platform that provides on-demand access to vetted professionals. You subscribe to a plan, get assigned a dedicated Business Manager, and we match you with expert professionals in minutes—not weeks.',
+        text: 'Knacksters is a managed talent platform that provides on-demand access to vetted professionals. You subscribe to a plan, get assigned a dedicated Customer Success Manager, and we match you with expert professionals in minutes—not weeks.',
       },
     },
     {
@@ -37,7 +37,7 @@ const faqSchema = {
       name: 'How much does Knacksters cost?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Plans start at $12,500/month for 200 hours (effective rate: $62.50/hour). Growth plan is $25,000/month for 450 hours. Enterprise plans are custom. All plans include a dedicated Business Manager.',
+        text: 'We offer a free Trial to Hire plan (50 hours, 30 days, one domain, one per company). Paid plans start at $7,000/month for 100 hours (Flex Retainer). Pro Retainer is $12,500/month for 200 hours. Growth is $25,000/month for 450 hours. Enterprise plans are custom. All plans include a dedicated Customer Success Manager.',
       },
     },
     {

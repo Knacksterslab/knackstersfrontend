@@ -54,6 +54,13 @@ export interface LandingContent {
     pageTitle: string;
     metaDescription: string;
   };
+  _statsBaseline?: {
+    date: string;
+    professionals: number;
+    hoursDelivered: number;
+    hoursPerDay: number;
+    professionalsPerWeek: number;
+  };
 }
 
 export const defaultLandingContent: LandingContent = {
@@ -105,6 +112,13 @@ export const defaultLandingContent: LandingContent = {
     "professionalsLabel": "Professionals in Network",
     "hoursDelivered": "960,000+",
     "hoursDeliveredLabel": "Hours Delivered"
+  },
+  "_statsBaseline": {
+    "date": "2026-03-27",
+    "professionals": 9999,
+    "hoursDelivered": 960000,
+    "hoursPerDay": 200,
+    "professionalsPerWeek": 1
   },
   "partners": {
     "title": "Trusted by Leading Companies",

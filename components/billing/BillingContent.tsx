@@ -208,7 +208,7 @@ export default function BillingContent() {
         </div>
       </div>
 
-      {/* Account Manager CTA */}
+      {/* Customer Success Manager CTA */}
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 mb-8">
         <div className="flex flex-col sm:flex-row items-start gap-4">
           <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
@@ -217,14 +217,14 @@ export default function BillingContent() {
           <div className="flex-1">
             <h3 className="text-lg font-bold text-gray-900 mb-2">Need to adjust your plan or purchase extra hours?</h3>
             <p className="text-sm text-gray-600 mb-4">
-              Your account manager can help you upgrade, downgrade, or add additional hours based on your needs.
+              Your Customer Success Manager can help you upgrade, downgrade, or add additional hours based on your needs.
             </p>
             <button 
               onClick={() => router.push('/support')}
               className="px-6 py-2.5 bg-[#FF9634] text-white font-semibold rounded-lg hover:bg-[#E88530] transition-colors flex items-center gap-2"
             >
               <MessageCircle size={18} />
-              Contact Account Manager
+              Contact Your CSM
             </button>
           </div>
         </div>

@@ -137,7 +137,7 @@ export default function ProjectsList() {
                   </div>
                   <p className="text-lg font-semibold text-gray-900 mb-2">No work requests yet</p>
                   <p className="text-sm text-gray-500 mb-6">
-                    Start by requesting a new task from your dashboard. Your account manager will review and create a project for you.
+                    Start by requesting a new task from your dashboard. Your Customer Success Manager will review and create a project for you.
                   </p>
                   <button 
                     onClick={() => window.location.href = '/client-dashboard'}
@@ -319,7 +319,7 @@ export default function ProjectsList() {
                     </div>
                     <p className="text-lg font-semibold text-gray-900 mb-2">No tasks yet</p>
                     <p className="text-sm text-gray-500">
-                      Tasks will appear here when your account manager assigns work to you
+                      Tasks will appear here when your Customer Success Manager assigns work to you
                     </p>
                   </div>
                 )

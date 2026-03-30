@@ -211,7 +211,7 @@ export default function TalentTimesheetPage() {
                   <div>
                     <h3 className="text-sm sm:text-base font-semibold text-blue-900 mb-1">Ready to Submit?</h3>
                     <p className="text-xs sm:text-sm text-blue-700">
-                      Once you've reviewed your timesheet for this week, submit it for approval by your Business Manager.
+                      Once you've reviewed your timesheet for this week, submit it for approval by your Customer Success Manager.
                     </p>
                   </div>
                 </div>

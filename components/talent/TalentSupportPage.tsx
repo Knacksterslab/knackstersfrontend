@@ -194,14 +194,14 @@ export default function TalentSupportPage() {
                 </div>
 
                 <div className="bg-white rounded-xl border border-gray-200 p-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-4">Your Business Manager</h3>
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">Your Customer Success Manager</h3>
                   <div className="flex items-start gap-4 mb-4">
                     <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
                       <User size={32} className="text-white" />
                     </div>
                     <div>
                       <h4 className="font-semibold text-gray-900 text-lg">Sarah Johnson</h4>
-                      <p className="text-sm text-gray-600 mb-3">Senior Business Manager</p>
+                      <p className="text-sm text-gray-600 mb-3">Senior Customer Success Manager</p>
                       <div className="space-y-2">
                         <div className="flex items-center gap-2 text-sm text-gray-700">
                           <Mail size={16} className="text-gray-400" />

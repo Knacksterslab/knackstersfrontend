@@ -15,11 +15,11 @@ export default function TermsOfServicePage() {
     {
       id: "services",
       title: "2. Our Services",
-      content: `Knacksters provides an on-demand talent platform that connects businesses ("Clients") with pre-vetted professionals ("Talent") across six core domains: AI Solutions, Cybersecurity, Development & DevOps, Design & Creative, Marketing, and Healthcare & Life Sciences. Each Client engagement includes a dedicated Business Manager who coordinates all aspects of the project.`,
+      content: `Knacksters provides an on-demand talent platform that connects businesses ("Clients") with pre-vetted professionals ("Talent") across six core domains: AI Solutions, Cybersecurity, Development & DevOps, Design & Creative, Marketing, and Healthcare & Life Sciences. Each Client engagement includes a dedicated Customer Success Manager who coordinates all aspects of the project.`,
       subsections: [
         {
           title: "2.1 Service Plans",
-          content: "We offer flexible subscription plans starting at $12,500/month for 200 hours, $25,000/month for 450 hours, and custom Enterprise plans. All plans include access to our full talent network and dedicated Business Manager support."
+          content: "We offer five subscription tiers: (1) Trial to Hire — free, 50 hours, valid 30 days, limited to one domain and one use per company; (2) Flex Retainer — $7,000/month for 100 hours; (3) Pro Retainer — $12,500/month for 200 hours; (4) Growth — $25,000/month for 450 hours; and (5) Enterprise — custom pricing and hours. All paid plans include access to our full talent network and dedicated Customer Success Manager support."
         },
         {
           title: "2.2 Additional Hours",
@@ -49,8 +49,8 @@ export default function TermsOfServicePage() {
           content: "You are solely responsible for all activities that occur under your account. Notify us immediately of any unauthorized use or security breach."
         },
         {
-          title: "4.3 Business Manager Access",
-          content: "Your dedicated Business Manager will have limited access to your account to coordinate talent assignments and project management on your behalf."
+          title: "4.3 Customer Success Manager Access",
+          content: "Your dedicated Customer Success Manager will have limited access to your account to coordinate talent assignments and project management on your behalf."
         }
       ]
     },
@@ -112,7 +112,7 @@ export default function TermsOfServicePage() {
         },
         {
           title: "7.3 Talent Quality",
-          content: "We maintain rigorous vetting standards (8% acceptance rate) and continuously monitor Talent performance. If you're unsatisfied with assigned Talent, your Business Manager will arrange a replacement."
+          content: "We maintain rigorous vetting standards (8% acceptance rate) and continuously monitor Talent performance. If you're unsatisfied with assigned Talent, your Customer Success Manager will arrange a replacement."
         }
       ]
     },
@@ -247,7 +247,7 @@ export default function TermsOfServicePage() {
 **Email:** connect@knacksters.co  
 **Support:** connect@knacksters.co
 
-For general inquiries, visit our website at knacksters.com or contact your dedicated Business Manager.`
+For general inquiries, visit our website at knacksters.com or contact your dedicated Customer Success Manager.`
     }
   ];
 
@@ -295,7 +295,7 @@ For general inquiries, visit our website at knacksters.com or contact your dedic
               <CheckCircle className="w-5 h-5 flex-shrink-0 mt-1" style={{ color: '#5A1568' }} />
               <div>
                 <h3 className="font-semibold text-gray-900 mb-1">Managed For You</h3>
-                <p className="text-sm text-gray-600">Dedicated Business Manager coordinates all talent and handles project logistics.</p>
+                <p className="text-sm text-gray-600">Dedicated Customer Success Manager coordinates all talent and handles project logistics.</p>
               </div>
             </div>
             <div className="flex items-start gap-3">

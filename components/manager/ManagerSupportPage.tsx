@@ -195,7 +195,7 @@ export default function ManagerSupportPage() {
                     <AlertCircle size={20} className="text-blue-600 flex-shrink-0 mt-0.5" />
                     <div>
                       <h4 className="font-semibold text-blue-900 text-sm mb-1">Manager Support</h4>
-                      <p className="text-xs text-blue-700">As a Business Manager, you have priority support access with typical response times of 1-2 hours.</p>
+                      <p className="text-xs text-blue-700">As a Customer Success Manager, you have priority support access with typical response times of 1-2 hours.</p>
                     </div>
                   </div>
                 </div>

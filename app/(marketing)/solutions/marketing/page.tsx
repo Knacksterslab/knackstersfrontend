@@ -2,20 +2,20 @@ import type { Metadata } from "next";
 import MarketingPage from "@/components/solutions/MarketingPage";
 
 export const metadata: Metadata = {
-  title: "Marketing Services",
+  title: "Growth & Customer Success Services",
   description:
-    "Drive growth with expert marketers. From SEO and content strategy to paid media and marketing analytics—our specialists deliver measurable results across every channel.",
-  keywords: ["marketing services", "SEO", "content marketing", "paid media", "marketing analytics", "growth marketing", "digital marketing", "social media marketing", "email marketing"],
+    "Drive acquisition and retention with expert growth marketers and customer success managers. From SEO and paid media to customer onboarding, RevOps, and churn reduction—measurable results across the full revenue lifecycle.",
+  keywords: ["growth marketing", "customer success manager", "CSM", "marketing services", "SEO", "content marketing", "paid media", "RevOps", "customer retention", "customer onboarding", "digital marketing", "email marketing"],
   openGraph: {
-    title: "Marketing Services - Knacksters",
-    description: "Drive growth with expert marketers. From SEO and content strategy to paid media and marketing analytics.",
+    title: "Growth & Customer Success - Knacksters",
+    description: "Expert marketers and CSMs who drive acquisition, retention, and revenue expansion across every channel.",
     url: "https://www.knacksters.co/solutions/marketing",
     images: [{ url: "/hero-bg.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Marketing Services - Knacksters",
-    description: "Drive growth with expert marketers. From SEO and content strategy to paid media and marketing analytics.",
+    title: "Growth & Customer Success - Knacksters",
+    description: "Expert marketers and CSMs who drive acquisition, retention, and revenue expansion across every channel.",
   },
 };
 

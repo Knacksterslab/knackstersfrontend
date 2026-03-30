@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Users, Briefcase, Clock, DollarSign, UserCheck, Calendar } from 'lucide-react';
 import Link from 'next/link';
+import { getLiveStats } from '@/lib/utils/stats';
 
 interface TalentApplication {
   id: string;
@@ -39,10 +40,11 @@ export default function AdminDashboardPage() {
     fetchTalentApplications();
   }, []);
 
+  const liveStats = getLiveStats();
   const stats = [
     {
       title: 'Total Talents',
-      value: '9,999+',
+      value: liveStats.professionals,
       icon: Users,
       color: 'bg-blue-500',
     },
@@ -54,7 +56,7 @@ export default function AdminDashboardPage() {
     },
     {
       title: 'Hours Delivered',
-      value: '960,000+',
+      value: liveStats.hoursDelivered,
       icon: Clock,
       color: 'bg-orange-500',
     },
@@ -80,7 +82,7 @@ export default function AdminDashboardPage() {
     },
     {
       title: 'View All Users',
-      description: 'Manage talents, clients, and business managers',
+      description: 'Manage talents, clients, and Customer Success Managers',
       href: '/admin-dashboard/users',
     },
   ];

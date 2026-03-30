@@ -95,14 +95,14 @@ export default function RequestTaskModal({ isOpen, onClose, onSuccess }: Request
           </div>
           <h3 className="text-2xl font-bold text-gray-900 mb-2">Request Submitted</h3>
           <p className="text-sm text-gray-600 mb-6">
-            Your account manager will review your request and match you with the right expert within 24 hours.
+            Your Customer Success Manager will review your request and match you with the right expert within 24 hours.
           </p>
           <div className="text-sm text-gray-600 bg-gray-50 p-4 rounded-lg border border-gray-200 text-left">
             <p className="font-semibold text-gray-900 mb-2">Next steps:</p>
             <ul className="space-y-1">
               <li className="flex items-start gap-2">
                 <span className="text-[#FF9634] mt-0.5">•</span>
-                <span>Account manager reviews scope</span>
+                <span>Your CSM reviews scope</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[#FF9634] mt-0.5">•</span>
@@ -265,7 +265,7 @@ export default function RequestTaskModal({ isOpen, onClose, onSuccess }: Request
           {/* Help Text */}
           <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
             <p className="text-sm text-gray-600">
-              <span className="font-semibold text-gray-900">What happens next:</span> Your account manager will review your request, refine the scope, provide an accurate estimate, and match you with the best expert for your needs.
+              <span className="font-semibold text-gray-900">What happens next:</span> Your Customer Success Manager will review your request, refine the scope, provide an accurate estimate, and match you with the best expert for your needs.
             </p>
           </div>
 

@@ -48,7 +48,7 @@ export default function ManagerSidebar({ isOpen = false, onClose }: ManagerSideb
       menuItems={menuItems}
       theme={sidebarThemes.manager}
       roleBadge={{
-        text: 'Business Manager',
+        text: 'Customer Success Manager',
         bgColor: 'bg-purple-50',
         textColor: 'text-purple-600',
       }}

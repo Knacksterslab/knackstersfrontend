@@ -3,11 +3,12 @@
 import Image from 'next/image';
 import { getActivePartners } from './partner-config';
 import { defaultLandingContent } from '@/components/landing/landing-content';
+import { getLiveStats } from '@/lib/utils/stats';
 
 export default function PartnersComponent() {
   const activePartners = getActivePartners();
   const { title, description } = defaultLandingContent.partners;
-  const { professionals, professionalsLabel, hoursDelivered, hoursDeliveredLabel } = defaultLandingContent.statistics;
+  const { professionals, professionalsLabel, hoursDelivered, hoursDeliveredLabel } = getLiveStats();
 
   return (
     <section className="w-full py-12 sm:py-16 md:py-20 lg:py-24 xl:py-28 px-4 sm:px-6 relative overflow-hidden" style={{ backgroundColor: '#7D1F2A' }}>

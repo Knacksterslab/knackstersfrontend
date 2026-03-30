@@ -27,7 +27,7 @@ export default function AccountManager({ accountManager }: AccountManagerProps) 
   }
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-8">
-      <h2 className="text-2xl font-bold text-gray-900 mb-8">Your Account Manager</h2>
+      <h2 className="text-2xl font-bold text-gray-900 mb-8">Your Customer Success Manager</h2>
 
       {/* Profile Section - Minimal and clean like screenshot */}
       <div className="flex flex-col items-center text-center">
@@ -56,7 +56,7 @@ export default function AccountManager({ accountManager }: AccountManagerProps) 
 
         {/* Name and Title - Clean and simple */}
         <h3 className="text-2xl font-bold text-gray-900 mb-2">{accountManager.fullName}</h3>
-        <p className="text-base text-gray-500">Account Manager</p>
+        <p className="text-base text-gray-500">Customer Success Manager</p>
       </div>
     </div>
   )

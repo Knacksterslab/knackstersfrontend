@@ -24,8 +24,8 @@ const features = [
     icon: "star",
   },
   {
-    title: "Transparent Pricing",
-    description: "From $12,500/mo for 200 hours. Scale as you grow.",
+    title: "Try Before You Hire",
+    description: "Work with a vetted professional for 50 hours free — then hire them full-time or scale with a plan.",
     icon: "dollar",
   },
   {
@@ -35,7 +35,7 @@ const features = [
   },
   {
     title: "Managed for You",
-    description: "Dedicated Business Manager handles everything.",
+    description: "Dedicated Customer Success Manager handles everything.",
     icon: "grid",
   },
 ];

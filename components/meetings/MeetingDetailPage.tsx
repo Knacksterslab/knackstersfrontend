@@ -181,7 +181,7 @@ export default function MeetingDetailPage({ meetingId }: MeetingDetailPageProps)
                 </div>
               </div>
 
-              {/* Account Manager */}
+              {/* Customer Success Manager */}
               {meeting.accountManager && (
                 <div className="flex items-start gap-3">
                   <img
@@ -190,7 +190,7 @@ export default function MeetingDetailPage({ meetingId }: MeetingDetailPageProps)
                     className="w-16 h-16 rounded-full object-cover flex-shrink-0 bg-gray-100"
                   />
                   <div>
-                    <p className="text-xs font-medium text-gray-500 mb-1">Account Manager</p>
+                    <p className="text-xs font-medium text-gray-500 mb-1">Customer Success Manager</p>
                     <p className="text-sm font-semibold text-gray-900">{meeting.accountManager.fullName}</p>
                     <p className="text-xs text-gray-600">{meeting.accountManager.email}</p>
                   </div>

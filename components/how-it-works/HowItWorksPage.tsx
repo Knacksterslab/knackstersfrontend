@@ -26,13 +26,13 @@ export default function HowItWorksPage() {
     {
       number: "01",
       title: "Subscribe & Meet Your Manager",
-      description: "Choose your plan and have a 15-minute onboarding call with your dedicated Business Manager who'll understand your needs.",
+      description: "Choose your plan and have a 15-minute onboarding call with your dedicated Customer Success Manager who'll understand your needs.",
       time: "15 minutes",
       outcome: "Clear understanding of your goals",
       details: [
-        "Choose from Starter ($12,500/mo), Growth ($25,000/mo), or Enterprise plans",
+        "Choose from Flex Retainer ($7,000/mo), Pro Retainer ($12,500/mo), Growth ($25,000/mo), or Enterprise plans",
         "Secure payment setup (invoice or card)",
-        "Meet your dedicated Business Manager via video call",
+        "Meet your dedicated Customer Success Manager via video call",
         "Share your initial project requirements and priorities",
         "Get instant access to the client dashboard"
       ],
@@ -58,11 +58,11 @@ export default function HowItWorksPage() {
     {
       number: "03",
       title: "Expert Matching (Minutes)",
-      description: "Your manager searches our 9,999+ vetted professionals and presents the best 2-3 candidates for your approval.",
+      description: "Your manager searches our 10,000+ vetted professionals and presents the best 2-3 candidates for your approval.",
       time: "2-4 hours (manager handles this)",
       outcome: "Curated expert profiles",
       details: [
-        "Manager searches pre-screened talent pool of 9,999+ professionals",
+        "Manager searches pre-screened talent pool of 10,000+ professionals",
         "Filters by skills, availability, experience, and hourly rates",
         "Reviews portfolios and past client ratings (avg 4.8/5)",
         "Shortlists top 2-3 candidates that match your needs",
@@ -164,7 +164,7 @@ export default function HowItWorksPage() {
     },
     {
       feature: "Monthly Cost",
-      knacksters: "$12,500 (200 hrs)",
+      knacksters: "From $7,000 (100 hrs)",
       freelance: "$15-25K",
       staffing: "$20-40K",
       fulltime: "$10-15K + benefits",
@@ -206,50 +206,84 @@ export default function HowItWorksPage() {
 
   const pricingPlans = [
     {
-      name: "Starter",
-      price: "$12,500",
-      period: "per month",
-      hours: "200 hours included",
+      name: "Trial to Hire",
+      price: "Free",
+      period: "",
+      hours: "50 hours",
+      badge: "Hire Risk-Free",
       features: [
-        "Dedicated Business Manager",
-        "Access to 9,999+ experts",
+        "50 hours of real work — valid 30 days",
+        "Evaluate one role at a time",
+        "One trial per company",
+        "Dedicated Customer Success Manager",
+        "Expert matching in 2-4 hours",
+        "Convert to full-time hire anytime"
+      ],
+      bestFor: "Companies evaluating a professional for a permanent full-time role",
+      cta: "Start Free Trial",
+      highlighted: false
+    },
+    {
+      name: "Flex Retainer",
+      price: "$7,000",
+      period: "per month",
+      hours: "100 hours included",
+      features: [
+        "Dedicated Customer Success Manager",
+        "Access to 10,000+ experts",
         "All 6 service domains",
         "Real-time dashboard",
         "No contracts",
         "Cancel anytime"
       ],
-      bestFor: "Small teams, focused projects",
+      bestFor: "Focused teams and ongoing projects",
       cta: "Get Started",
       highlighted: false
+    },
+    {
+      name: "Pro Retainer",
+      price: "$12,500",
+      period: "per month",
+      hours: "200 hours included",
+      badge: "Most Popular",
+      features: [
+        "Everything in Flex Retainer, plus:",
+        "Priority talent matching",
+        "Priority 24/7 support",
+        "Advanced analytics",
+        "Custom reporting",
+        "Multiple workstreams"
+      ],
+      bestFor: "Teams running multiple projects",
+      cta: "Get Started",
+      highlighted: true
     },
     {
       name: "Growth",
       price: "$25,000",
       period: "per month",
       hours: "450 hours included",
-      badge: "Most Popular",
       features: [
-        "Everything in Starter, plus:",
-        "Priority talent matching",
-        "Dedicated account manager",
+        "Everything in Pro Retainer, plus:",
+        "Dedicated Customer Success Manager",
         "Quarterly business reviews",
-        "Advanced analytics",
-        "Custom reporting"
+        "Custom reporting",
+        "Volume pricing benefits"
       ],
-      bestFor: "Growing companies, multiple projects",
+      bestFor: "Scaling companies with large teams",
       cta: "Get Started",
-      highlighted: true
+      highlighted: false
     },
     {
       name: "Enterprise",
       price: "Custom",
       period: "pricing",
-      hours: "Unlimited hours",
+      hours: "Custom hours",
       features: [
         "Everything in Growth, plus:",
         "White-label options",
         "Custom integrations",
-        "Dedicated support team",
+        "Dedicated success team",
         "SLA guarantees",
         "Custom workflows"
       ],
@@ -273,12 +307,12 @@ export default function HowItWorksPage() {
     {
       icon: Users,
       title: "Managed for You",
-      description: "Your Business Manager handles coordination, quality control, and issue resolution. You focus on your business."
+      description: "Your Customer Success Manager handles coordination, quality control, and issue resolution. You focus on your business."
     },
     {
       icon: Award,
       title: "Proven Results",
-      description: "4.8/5 average rating from 200+ enterprise clients. 960,000+ hours delivered successfully."
+      description: "4.8/5 average rating from 200+ enterprise clients. 960,000+ hours delivered and growing daily."
     }
   ];
 

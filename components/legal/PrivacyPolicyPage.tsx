@@ -55,7 +55,7 @@ By using our Services, you agree to the collection and use of information in acc
       icon: Eye,
       content: `We use collected information for the following purposes:`,
       items: [
-        "**Provide Services:** Deliver, operate, and maintain our platform; match you with appropriate Talent; coordinate projects through Business Managers.",
+        "**Provide Services:** Deliver, operate, and maintain our platform; match you with appropriate Talent; coordinate projects through Customer Success Managers.",
         "**Process Payments:** Handle billing, invoicing, and payment processing; detect and prevent fraud.",
         "**Communications:** Send service updates, transaction confirmations, security alerts, and support messages.",
         "**Personalization:** Customize your experience, remember preferences, and provide relevant recommendations.",

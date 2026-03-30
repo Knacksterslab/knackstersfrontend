@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import PaymentMethodModal from './PaymentMethodModal'
 import { getPricingPlansArray } from '@/lib/config/plans'
 
-const pricingPlans = getPricingPlansArray('STARTER')
+const pricingPlans = getPricingPlansArray('PRO_RETAINER')
 
 interface PlanSelectionProps {
   onSubscriptionComplete?: () => void
@@ -96,6 +96,12 @@ export default function PlanSelection({ onSubscriptionComplete, hasUpcomingMeeti
     setError(null)
 
     try {
+      // Free trial — no payment method needed
+      if (selectedPlan === 'TRIAL') {
+        await activateSubscription()
+        return
+      }
+
       // Check if user has a payment method
       const hasMethod = await checkPaymentMethod()
 
@@ -132,7 +138,7 @@ export default function PlanSelection({ onSubscriptionComplete, hasUpcomingMeeti
             <div className="flex-1">
               <h3 className="text-sm font-bold text-gray-900 mb-1">💡 Not sure which plan fits your needs?</h3>
               <p className="text-xs text-gray-700 mb-3">
-                Schedule a free 15-minute strategy call with your dedicated account manager. 
+                Schedule a free 15-minute strategy call with your dedicated Customer Success Manager. 
                 Get expert guidance on choosing the right plan and how to maximize your team's efficiency.
               </p>
               <button
@@ -156,56 +162,102 @@ export default function PlanSelection({ onSubscriptionComplete, hasUpcomingMeeti
         </div>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-4">
-        {pricingPlans.map((plan) => (
-          <div
-            key={plan.name}
-            className={`relative border-2 rounded-xl p-4 cursor-pointer transition-all hover:shadow-lg ${
-              selectedPlan === plan.name
-                ? 'border-[#FF9634] bg-orange-50'
-                : plan.popular
-                ? 'border-[#FF9634] bg-white'
-                : 'border-gray-200 bg-white'
-            }`}
-            onClick={() => handlePlanSelect(plan.name)}
-          >
-            {plan.popular && (
-              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                <span className="bg-gradient-to-r from-[#E9414C] to-[#FF9634] text-white px-3 py-1 rounded-full text-xs font-semibold">
-                  Most Popular
-                </span>
+      {/* Always horizontally scrollable — 5 plans need room */}
+      <div className="overflow-x-auto pb-3 pt-5 -mx-4 sm:-mx-6 px-4 sm:px-6">
+        <div className="flex gap-4" style={{ width: 'max-content' }}>
+          {pricingPlans.map((plan) => {
+            const isTrial = plan.name === 'TRIAL'
+            const isSelected = selectedPlan === plan.name
+            const isPopular = plan.popular && !plan.badge
+
+            return (
+              <div
+                key={plan.name}
+                style={{ width: '220px', flexShrink: 0 }}
+                className={`relative flex flex-col rounded-2xl cursor-pointer transition-all hover:shadow-xl hover:-translate-y-0.5 ${
+                  isSelected
+                    ? 'border-2 border-[#FF9634] shadow-lg'
+                    : isPopular
+                    ? 'border-2 border-[#FF9634]'
+                    : isTrial
+                    ? 'border-2 border-green-400'
+                    : 'border border-gray-200'
+                } bg-white`}
+                onClick={() => handlePlanSelect(plan.name)}
+              >
+                {/* Badge */}
+                {(isPopular || plan.badge) && (
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
+                    <span className={`${isTrial ? 'bg-green-500' : 'bg-gradient-to-r from-[#E9414C] to-[#FF9634]'} text-white px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap shadow-sm`}>
+                      {plan.badge ?? 'Most Popular'}
+                    </span>
+                  </div>
+                )}
+
+                {/* Coloured top accent bar */}
+                <div className={`h-1 w-full rounded-t-2xl ${
+                  isTrial ? 'bg-green-400' : isPopular || isSelected ? 'bg-gradient-to-r from-[#E9414C] to-[#FF9634]' : 'bg-gray-200'
+                }`} />
+
+                <div className="p-5 flex flex-col flex-1">
+                  {/* Plan name */}
+                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">
+                    {plan.displayName ?? plan.name}
+                  </h3>
+
+                  {/* Price */}
+                  <div className="mb-0.5">
+                    <span className="text-2xl font-extrabold text-gray-900 leading-none">
+                      {plan.price}
+                    </span>
+                  </div>
+                  <div className="text-xs text-gray-400 mb-1">
+                    {plan.price === 'Free' ? '30-day trial' : 'per month'}
+                  </div>
+
+                  {/* Hours */}
+                  <div className={`text-sm font-bold mb-3 ${isTrial ? 'text-green-600' : 'text-[#FF9634]'}`}>
+                    {plan.hours}
+                  </div>
+
+                  {/* Description */}
+                  <p className="text-xs text-gray-400 mb-3 leading-relaxed">
+                    {plan.description}
+                  </p>
+
+                  {/* Divider */}
+                  <div className="border-t border-gray-100 mb-4" />
+
+                  {/* Features */}
+                  <ul className="space-y-2.5 mb-5 flex-1">
+                    {plan.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-start gap-2 text-xs text-gray-700 leading-snug">
+                        <CheckCircle
+                          size={14}
+                          className={`flex-shrink-0 mt-0.5 ${isTrial ? 'text-green-500' : 'text-[#FF9634]'}`}
+                        />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* CTA button */}
+                  <button
+                    className={`w-full py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                      isSelected
+                        ? 'bg-gradient-to-r from-[#E9414C] to-[#FF9634] text-white shadow-md'
+                        : isTrial
+                        ? 'bg-green-50 text-green-700 border border-green-300 hover:bg-green-100'
+                        : 'bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100'
+                    }`}
+                  >
+                    {isSelected ? 'Selected ✓' : isTrial ? 'Start Free Trial' : 'Subscribe Now'}
+                  </button>
+                </div>
               </div>
-            )}
-            
-            <div className="text-center mb-4">
-              <h3 className="text-sm font-bold text-gray-900 mb-1">{plan.name}</h3>
-              <div className="text-2xl font-bold text-gray-900 mb-1">{plan.price}</div>
-              <div className="text-xs text-gray-600">per month</div>
-              <div className="text-sm text-[#FF9634] font-semibold mt-1">{plan.hours}</div>
-            </div>
-
-            <p className="text-xs text-gray-600 mb-4 text-center">{plan.description}</p>
-
-            <ul className="space-y-2 mb-4">
-              {plan.features.map((feature, idx) => (
-                <li key={idx} className="flex items-start gap-2 text-xs text-gray-700">
-                  <CheckCircle size={14} className="text-green-500 flex-shrink-0 mt-0.5" />
-                  <span>{feature}</span>
-                </li>
-              ))}
-            </ul>
-
-            <button
-              className={`w-full py-2 rounded-lg text-sm font-semibold transition-colors ${
-                selectedPlan === plan.name
-                  ? 'bg-gradient-to-r from-[#E9414C] to-[#FF9634] text-white shadow-md'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              {selectedPlan === plan.name ? 'Selected ✓' : 'Subscribe Now'}
-            </button>
-          </div>
-        ))}
+            )
+          })}
+        </div>
       </div>
 
       {selectedPlan && (
@@ -214,11 +266,12 @@ export default function PlanSelection({ onSubscriptionComplete, hasUpcomingMeeti
             <CheckCircle size={20} className="text-green-600 flex-shrink-0 mt-0.5" />
             <div className="flex-1">
               <p className="text-sm font-semibold text-green-900 mb-1">
-                {selectedPlan} Plan Selected!
+                {pricingPlans.find(p => p.name === selectedPlan)?.displayName ?? selectedPlan} Selected!
               </p>
               <p className="text-xs text-green-800 mb-3">
-                Click "Proceed to Checkout" to {hasPaymentMethod === false ? 'add your payment method and ' : ''}activate your subscription and start requesting tasks immediately. 
-                You can schedule your strategy call anytime for optimization tips.
+                {selectedPlan === 'TRIAL'
+                  ? 'Click "Start Free Trial" to activate your 50-hour trial. No payment method required.'
+                  : `Click "Proceed to Checkout" to ${hasPaymentMethod === false ? 'add your payment method and ' : ''}activate your subscription and start requesting tasks immediately.`}
               </p>
               <button
                 onClick={handleCheckout}
@@ -230,6 +283,8 @@ export default function PlanSelection({ onSubscriptionComplete, hasUpcomingMeeti
                     <Loader2 size={16} className="animate-spin" />
                     Processing...
                   </>
+                ) : selectedPlan === 'TRIAL' ? (
+                  'Start Free Trial →'
                 ) : (
                   'Proceed to Checkout →'
                 )}

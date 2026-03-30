@@ -45,11 +45,11 @@ export default function FAQPage() {
             <>
               <p className="mb-3">Knacksters is a managed talent platform that provides on-demand access to vetted professionals across multiple domains. Here's how it works:</p>
               <ol className="list-decimal list-inside space-y-2 ml-2">
-                <li><strong>Subscribe:</strong> Choose a plan that fits your needs (from $12,500/mo for 200 hours)</li>
-                <li><strong>Meet Your Manager:</strong> Get assigned a dedicated Business Manager who understands your goals</li>
+                <li><strong>Try Before You Hire:</strong> Start with our Trial to Hire plan — 50 hours of real work to evaluate a professional for a permanent role, completely free. Or jump straight into a paid plan from $7,000/mo</li>
+                <li><strong>Meet Your CSM:</strong> Get assigned a dedicated Customer Success Manager who understands your goals</li>
                 <li><strong>Deploy Talent:</strong> We match you with expert professionals in minutes (not weeks)</li>
                 <li><strong>Flexible Allocation:</strong> Spread your hours across multiple experts or focus on specific priorities</li>
-                <li><strong>Managed Service:</strong> Your Business Manager handles coordination, quality control, and issue resolution</li>
+                <li><strong>Managed Service:</strong> Your Customer Success Manager handles coordination, quality control, and issue resolution</li>
               </ol>
             </>
           )
@@ -62,7 +62,7 @@ export default function FAQPage() {
               <ul className="space-y-2">
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
-                  <span><strong>Dedicated Management:</strong> Every client gets a Business Manager who handles coordination, vetting, and quality assurance</span>
+                  <span><strong>Dedicated Management:</strong> Every client gets a Customer Success Manager who handles coordination, vetting, and quality assurance</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
@@ -85,12 +85,12 @@ export default function FAQPage() {
           )
         },
         {
-          question: "How is the trial period no-risk?",
-          answer: "We start each engagement with a trial period. This gives you time to ensure the expert is the right fit. If you're completely satisfied with the results, we'll bill you for the time and continue the engagement. If you're not satisfied, you won't be billed. We can then introduce you to another expert who may be a better match."
+          question: "How does the Trial to Hire plan work?",
+          answer: "The Trial to Hire plan is designed for companies who want to evaluate a professional for a permanent full-time role before committing. You get 50 hours of real, billable-quality work — completely free. At the end of the trial, you choose: hire them full-time, continue on a subscription plan, or walk away with no obligation. No credit card required, one trial per company, and one role evaluated at a time."
         },
         {
           question: "Is there a subscription fee?",
-          answer: "Yes. Our pricing is simple and transparent. Plans start at $12,500/month for 200 hours (that's $62.50/hour). This includes access to our platform, a dedicated Business Manager, and our entire network of 9,999+ vetted professionals. Unused hours don't roll over, but you can scale up or down monthly."
+          answer: "Yes. Our pricing is simple and transparent. We offer a free Trial to Hire plan (50 hours, 30 days, one domain). Paid plans start at $7,000/month for 100 hours (Flex Retainer — $70/hr effective). All plans include a dedicated Customer Success Manager and access to our full network of 10,000+ vetted professionals. Unused hours don't roll over, but you can scale up or down monthly."
         }
       ]
     },
@@ -115,7 +115,7 @@ export default function FAQPage() {
         },
         {
           question: "What if I'm not satisfied with the professional assigned to me?",
-          answer: "We allow clients to work with up to three professionals per position during the trial period before deciding. While we rigorously screen all applicants, we understand that fit matters. Your Business Manager will work closely with you to find the right match, and you won't be billed unless you're satisfied."
+          answer: "We allow clients to work with up to three professionals per position during the trial period before deciding. While we rigorously screen all applicants, we understand that fit matters. Your Customer Success Manager will work closely with you to find the right match, and you won't be billed unless you're satisfied."
         },
         {
           question: "Where are your professionals located?",
@@ -123,7 +123,7 @@ export default function FAQPage() {
         },
         {
           question: "Can I request specific expertise or certifications?",
-          answer: "Absolutely. Your Business Manager will work with you to understand your exact requirements—whether you need specific certifications (e.g., AWS Certified Solutions Architect, PMP, CPA), industry experience (e.g., healthcare, fintech), or niche skills (e.g., Kubernetes, GDPR compliance). We match you with professionals who meet your precise needs."
+          answer: "Absolutely. Your Customer Success Manager will work with you to understand your exact requirements—whether you need specific certifications (e.g., AWS Certified Solutions Architect, PMP, CPA), industry experience (e.g., healthcare, fintech), or niche skills (e.g., Kubernetes, GDPR compliance). We match you with professionals who meet your precise needs."
         }
       ]
     },
@@ -136,28 +136,36 @@ export default function FAQPage() {
           question: "What are your pricing plans?",
           answer: (
             <>
-              <p className="mb-3">We offer three transparent pricing tiers:</p>
+              <p className="mb-3">We offer five transparent pricing tiers:</p>
               <ul className="space-y-3">
+                <li className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="font-semibold text-gray-900 mb-1">Trial to Hire — Free</div>
+                  <div className="text-sm text-gray-600">Evaluate a professional for a full-time role — 50 hours of real work • Valid 30 days • One role at a time • One per company</div>
+                </li>
                 <li className="p-3 bg-gray-50 rounded-lg">
-                  <div className="font-semibold text-gray-900 mb-1">Starter - $12,500/month</div>
+                  <div className="font-semibold text-gray-900 mb-1">Flex Retainer — $7,000/month</div>
+                  <div className="text-sm text-gray-600">100 hours/month • Effective rate: $70/hour</div>
+                </li>
+                <li className="p-3 bg-gray-50 rounded-lg">
+                  <div className="font-semibold text-gray-900 mb-1">Pro Retainer — $12,500/month</div>
                   <div className="text-sm text-gray-600">200 hours/month • Effective rate: $62.50/hour</div>
                 </li>
                 <li className="p-3 bg-gray-50 rounded-lg">
-                  <div className="font-semibold text-gray-900 mb-1">Growth - $25,000/month</div>
+                  <div className="font-semibold text-gray-900 mb-1">Growth — $25,000/month</div>
                   <div className="text-sm text-gray-600">450 hours/month • Effective rate: $55.56/hour</div>
                 </li>
                 <li className="p-3 bg-gray-50 rounded-lg">
-                  <div className="font-semibold text-gray-900 mb-1">Enterprise - Custom</div>
-                  <div className="text-sm text-gray-600">Custom hours & pricing • Priority support</div>
+                  <div className="font-semibold text-gray-900 mb-1">Enterprise — Custom</div>
+                  <div className="text-sm text-gray-600">Custom hours & pricing • Dedicated success team</div>
                 </li>
               </ul>
-              <p className="mt-3 text-sm">Overage rate: $100/hour. All plans include a dedicated Business Manager and access to our full network.</p>
+              <p className="mt-3 text-sm">Overage rate: $100/hour. All plans include a dedicated Customer Success Manager and access to our full network.</p>
             </>
           )
         },
         {
           question: "How does billing work?",
-          answer: "We bill twice monthly with Net 10 terms, giving you time to review charges before processing. Your dedicated Business Manager tracks all hours and provides detailed invoices showing which professionals worked on what tasks. Everything is transparent and easy to audit."
+          answer: "We bill twice monthly with Net 10 terms, giving you time to review charges before processing. Your dedicated Customer Success Manager tracks all hours and provides detailed invoices showing which professionals worked on what tasks. Everything is transparent and easy to audit."
         },
         {
           question: "What payment methods do you accept?",
@@ -169,7 +177,7 @@ export default function FAQPage() {
         },
         {
           question: "Do unused hours roll over?",
-          answer: "No, unused hours do not roll over to the next month. However, your Business Manager will help you maximize your monthly allocation by planning projects strategically and spreading work across your team as needed."
+          answer: "No, unused hours do not roll over to the next month. However, your Customer Success Manager will help you maximize your monthly allocation by planning projects strategically and spreading work across your team as needed."
         }
       ]
     },
@@ -180,7 +188,7 @@ export default function FAQPage() {
       faqs: [
         {
           question: "How quickly can I start working with talent?",
-          answer: "Most clients are matched with their first professional within 4-6 hours of signup. Our record is 37 minutes from signup to expert assignment. Once you subscribe and meet with your Business Manager, we immediately begin sourcing talent from our pre-vetted network of 9,999+ professionals."
+          answer: "Most clients are matched with their first professional within 4-6 hours of signup. Our record is 37 minutes from signup to expert assignment. Once you subscribe and meet with your Customer Success Manager, we immediately begin sourcing talent from our pre-vetted network of 10,000+ professionals."
         },
         {
           question: "What happens after I sign up?",
@@ -189,7 +197,7 @@ export default function FAQPage() {
               <p className="mb-3">Here's what to expect:</p>
               <ol className="list-decimal list-inside space-y-2 ml-2">
                 <li><strong>Immediate Access:</strong> You'll get instant access to your client dashboard</li>
-                <li><strong>Onboarding Call (15 min):</strong> Meet your dedicated Business Manager via video call</li>
+                <li><strong>Onboarding Call (15 min):</strong> Meet your dedicated Customer Success Manager via video call</li>
                 <li><strong>Requirements Discussion:</strong> Your manager asks targeted questions to understand your needs</li>
                 <li><strong>Talent Matching (Minutes):</strong> We search our network and present 2-3 top candidates</li>
                 <li><strong>Trial Period Begins:</strong> Start working with your chosen professional risk-free</li>
@@ -199,7 +207,7 @@ export default function FAQPage() {
         },
         {
           question: "Do I need to provide project requirements upfront?",
-          answer: "Not necessarily. Many clients come to us with a general sense of what they need but aren't sure about specifics. Your Business Manager is trained to ask the right questions to help you define requirements, break down projects, and identify the skills needed. We'll guide you through the process."
+          answer: "Not necessarily. Many clients come to us with a general sense of what they need but aren't sure about specifics. Your Customer Success Manager is trained to ask the right questions to help you define requirements, break down projects, and identify the skills needed. We'll guide you through the process."
         },
         {
           question: "Can I scale my team up or down?",
@@ -213,20 +221,20 @@ export default function FAQPage() {
       slug: "working",
       faqs: [
         {
-          question: "How does the Business Manager role work?",
-          answer: "Your dedicated Business Manager acts as your single point of contact. They handle talent sourcing, vetting, onboarding, quality control, issue resolution, and ongoing project coordination. Think of them as an extension of your team—they ensure everything runs smoothly so you can focus on your core business."
+          question: "How does your Customer Success Manager work?",
+          answer: "Your dedicated Customer Success Manager acts as your single point of contact. They handle talent sourcing, vetting, onboarding, quality control, issue resolution, and ongoing project coordination. Think of them as an extension of your team—they ensure everything runs smoothly so you can focus on your core business."
         },
         {
-          question: "Can I work directly with the professionals, or does everything go through the Business Manager?",
-          answer: "You can work directly with your assigned professionals via Slack, email, video calls, or your preferred tools. Your Business Manager is there to facilitate and oversee, not micromanage. They'll check in regularly to ensure quality and address any concerns, but day-to-day collaboration happens directly between you and your team."
+          question: "Can I work directly with the professionals, or does everything go through my Customer Success Manager?",
+          answer: "You can work directly with your assigned professionals via Slack, email, video calls, or your preferred tools. Your Customer Success Manager is there to facilitate and oversee, not micromanage. They'll check in regularly to ensure quality and address any concerns, but day-to-day collaboration happens directly between you and your team."
         },
         {
           question: "What happens if a professional becomes unavailable?",
-          answer: "While we take every measure to ensure reliability, if an expert becomes unavailable during scheduled work, Knacksters will credit back the time billed. Your Business Manager will immediately source a replacement if needed. Dependability is a top priority in our screening process."
+          answer: "While we take every measure to ensure reliability, if an expert becomes unavailable during scheduled work, Knacksters will credit back the time billed. Your Customer Success Manager will immediately source a replacement if needed. Dependability is a top priority in our screening process."
         },
         {
           question: "Can I bring Knacksters professionals on-site?",
-          answer: "Yes, depending on the professional's location and your specific needs. Most of our network works remotely, but for clients who need on-site presence, we can facilitate arrangements. Discuss your requirements with your Business Manager during onboarding."
+          answer: "Yes, depending on the professional's location and your specific needs. Most of our network works remotely, but for clients who need on-site presence, we can facilitate arrangements. Discuss your requirements with your Customer Success Manager during onboarding."
         },
         {
           question: "Can I hire a Knacksters professional full-time for my company?",
@@ -236,10 +244,10 @@ export default function FAQPage() {
               <ol className="list-decimal list-inside space-y-2 ml-2 mb-3">
                 <li><strong>Evaluate Risk-Free:</strong> Work with the expert through real projects to assess their skills, work style, and cultural fit</li>
                 <li><strong>Proven Performance:</strong> By the time you're ready to hire, you already know they can deliver results</li>
-                <li><strong>Streamlined Process:</strong> Your Business Manager coordinates the transition, handling paperwork and logistics</li>
+                <li><strong>Streamlined Process:</strong> Your Customer Success Manager coordinates the transition, handling paperwork and logistics</li>
                 <li><strong>Transparent Fees:</strong> No hidden agency markups or surprise recruiting fees—just a simple, fair conversion process</li>
               </ol>
-              <p className="text-sm">Contact your Business Manager to discuss conversion terms, timelines, and next steps. This is one of Knacksters' most popular benefits—try before you hire, with zero risk.</p>
+              <p className="text-sm">Contact your Customer Success Manager to discuss conversion terms, timelines, and next steps. This is one of Knacksters' most popular benefits—try before you hire, with zero risk.</p>
             </>
           )
         }
@@ -274,7 +282,7 @@ export default function FAQPage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-orange-500 font-bold">•</span>
-                  <span><strong>Marketing:</strong> SEO Specialists, Content Strategists, Social Media Managers, Growth Marketers</span>
+                  <span><strong>Marketing:</strong> SEO Specialists, Content Strategists, Social Media Managers, Growth Marketers, Customer Success Managers</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-orange-500 font-bold">•</span>
@@ -286,15 +294,15 @@ export default function FAQPage() {
         },
         {
           question: "Can I use my hours across different solution areas?",
-          answer: "Yes! Your monthly hour allocation can be spread across any combination of solution areas. For example, you could use 100 hours for development, 50 hours for design, and 50 hours for marketing—all within the same subscription. Your Business Manager will help coordinate specialists from different domains."
+          answer: "Yes! Your monthly hour allocation can be spread across any combination of solution areas. For example, you could use 100 hours for development, 50 hours for design, and 50 hours for marketing—all within the same subscription. Your Customer Success Manager will help coordinate specialists from different domains."
         },
         {
           question: "Do you offer team augmentation or entire project delivery?",
-          answer: "Both. Some clients use Knacksters for team augmentation—adding specific expertise to their existing teams. Others rely on us for end-to-end project delivery, where we assemble and manage an entire team. Your Business Manager will work with you to determine the best approach for your needs."
+          answer: "Both. Some clients use Knacksters for team augmentation—adding specific expertise to their existing teams. Others rely on us for end-to-end project delivery, where we assemble and manage an entire team. Your Customer Success Manager will work with you to determine the best approach for your needs."
         },
         {
           question: "Can you handle specialized or niche requirements?",
-          answer: "Yes. While our six core solution areas cover most needs, our network includes specialists in niche domains like blockchain, IoT, AR/VR, fintech compliance, clinical trials, and more. If you have specialized requirements, let your Business Manager know—we'll source the right expert."
+          answer: "Yes. While our six core solution areas cover most needs, our network includes specialists in niche domains like blockchain, IoT, AR/VR, fintech compliance, clinical trials, and more. If you have specialized requirements, let your Customer Success Manager know—we'll source the right expert."
         }
       ]
     },
@@ -309,7 +317,7 @@ export default function FAQPage() {
         },
         {
           question: "How is my IP protected?",
-          answer: "We have agreements with every professional in our network that establish clear IP ownership and confidentiality terms. Through a clean pass-through arrangement, all IP created during your engagement transfers directly to you. If you require additional direct agreements or custom NDAs, your Business Manager can facilitate those."
+          answer: "We have agreements with every professional in our network that establish clear IP ownership and confidentiality terms. Through a clean pass-through arrangement, all IP created during your engagement transfers directly to you. If you require additional direct agreements or custom NDAs, your Customer Success Manager can facilitate those."
         },
         {
           question: "What contracts do I need to sign?",
@@ -317,7 +325,7 @@ export default function FAQPage() {
         },
         {
           question: "Can Knacksters professionals sign our company's NDA?",
-          answer: "Yes. If you have specific confidentiality requirements or company NDAs, our professionals can sign them. Discuss your requirements with your Business Manager during onboarding, and we'll ensure all paperwork is handled properly."
+          answer: "Yes. If you have specific confidentiality requirements or company NDAs, our professionals can sign them. Discuss your requirements with your Customer Success Manager during onboarding, and we'll ensure all paperwork is handled properly."
         }
       ]
     },
@@ -328,15 +336,15 @@ export default function FAQPage() {
       faqs: [
         {
           question: "What kind of support do I get?",
-          answer: "Every client gets a dedicated Business Manager who serves as your primary point of contact. You'll have their direct email and can schedule calls as needed. Additionally, you have access to our support team via the client dashboard for technical issues, billing questions, or urgent matters."
+          answer: "Every client gets a dedicated Customer Success Manager who serves as your primary point of contact. You'll have their direct email and can schedule calls as needed. Additionally, you have access to our support team via the client dashboard for technical issues, billing questions, or urgent matters."
         },
         {
           question: "What happens if there's a quality issue with the work delivered?",
-          answer: "Your Business Manager actively monitors quality and will address any concerns immediately. If work doesn't meet your standards, we'll have the professional revise it at no additional cost. If issues persist, we'll source a replacement and ensure you're satisfied with the outcome."
+          answer: "Your Customer Success Manager actively monitors quality and will address any concerns immediately. If work doesn't meet your standards, we'll have the professional revise it at no additional cost. If issues persist, we'll source a replacement and ensure you're satisfied with the outcome."
         },
         {
           question: "How do you handle time zone differences?",
-          answer: "We carefully match professionals based on time zone compatibility. Most of our network works in time zones that overlap with US and European business hours. If you need real-time collaboration, let your Business Manager know during requirements discussion, and we'll prioritize candidates in compatible time zones."
+          answer: "We carefully match professionals based on time zone compatibility. Most of our network works in time zones that overlap with US and European business hours. If you need real-time collaboration, let your Customer Success Manager know during requirements discussion, and we'll prioritize candidates in compatible time zones."
         },
         {
           question: "Is there a minimum contract length?",

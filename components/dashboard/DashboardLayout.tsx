@@ -62,7 +62,7 @@ export default function DashboardLayout() {
     if (data?.upcomingMeeting) {
       return "Your strategy call is scheduled. We'll help you choose the right plan and get started.";
     }
-    return 'Schedule a call with your account manager to choose a plan and activate your subscription.';
+    return 'Schedule a call with your Customer Success Manager to choose a plan and activate your subscription.';
   };
 
   if (loading) {
@@ -188,7 +188,7 @@ export default function DashboardLayout() {
                       <>
                         <AccountManager accountManager={data.accountManager} />
                         <NewUserTip tipId="account-manager" title="Your Dedicated Support" variant="success">
-                          Your account manager coordinates all experts, ensures quality delivery, and keeps your projects on track. Reach out anytime!
+                          Your Customer Success Manager coordinates all experts, ensures quality delivery, and keeps your projects on track. Reach out anytime!
                         </NewUserTip>
                       </>
                     )}

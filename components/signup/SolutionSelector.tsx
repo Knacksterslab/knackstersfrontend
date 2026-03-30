@@ -51,8 +51,8 @@ export const solutionOptions: SolutionOption[] = [
   },
   {
     id: 'MARKETING_GROWTH',
-    title: 'Marketing & Growth',
-    description: 'SEO, content, and digital marketing strategies',
+    title: 'Growth & Customer Success',
+    description: 'Marketing, acquisition, retention, and customer success',
     icon: '📈',
     gradient: 'from-yellow-500 to-orange-500',
   },

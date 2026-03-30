@@ -62,7 +62,7 @@ export default function UpcomingMeeting({ meeting, accountManager }: UpcomingMee
       <>
         <div className="bg-white rounded-xl border border-gray-200">
           <div className="flex items-center justify-between p-4 border-b border-gray-200">
-            <h2 className="text-base font-semibold text-gray-900">Account Manager Call</h2>
+            <h2 className="text-base font-semibold text-gray-900">Customer Success Manager Call</h2>
             <button 
               onClick={() => router.push('/meetings')}
               className="text-xs text-blue-600 hover:text-blue-700 font-medium"
@@ -81,7 +81,7 @@ export default function UpcomingMeeting({ meeting, accountManager }: UpcomingMee
                 />
                 <div className="flex-1">
                   <h3 className="text-base font-semibold text-gray-900">{accountManager.fullName}</h3>
-                  <p className="text-xs text-gray-500 mb-1">Account Manager</p>
+                  <p className="text-xs text-gray-500 mb-1">Customer Success Manager</p>
                   <div className="flex items-center gap-2 text-xs">
                     <Clock size={12} className="text-gray-400" />
                     <span className="text-gray-600">{new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })} local time</span>
@@ -95,7 +95,7 @@ export default function UpcomingMeeting({ meeting, accountManager }: UpcomingMee
             )}
 
             <p className="text-sm text-gray-600 leading-relaxed mb-4">
-              Schedule a call with your account manager to discuss projects, match with experts, or get support with your subscription.
+              Schedule a call with your Customer Success Manager to discuss projects, match with experts, or get support with your subscription.
             </p>
 
             <div className="flex gap-2">
@@ -173,7 +173,7 @@ export default function UpcomingMeeting({ meeting, accountManager }: UpcomingMee
               />
               <div className="flex-1">
                 <h3 className="text-base font-semibold text-gray-900">{accountManager.fullName}</h3>
-                <p className="text-xs text-gray-500 mb-1">Account Manager</p>
+                <p className="text-xs text-gray-500 mb-1">Customer Success Manager</p>
                 <div className="flex items-center gap-2 text-xs">
                   <Clock size={12} className="text-gray-400" />
                   <span className="text-gray-600">{formatTime(meetingDate)}</span>

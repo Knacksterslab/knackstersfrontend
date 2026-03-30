@@ -428,7 +428,7 @@ export default function LandingPageEditor() {
                   value={content.statistics.professionals}
                   onChange={(e) => updateContent('statistics', 'professionals', e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="e.g., 9,999+"
+                  placeholder="e.g., 10,002+"
                 />
               </div>
               <div>
@@ -456,7 +456,7 @@ export default function LandingPageEditor() {
                   value={content.statistics.hoursDelivered}
                   onChange={(e) => updateContent('statistics', 'hoursDelivered', e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="e.g., 960,000+"
+                  placeholder="e.g., 961,400+"
                 />
               </div>
               <div>

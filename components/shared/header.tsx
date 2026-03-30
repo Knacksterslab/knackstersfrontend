@@ -26,13 +26,13 @@ export default function Header() {
     { label: "Cybersecurity", href: "/solutions/cybersecurity", icon: "🛡️" },
     { label: "Development & DevOps", href: "/solutions/development-devops", icon: "💻" },
     { label: "Design & Creative", href: "/solutions/design-creative", icon: "🎨" },
-    { label: "Marketing", href: "/solutions/marketing", icon: "📈" },
+    { label: "Growth & Customer Success", href: "/solutions/marketing", icon: "🚀" },
     { label: "Healthcare & Life Sciences", href: "/solutions/healthcare-life-sciences", icon: "🏥" },
   ];
 
   const navLinks = [
 
-    { label: "Solutions", href: "/#services", hasDropdown: true },
+    { label: "Solutions", href: "/solutions", hasDropdown: true },
 
     { label: "How it works", href: "/how-it-works" },
 
