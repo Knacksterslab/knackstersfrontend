@@ -16,186 +16,225 @@ import {
   Shield,
   Sparkles,
   BarChart3,
-  Settings,
-  UserCheck
+  UserCheck,
+  Briefcase,
+  HeartHandshake
 } from "lucide-react";
 import PrimaryButton from "../svg/primary-button";
 
 export default function HowItWorksPage() {
+
+  // Two distinct starting paths
+  const startingPaths = [
+    {
+      icon: HeartHandshake,
+      badge: "Most Popular Starting Point",
+      badgeColor: "bg-green-500",
+      title: "Trial to Hire",
+      subtitle: "Evaluating someone for a permanent role?",
+      description: "Work with a vetted professional for 50 hours — completely free. See their quality, assess the fit, then decide: hire them full-time or convert to a subscription. No credit card, no commitment.",
+      steps: ["Sign up free", "Get matched in 2–4 hours", "50 hours of real work", "Hire full-time or subscribe"],
+      cta: "Start Free Trial",
+      ctaHref: "/signup",
+      accentColor: "border-green-400",
+      bgColor: "bg-green-50",
+      ctaStyle: "bg-green-600 hover:bg-green-700 text-white",
+    },
+    {
+      icon: Briefcase,
+      badge: "For Ongoing Teams",
+      badgeColor: "bg-gradient-to-r from-[#E9414C] to-[#FF9634]",
+      title: "Subscribe & Scale",
+      subtitle: "Need ongoing expert capacity?",
+      description: "Choose a monthly plan and get a managed team of vetted professionals across any of our 6 domains — deployed within hours, managed end-to-end by your dedicated Customer Success Manager.",
+      steps: ["Choose a plan from $7,000/mo", "15-min onboarding call", "Experts deployed same day", "Scale up or down monthly"],
+      cta: "View Plans",
+      ctaHref: "/signup",
+      accentColor: "border-[#FF9634]",
+      bgColor: "bg-orange-50",
+      ctaStyle: "text-white",
+    },
+  ];
+
   const journeySteps = [
     {
       number: "01",
-      title: "Subscribe & Meet Your Manager",
-      description: "Choose your plan and have a 15-minute onboarding call with your dedicated Customer Success Manager who'll understand your needs.",
-      time: "15 minutes",
-      outcome: "Clear understanding of your goals",
+      title: "Start Free or Subscribe",
+      description: "Choose your path: evaluate a professional for a permanent role with 50 free hours, or jump straight into a subscription plan. Either way, you're matched with experts within hours.",
+      time: "5 minutes",
+      outcome: "Account created & plan selected",
       details: [
-        "Choose from Flex Retainer ($7,000/mo), Pro Retainer ($12,500/mo), Growth ($25,000/mo), or Enterprise plans",
-        "Secure payment setup (invoice or card)",
-        "Meet your dedicated Customer Success Manager via video call",
-        "Share your initial project requirements and priorities",
-        "Get instant access to the client dashboard"
+        "Trial to Hire — free, 50 hours, evaluate one professional for a permanent role",
+        "Flex Retainer ($7,000/mo) — 100 hours for focused ongoing projects",
+        "Pro Retainer ($12,500/mo) — 200 hours for teams running multiple workstreams",
+        "Growth ($25,000/mo) — 450 hours for scaling businesses",
+        "Enterprise — custom pricing and hours for large organisations",
+        "No credit card required for the Trial to Hire plan"
       ],
       icon: UserPlus,
       color: "from-blue-500 to-cyan-600"
     },
     {
       number: "02",
-      title: "Define Your Requirements",
-      description: "Your manager works with you to break down projects, define skill needs, and create a clear roadmap.",
-      time: "30-60 minutes",
-      outcome: "Detailed project roadmap",
+      title: "Meet Your Customer Success Manager",
+      description: "Within 15 minutes of signing up, your dedicated CSM reaches out via video call to understand your goals, whether you're hiring for a permanent role or building an ongoing team.",
+      time: "15 minutes",
+      outcome: "Clear understanding of your goals",
       details: [
-        "Manager asks targeted questions about your business goals",
-        "Break down complex projects into specific tasks",
-        "Define required skills, expertise levels, and experience",
-        "Set clear timelines and delivery expectations",
-        "Establish quality standards and success metrics"
+        "Dedicated CSM assigned immediately upon signup",
+        "15-minute video onboarding call — not a sales call",
+        "For Trial to Hire: define the role you're evaluating",
+        "For subscriptions: share project requirements and priorities",
+        "Establish quality standards, timelines, and success metrics",
+        "Get instant access to the full client dashboard"
       ],
-      icon: Target,
+      icon: Users,
       color: "from-purple-500 to-pink-600"
     },
     {
       number: "03",
-      title: "Expert Matching (Minutes)",
-      description: "Your manager searches our 10,000+ vetted professionals and presents the best 2-3 candidates for your approval.",
-      time: "2-4 hours (manager handles this)",
-      outcome: "Curated expert profiles",
+      title: "Expert Matching (Hours, Not Weeks)",
+      description: "Your CSM searches our 10,000+ vetted professionals and presents the best 2–3 candidates for your approval. You review and approve — they handle the rest.",
+      time: "2–4 hours (your CSM handles this)",
+      outcome: "Curated expert profiles presented",
       details: [
-        "Manager searches pre-screened talent pool of 10,000+ professionals",
-        "Filters by skills, availability, experience, and hourly rates",
-        "Reviews portfolios and past client ratings (avg 4.8/5)",
-        "Shortlists top 2-3 candidates that match your needs",
-        "Presents detailed profiles with expertise and recommendations"
+        "CSM searches pre-screened talent pool of 10,000+ professionals",
+        "Filtered by skills, availability, experience level, and domain",
+        "Reviews portfolios and past client ratings (avg 4.8/5 — 8% pass rate)",
+        "Shortlists top 2–3 candidates that match your needs",
+        "Presents detailed profiles with expertise and recommendations",
+        "You approve in your dashboard — no back-and-forth emails"
       ],
       icon: Zap,
       color: "from-orange-500 to-red-600"
     },
     {
       number: "04",
-      title: "Approval & Assignment",
-      description: "Review candidate profiles, approve your preferred expert(s), and work begins immediately.",
+      title: "Approval & Immediate Start",
+      description: "Review candidate profiles in your dashboard, approve your preferred expert, and work begins immediately. No procurement hoops, no delays.",
       time: "15 minutes (your approval)",
-      outcome: "Expert assigned and ready",
+      outcome: "Expert assigned and work begins",
       details: [
-        "Review detailed expert profiles in your dashboard",
-        "See portfolios, skills, ratings, and availability",
-        "Approve one or multiple experts for different tasks",
-        "Manager assigns specific deliverables and timelines",
-        "Expert begins work immediately upon assignment"
+        "Review detailed profiles: portfolio, skills, ratings, and availability",
+        "Approve one expert or multiple for different tasks",
+        "CSM assigns specific deliverables and timelines",
+        "Expert begins work immediately upon your approval",
+        "Full visibility into tasks and progress from day one"
       ],
       icon: CheckCircle,
       color: "from-green-500 to-emerald-600"
     },
     {
       number: "05",
-      title: "Execution & Management",
-      description: "Your manager handles daily coordination while you stay focused on your business. Review deliverables and provide feedback.",
-      time: "Ongoing (30 mins/week for you)",
-      outcome: "Projects move forward",
+      title: "Execution — Managed for You",
+      description: "Your CSM handles daily coordination, quality control, and progress tracking. You spend ~30 minutes a week reviewing deliverables. That's it.",
+      time: "~30 mins/week for you",
+      outcome: "Projects move forward without management overhead",
       details: [
-        "Manager conducts daily check-ins with assigned talent",
+        "CSM conducts daily check-ins with assigned professionals",
         "Quality control and progress tracking handled for you",
-        "Regular status updates on project milestones",
-        "You review completed deliverables in the dashboard",
-        "Provide feedback directly—manager ensures revisions"
+        "Regular status updates on milestones and deliverables",
+        "Review completed work in the dashboard and approve or request revisions",
+        "CSM resolves any issues — you never manage the talent directly"
       ],
       icon: TrendingUp,
       color: "from-indigo-500 to-purple-600"
     },
     {
       number: "06",
-      title: "Track, Scale, Optimize",
-      description: "Monitor hours in real-time, approve timesheets, and adjust your team size month-to-month with no contracts.",
+      title: "Track, Scale, Optimise",
+      description: "Monitor hours in real-time, approve timesheets, and adjust your team month-to-month. No contracts, no penalties.",
       time: "Monthly review",
       outcome: "Flexible, predictable costs",
       details: [
         "Real-time dashboard shows hours used vs. remaining",
-        "Review and approve monthly timesheets",
-        "See all completed deliverables and project status",
-        "Scale up by adding more hours or experts next month",
-        "Scale down or cancel anytime—no long-term contracts"
+        "Review and approve monthly timesheets with one click",
+        "See all completed deliverables and project history",
+        "Scale up by adding hours or domains next month",
+        "Scale down or cancel anytime — zero long-term contracts"
       ],
       icon: BarChart3,
       color: "from-teal-500 to-cyan-600"
     },
-    {
-      number: "07",
-      title: "Found the Perfect Fit? Hire Full-Time",
-      description: "When a Knackster becomes invaluable, convert them to a permanent role through our streamlined hiring pathway.",
-      time: "Optional",
-      outcome: "Zero-risk permanent hire",
-      details: [
-        "You've already proven the expert's skills through real work",
-        "No recruiting fees or lengthy interview processes",
-        "Your manager coordinates the transition seamlessly",
-        "Transparent conversion terms—no surprises",
-        "Continue working together as a full-time team member"
-      ],
-      icon: UserCheck,
-      color: "from-amber-500 to-orange-600"
-    }
   ];
+
+  // Trial to Hire specific journey
+  const trialOutcome = {
+    number: "07",
+    title: "Decide: Hire Full-Time or Subscribe",
+    description: "After your 50 trial hours, you've seen real work from a real professional. Now you choose — with complete confidence and zero risk.",
+    time: "Your decision, your timeline",
+    outcome: "Zero-risk hiring or seamless subscription",
+    details: [
+      "Hire them full-time — your CSM coordinates the transition, transparent conversion terms, no surprises",
+      "Convert to a subscription plan — keep working together under Flex, Pro, or Growth",
+      "Not the right fit? Walk away with no obligation — your CSM will find another match",
+      "No lengthy interview processes — you already know they can deliver",
+      "No recruiting fees — the trial hours were free"
+    ],
+    icon: UserCheck,
+    color: "from-amber-500 to-orange-600"
+  };
 
   const differentiators = [
     {
       feature: "Time to Start",
-      knacksters: "Minutes",
-      freelance: "1-2 weeks",
-      staffing: "4-6 weeks",
-      fulltime: "6-12 weeks",
+      knacksters: "Hours",
+      freelance: "1–2 weeks",
+      staffing: "4–6 weeks",
+      fulltime: "6–12 weeks",
       highlight: true
     },
     {
       feature: "Who Manages",
-      knacksters: "Dedicated Manager",
+      knacksters: "Dedicated CSM",
       freelance: "You do it all",
       staffing: "You do it all",
       fulltime: "You do it all",
       highlight: true
     },
     {
+      feature: "Try Before Committing",
+      knacksters: "✓ 50 free hours",
+      freelance: "✗ Pay upfront",
+      staffing: "✗ Contract first",
+      fulltime: "✗ Hire blind",
+      highlight: true
+    },
+    {
       feature: "Quality Vetting",
-      knacksters: "Pre-screened (8% pass rate)",
+      knacksters: "Pre-screened (8% pass)",
       freelance: "Hit or miss",
       staffing: "Variable",
       fulltime: "Unknown until hired",
       highlight: false
     },
     {
-      feature: "Monthly Cost",
-      knacksters: "From $7,000 (100 hrs)",
-      freelance: "$15-25K",
-      staffing: "$20-40K",
-      fulltime: "$10-15K + benefits",
+      feature: "True Monthly Cost*",
+      knacksters: "From $7,000 managed",
+      freelance: "$15–25K unmanaged",
+      staffing: "$20–40K + agency fee",
+      fulltime: "$10–15K + overhead",
       highlight: false
     },
     {
       feature: "Flexibility",
       knacksters: "Scale monthly",
       freelance: "Per project",
-      staffing: "6-12 mo contracts",
+      staffing: "6–12 mo contracts",
       fulltime: "Fixed forever",
       highlight: false
     },
     {
-      feature: "Risk Level",
-      knacksters: "Low",
-      freelance: "High",
-      staffing: "Medium",
-      fulltime: "Very High",
+      feature: "Can Hire Full-Time",
+      knacksters: "✓ Anytime",
+      freelance: "⚠ Complicated",
+      staffing: "✗ Large fees",
+      fulltime: "N/A",
       highlight: false
     },
     {
-      feature: "Cancel Anytime",
-      knacksters: "✓ Yes",
-      freelance: "N/A",
-      staffing: "✗ No",
-      fulltime: "✗ No",
-      highlight: true
-    },
-    {
-      feature: "Multi-Expertise",
+      feature: "Multi-Domain",
       knacksters: "✓ 6 domains",
       freelance: "✗ Single skill",
       staffing: "⚠ Extra cost",
@@ -211,23 +250,26 @@ export default function HowItWorksPage() {
       period: "",
       hours: "50 hours",
       badge: "Hire Risk-Free",
+      badgeStyle: "bg-green-500 text-white",
       features: [
         "50 hours of real work — valid 30 days",
         "Evaluate one role at a time",
         "One trial per company",
         "Dedicated Customer Success Manager",
-        "Expert matching in 2-4 hours",
+        "Expert matching in 2–4 hours",
         "Convert to full-time hire anytime"
       ],
       bestFor: "Companies evaluating a professional for a permanent full-time role",
       cta: "Start Free Trial",
-      highlighted: false
+      highlighted: false,
+      borderStyle: "border-green-400",
+      ctaStyle: "bg-green-600 hover:bg-green-700 text-white",
     },
     {
       name: "Flex Retainer",
       price: "$7,000",
       period: "per month",
-      hours: "100 hours included",
+      hours: "100 hours",
       features: [
         "Dedicated Customer Success Manager",
         "Access to 10,000+ experts",
@@ -238,41 +280,48 @@ export default function HowItWorksPage() {
       ],
       bestFor: "Focused teams and ongoing projects",
       cta: "Get Started",
-      highlighted: false
+      highlighted: false,
+      borderStyle: "border-gray-200",
+      ctaStyle: "text-white",
     },
     {
       name: "Pro Retainer",
       price: "$12,500",
       period: "per month",
-      hours: "200 hours included",
+      hours: "200 hours",
       badge: "Most Popular",
+      badgeStyle: "bg-yellow-400 text-gray-900",
       features: [
-        "Everything in Flex Retainer, plus:",
-        "Priority talent matching",
+        "Everything in Flex, plus:",
+        "Priority matching in under 2 hours",
         "Priority 24/7 support",
         "Advanced analytics",
         "Custom reporting",
         "Multiple workstreams"
       ],
-      bestFor: "Teams running multiple projects",
+      bestFor: "Teams running multiple projects simultaneously",
       cta: "Get Started",
-      highlighted: true
+      highlighted: true,
+      borderStyle: "border-[#5A1568]",
+      ctaStyle: "text-white",
     },
     {
       name: "Growth",
       price: "$25,000",
       period: "per month",
-      hours: "450 hours included",
+      hours: "450 hours",
       features: [
-        "Everything in Pro Retainer, plus:",
-        "Dedicated Customer Success Manager",
+        "Everything in Pro, plus:",
+        "Dedicated senior CSM",
         "Quarterly business reviews",
         "Custom reporting",
         "Volume pricing benefits"
       ],
       bestFor: "Scaling companies with large teams",
       cta: "Get Started",
-      highlighted: false
+      highlighted: false,
+      borderStyle: "border-gray-200",
+      ctaStyle: "text-white",
     },
     {
       name: "Enterprise",
@@ -287,135 +336,190 @@ export default function HowItWorksPage() {
         "SLA guarantees",
         "Custom workflows"
       ],
-      bestFor: "Large enterprises, ongoing needs",
+      bestFor: "Large enterprises with ongoing needs",
       cta: "Contact Sales",
-      highlighted: false
+      highlighted: false,
+      borderStyle: "border-gray-200",
+      ctaStyle: "text-white",
     }
   ];
 
   const benefits = [
     {
       icon: Zap,
-      title: "Deploy in Minutes",
-      description: "Our record is 37 minutes from signup to expert assigned. Average time is 4-6 hours."
+      title: "Deploy in Hours",
+      description: "Our record is 37 minutes from signup to expert assigned. Average is 2–4 hours. Not days, not weeks."
     },
     {
       icon: Shield,
       title: "Pre-Vetted Experts",
-      description: "Only 8% of applicants pass our 3-step screening: portfolio review, skills test, background check."
+      description: "Only 8% of applicants pass our 3-step screening: portfolio review, skills test, and background check."
     },
     {
       icon: Users,
-      title: "Managed for You",
-      description: "Your Customer Success Manager handles coordination, quality control, and issue resolution. You focus on your business."
+      title: "Fully Managed",
+      description: "Your CSM handles coordination, quality control, and issue resolution. You spend ~30 minutes a week."
     },
     {
       icon: Award,
-      title: "Proven Results",
-      description: "4.8/5 average rating from 200+ enterprise clients. 960,000+ hours delivered and growing daily."
+      title: "Hire or Subscribe",
+      description: "Try before you hire — 50 free hours to evaluate any professional for a permanent role, with zero risk."
     }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 py-12 sm:py-16 md:py-20 px-4 sm:px-6">
-        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 font-mono text-gray-900">
-              How <span style={{ color: '#5A1568' }}>Knacksters Works</span>
-            </h1>
-            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-700 mb-6 sm:mb-8 leading-relaxed font-sans px-4">
-              Your expert team, deployed in minutes—managed end-to-end. No hiring hassles, no management overhead, no long-term commitments.
+    <div className="min-h-screen">
+
+      {/* Hero — brand aligned: hero-bg.png, font-mono, brand colors */}
+      <section
+        className="relative bg-[rgb(250,250,250)] bg-cover bg-center overflow-hidden py-16 sm:py-20 md:py-24 px-4"
+        style={{ backgroundImage: "url(/hero-bg.png)", backgroundPosition: "center bottom" }}
+      >
+        <div className="max-w-4xl mx-auto flex flex-col items-center text-center">
+          <h1 className="m-0 leading-[1.15] font-mono font-normal text-[2rem] sm:text-[2.5rem] md:text-[3.5rem] text-[rgb(38,38,38)] mb-4">
+            Try a Professional for Free.{" "}
+            <span
+              style={{
+                backgroundImage: "linear-gradient(90deg, #E9414C 0%, #FF9634 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Hire or Scale.
+            </span>
+          </h1>
+          <p className="mt-2 leading-[1.57] font-normal font-sans text-[rgb(89,89,89)] text-base sm:text-lg md:text-xl text-center max-w-2xl mx-auto mb-6">
+            Work with a vetted expert for 50 hours free — then hire them full-time or scale with a managed subscription. No credit card. No commitment.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center gap-3 mb-6">
+            <div className="flex">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Star key={star} className="w-4 h-4 fill-orange-500 text-orange-500" />
+              ))}
+            </div>
+            <span className="text-sm font-sans text-[rgb(89,89,89)]">4.8/5 from 200+ enterprise clients</span>
+          </div>
+          <Link href="/signup" className="inline-block">
+            <PrimaryButton
+              width="256"
+              height="56"
+              wrapperClassName="hero-primary-button-wrapper"
+              gradientId="paint0_linear_hiw_hero"
+            />
+          </Link>
+        </div>
+      </section>
+
+      {/* Two Ways to Start */}
+      <section className="py-16 px-4 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="font-mono font-normal text-[1.75rem] sm:text-[2rem] md:text-[2.5rem] text-[rgb(38,38,38)] mb-3">
+              Two Ways to Start
+            </h2>
+            <p className="font-sans text-base sm:text-lg text-[rgb(89,89,89)] max-w-2xl mx-auto">
+              Whether you're hiring someone permanently or building an ongoing team — we have a path for you.
             </p>
-            <div className="flex flex-wrap justify-center gap-4 mb-6 sm:mb-8">
-              <Link href="/signup" className="inline-block">
-                <div className="w-[180px] sm:w-[200px]">
-                  <div className="scale-90 sm:scale-100 origin-center">
-                    <PrimaryButton
-                      width="200"
-                      height="56"
-                      wrapperClassName="primary-button-wrapper"
-                      gradientId="paint0_linear_howitworks_hero"
-                    />
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {startingPaths.map((path, index) => {
+              const IconComponent = path.icon;
+              const isSubscribe = index === 1;
+              return (
+                <div key={index} className={`relative rounded-2xl border-2 ${path.accentColor} ${path.bgColor} p-8`}>
+                  <div className="absolute -top-3.5 left-6">
+                    <span className={`${path.badgeColor} text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm`}>
+                      {path.badge}
+                    </span>
                   </div>
+                  <div className="flex items-start gap-4 mb-4 mt-2">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${isSubscribe ? 'bg-gradient-to-br from-[#E9414C] to-[#FF9634]' : 'bg-green-600'}`}>
+                      <IconComponent className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-[rgb(38,38,38)] font-sans">{path.title}</h3>
+                      <p className="text-sm text-[rgb(89,89,89)] font-sans">{path.subtitle}</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-[rgb(89,89,89)] font-sans leading-relaxed mb-5">{path.description}</p>
+                  <div className="flex flex-col gap-2 mb-6">
+                    {path.steps.map((step, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <div className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0 ${isSubscribe ? 'bg-[#FF9634]' : 'bg-green-600'}`}>
+                          {i + 1}
+                        </div>
+                        <span className="text-sm font-sans text-[rgb(38,38,38)]">{step}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <Link href={path.ctaHref}>
+                    <button
+                      className={`w-full py-2.5 rounded-xl text-sm font-bold font-sans transition-all ${path.ctaStyle}`}
+                      style={isSubscribe ? { backgroundImage: "linear-gradient(90deg, #E9414C, #FF9634)" } : {}}
+                    >
+                      {path.cta} →
+                    </button>
+                  </Link>
                 </div>
-              </Link>
-            </div>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-gray-600 font-sans">
-              <div className="flex">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star key={star} className="w-4 h-4 sm:w-5 sm:h-5 fill-orange-500 text-orange-500" />
-                ))}
-              </div>
-              <span className="text-xs sm:text-sm">4.8/5 from 200+ enterprise clients</span>
-            </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* The Journey - 7 Steps */}
-      <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 bg-gray-50">
+      {/* The Journey */}
+      <section className="py-16 sm:py-20 px-4 bg-[#f9f9f9]">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-10 sm:mb-12 md:mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 font-mono">
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="font-mono font-normal text-[1.75rem] sm:text-[2rem] md:text-[2.5rem] text-[rgb(38,38,38)] mb-3">
               The Complete Journey
             </h2>
-            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto font-sans px-4">
-              From signup to scaling—here's exactly how we work together to build your on-demand team
+            <p className="font-sans text-base sm:text-lg text-[rgb(89,89,89)] max-w-3xl mx-auto">
+              From signup to a running team — here's exactly what happens and when
             </p>
           </div>
 
-          <div className="space-y-8 sm:space-y-10 md:space-y-12">
+          <div className="space-y-10 md:space-y-12">
             {journeySteps.map((step, index) => {
               const IconComponent = step.icon;
               const isEven = index % 2 === 0;
-              
               return (
                 <div
                   key={index}
                   className={`flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-8 items-center`}
                 >
-                  {/* Icon & Number */}
                   <div className="lg:w-1/3 flex justify-center">
-                    <div className={`relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 rounded-xl sm:rounded-2xl bg-gradient-to-br ${step.color} flex items-center justify-center shadow-xl`}>
-                      <IconComponent className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 text-white" />
-                      <div 
-                        className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full border-4 flex items-center justify-center shadow-lg"
+                    <div className={`relative w-36 h-36 sm:w-44 sm:h-44 rounded-2xl bg-gradient-to-br ${step.color} flex items-center justify-center shadow-xl`}>
+                      <IconComponent className="w-20 h-20 sm:w-24 sm:h-24 text-white" />
+                      <div
+                        className="absolute -top-4 -right-4 w-14 h-14 rounded-full border-4 flex items-center justify-center shadow-lg"
                         style={{ backgroundColor: '#5A1568', borderColor: '#7A2A88' }}
                       >
-                        <span className="text-lg sm:text-xl md:text-2xl font-bold text-white font-mono">{step.number}</span>
+                        <span className="text-xl font-bold text-white font-mono">{step.number}</span>
                       </div>
                     </div>
                   </div>
-
-                  {/* Content */}
                   <div className="lg:w-2/3 w-full">
-                    <div className="bg-white rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 border-2 border-gray-300 shadow-xl hover:shadow-2xl transition-all">
-                      <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-2 sm:mb-3 font-sans">
-                        {step.title}
-                      </h3>
-                      <p className="text-sm sm:text-base md:text-lg text-gray-600 mb-4 sm:mb-6 font-sans">
-                        {step.description}
-                      </p>
-                      
-                      <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6">
-                        <div className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-50 rounded-lg border border-blue-200">
-                          <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600 flex-shrink-0" />
-                          <span className="text-xs sm:text-sm font-medium text-blue-900 font-sans whitespace-nowrap">{step.time}</span>
+                    <div className="bg-white rounded-2xl p-6 sm:p-8 border border-gray-200 shadow-md hover:shadow-xl transition-all">
+                      <h3 className="text-xl sm:text-2xl font-bold text-[rgb(38,38,38)] mb-2 font-sans">{step.title}</h3>
+                      <p className="text-sm sm:text-base text-[rgb(89,89,89)] mb-5 font-sans leading-relaxed">{step.description}</p>
+                      <div className="flex flex-wrap gap-3 mb-5">
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 rounded-lg border border-blue-200">
+                          <Clock className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                          <span className="text-xs font-medium text-blue-900 font-sans">{step.time}</span>
                         </div>
-                        <div className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-green-50 rounded-lg border border-green-200">
-                          <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-600 flex-shrink-0" />
-                          <span className="text-xs sm:text-sm font-medium text-green-900 font-sans">{step.outcome}</span>
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-green-50 rounded-lg border border-green-200">
+                          <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0" />
+                          <span className="text-xs font-medium text-green-900 font-sans">{step.outcome}</span>
                         </div>
                       </div>
-
-                      <ul className="space-y-2 sm:space-y-3">
+                      <ul className="space-y-2">
                         {step.details.map((detail, idx) => (
-                          <li key={idx} className="flex items-start gap-2 sm:gap-3">
-                            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 mt-0.5" style={{ color: '#5A1568' }} />
-                            <span className="text-xs sm:text-sm text-gray-700 font-sans">{detail}</span>
+                          <li key={idx} className="flex items-start gap-2">
+                            <ArrowRight className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: '#5A1568' }} />
+                            <span className="text-xs sm:text-sm text-[rgb(89,89,89)] font-sans">{detail}</span>
                           </li>
                         ))}
                       </ul>
@@ -425,175 +529,203 @@ export default function HowItWorksPage() {
               );
             })}
           </div>
+
+          {/* Trial to Hire outcome — visually distinct */}
+          <div className="mt-12">
+            <div className="text-center mb-6">
+              <div className="inline-flex items-center gap-2 bg-green-100 border border-green-300 rounded-full px-4 py-2">
+                <HeartHandshake className="w-4 h-4 text-green-700" />
+                <span className="text-sm font-semibold text-green-800 font-sans">Trial to Hire Outcome</span>
+              </div>
+            </div>
+            <div className="flex flex-col lg:flex-row gap-8 items-center">
+              <div className="lg:w-1/3 flex justify-center">
+                <div className="relative w-36 h-36 sm:w-44 sm:h-44 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-xl">
+                  <UserCheck className="w-20 h-20 sm:w-24 sm:h-24 text-white" />
+                  <div
+                    className="absolute -top-4 -right-4 w-14 h-14 rounded-full border-4 flex items-center justify-center shadow-lg bg-green-600"
+                    style={{ borderColor: '#16a34a' }}
+                  >
+                    <span className="text-xl font-bold text-white font-mono">07</span>
+                  </div>
+                </div>
+              </div>
+              <div className="lg:w-2/3 w-full">
+                <div className="bg-white rounded-2xl p-6 sm:p-8 border-2 border-green-400 shadow-md hover:shadow-xl transition-all">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">Trial to Hire Only</span>
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-[rgb(38,38,38)] mb-2 font-sans">{trialOutcome.title}</h3>
+                  <p className="text-sm sm:text-base text-[rgb(89,89,89)] mb-5 font-sans leading-relaxed">{trialOutcome.description}</p>
+                  <div className="flex flex-wrap gap-3 mb-5">
+                    <div className="flex items-center gap-2 px-3 py-1.5 bg-green-50 rounded-lg border border-green-200">
+                      <Clock className="w-4 h-4 text-green-600 flex-shrink-0" />
+                      <span className="text-xs font-medium text-green-900 font-sans">{trialOutcome.time}</span>
+                    </div>
+                    <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 rounded-lg border border-amber-200">
+                      <CheckCircle className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                      <span className="text-xs font-medium text-amber-900 font-sans">{trialOutcome.outcome}</span>
+                    </div>
+                  </div>
+                  <ul className="space-y-2">
+                    {trialOutcome.details.map((detail, idx) => (
+                      <li key={idx} className="flex items-start gap-2">
+                        <ArrowRight className="w-4 h-4 flex-shrink-0 mt-0.5 text-green-600" />
+                        <span className="text-xs sm:text-sm text-[rgb(89,89,89)] font-sans">{detail}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* What Makes Us Different */}
-      <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 bg-gradient-to-br from-gray-50 to-white">
+      {/* Comparison Table */}
+      <section className="py-16 sm:py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-10 sm:mb-12 md:mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 font-mono">
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="font-mono font-normal text-[1.75rem] sm:text-[2rem] md:text-[2.5rem] text-[rgb(38,38,38)] mb-3">
               Knacksters vs. The Alternatives
             </h2>
-            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto font-sans px-4">
-              See how we stack up against traditional hiring, freelance marketplaces, and staffing agencies
+            <p className="font-sans text-base sm:text-lg text-[rgb(89,89,89)] max-w-3xl mx-auto">
+              See how we compare to traditional hiring, freelance marketplaces, and staffing agencies
             </p>
           </div>
 
           <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
-            <table className="w-full min-w-[700px] bg-white rounded-xl sm:rounded-2xl shadow-lg overflow-hidden">
+            <table className="w-full min-w-[680px] bg-white rounded-2xl shadow-lg overflow-hidden">
               <thead>
                 <tr style={{ backgroundColor: '#5A1568' }} className="text-white">
-                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-left font-bold font-sans text-xs sm:text-sm whitespace-nowrap">Feature</th>
-                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-center font-bold font-sans text-xs sm:text-sm whitespace-nowrap">Knacksters</th>
-                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-center font-sans text-xs sm:text-sm whitespace-nowrap">Freelance</th>
-                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-center font-sans text-xs sm:text-sm whitespace-nowrap">Staffing</th>
-                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-center font-sans text-xs sm:text-sm whitespace-nowrap">Full-Time</th>
+                  <th className="px-4 md:px-6 py-4 text-left font-bold font-sans text-xs sm:text-sm">Feature</th>
+                  <th className="px-4 md:px-6 py-4 text-center font-bold font-sans text-xs sm:text-sm">Knacksters</th>
+                  <th className="px-4 md:px-6 py-4 text-center font-sans text-xs sm:text-sm opacity-80">Freelance</th>
+                  <th className="px-4 md:px-6 py-4 text-center font-sans text-xs sm:text-sm opacity-80">Staffing</th>
+                  <th className="px-4 md:px-6 py-4 text-center font-sans text-xs sm:text-sm opacity-80">Full-Time</th>
                 </tr>
               </thead>
               <tbody>
                 {differentiators.map((row, index) => (
-                  <tr 
+                  <tr
                     key={index}
                     className={`border-b border-gray-100 ${row.highlight ? 'bg-orange-50' : 'bg-white'} hover:bg-gray-50 transition-colors`}
                   >
-                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 font-semibold text-gray-900 font-sans text-xs sm:text-sm whitespace-nowrap">{row.feature}</td>
-                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-center font-bold font-sans text-xs sm:text-sm whitespace-nowrap" style={{ color: '#5A1568' }}>{row.knacksters}</td>
-                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-center text-gray-600 font-sans text-xs sm:text-sm whitespace-nowrap">{row.freelance}</td>
-                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-center text-gray-600 font-sans text-xs sm:text-sm whitespace-nowrap">{row.staffing}</td>
-                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-center text-gray-600 font-sans text-xs sm:text-sm whitespace-nowrap">{row.fulltime}</td>
+                    <td className="px-4 md:px-6 py-3.5 font-semibold text-[rgb(38,38,38)] font-sans text-xs sm:text-sm">{row.feature}</td>
+                    <td className="px-4 md:px-6 py-3.5 text-center font-bold font-sans text-xs sm:text-sm" style={{ color: '#5A1568' }}>{row.knacksters}</td>
+                    <td className="px-4 md:px-6 py-3.5 text-center text-gray-500 font-sans text-xs sm:text-sm">{row.freelance}</td>
+                    <td className="px-4 md:px-6 py-3.5 text-center text-gray-500 font-sans text-xs sm:text-sm">{row.staffing}</td>
+                    <td className="px-4 md:px-6 py-3.5 text-center text-gray-500 font-sans text-xs sm:text-sm">{row.fulltime}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
 
-          <div className="mt-6 sm:mt-8 text-center">
-            <p className="text-sm sm:text-base md:text-lg text-gray-700 font-sans italic px-4">
-              💡 You're not just paying for talent—you're paying to eliminate hiring, management, and risk.
+          <div className="mt-6 text-center space-y-2">
+            <p className="text-sm text-gray-500 font-sans italic">
+              * Full-time cost excludes employer taxes, benefits, equipment, onboarding, and management time — which typically add 30–50% on top of salary.
+            </p>
+            <p className="text-base text-gray-700 font-sans font-medium">
+              💡 With Knacksters, you're not just paying for talent — you're eliminating hiring risk, management overhead, and long-term commitment.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 bg-white">
+      {/* Pricing */}
+      <section className="py-16 sm:py-20 px-4 bg-[#262626]">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-10 sm:mb-12 md:mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 font-mono">
+          <div className="text-center mb-12">
+            <h2 className="font-mono font-normal text-[1.75rem] sm:text-[2rem] md:text-[2.5rem] text-white mb-3">
               Transparent Pricing
             </h2>
-            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto font-sans px-4">
-              No hidden fees. No setup costs. No cancellation penalties. Just simple, predictable pricing.
+            <p className="font-sans text-base sm:text-lg max-w-3xl mx-auto" style={{ color: 'rgb(140,140,140)' }}>
+              No hidden fees. No setup costs. No cancellation penalties. Start free, scale as you grow.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 items-start">
-            {pricingPlans.map((plan, index) => (
-              <div
-                key={index}
-                className={`relative rounded-xl sm:rounded-2xl p-6 sm:p-8 transition-transform hover:scale-105 ${
-                  plan.highlighted
-                    ? 'text-white shadow-2xl scale-[1.02] md:scale-105'
-                    : 'bg-white border-2 border-gray-200 shadow-md'
-                }`}
-                style={plan.highlighted ? { backgroundColor: '#5A1568' } : {}}
-              >
-                {plan.badge && (
-                  <div className="absolute -top-3 sm:-top-4 left-1/2 transform -translate-x-1/2 px-3 sm:px-4 py-1 bg-yellow-400 text-gray-900 rounded-full text-xs sm:text-sm font-bold font-sans">
-                    {plan.badge}
+          {/* Scrollable plan cards */}
+          <div className="overflow-x-auto pb-3 pt-5 -mx-4 px-4">
+            <div className="flex gap-4" style={{ width: 'max-content' }}>
+              {pricingPlans.map((plan, index) => (
+                <div
+                  key={index}
+                  style={{ width: '220px', flexShrink: 0 }}
+                  className={`relative flex flex-col rounded-2xl border-2 ${plan.borderStyle} bg-white`}
+                >
+                  {plan.badge && (
+                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
+                      <span className={`${plan.badgeStyle} text-xs font-bold px-3 py-1 rounded-full shadow-sm whitespace-nowrap`}>
+                        {plan.badge}
+                      </span>
+                    </div>
+                  )}
+                  <div className={`h-1 w-full rounded-t-2xl ${plan.name === 'Trial to Hire' ? 'bg-green-400' : plan.highlighted ? 'bg-[#5A1568]' : 'bg-gray-200'}`} />
+                  <div className="p-5 flex flex-col flex-1">
+                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">{plan.name}</h3>
+                    <div className="text-2xl font-extrabold text-[rgb(38,38,38)] mb-0.5">{plan.price}</div>
+                    <div className="text-xs text-gray-400 mb-1">{plan.period || '30-day trial'}</div>
+                    <div className={`text-sm font-bold mb-3 ${plan.name === 'Trial to Hire' ? 'text-green-600' : 'text-[#FF9634]'}`}>{plan.hours}</div>
+                    <p className="text-xs text-gray-400 mb-3 leading-relaxed">{plan.bestFor}</p>
+                    <div className="border-t border-gray-100 mb-4" />
+                    <ul className="space-y-2.5 mb-5 flex-1">
+                      {plan.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-start gap-2 text-xs text-[rgb(89,89,89)] leading-snug">
+                          <CheckCircle size={13} className={`flex-shrink-0 mt-0.5 ${plan.name === 'Trial to Hire' ? 'text-green-500' : 'text-[#FF9634]'}`} />
+                          <span className="font-sans">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Link href="/signup">
+                      <button
+                        className={`w-full py-2.5 rounded-xl text-sm font-bold font-sans transition-all ${plan.ctaStyle}`}
+                        style={
+                          plan.name === 'Trial to Hire' ? {} :
+                          plan.highlighted ? { backgroundColor: '#5A1568' } :
+                          { backgroundImage: "linear-gradient(90deg, #E9414C, #FF9634)" }
+                        }
+                      >
+                        {plan.cta}
+                      </button>
+                    </Link>
                   </div>
-                )}
-                
-                <div className="text-center mb-5 sm:mb-6">
-                  <h3 className={`text-xl sm:text-2xl font-bold mb-2 font-sans ${plan.highlighted ? 'text-white' : 'text-gray-900'}`}>
-                    {plan.name}
-                  </h3>
-                  <div className="mb-2">
-                    <span className={`text-3xl sm:text-4xl font-bold font-mono ${plan.highlighted ? 'text-white' : 'text-gray-900'}`}>
-                      {plan.price}
-                    </span>
-                    <span className={`text-base sm:text-lg ${plan.highlighted ? 'text-white/80' : 'text-gray-600'} font-sans`}>
-                      {' '}{plan.period}
-                    </span>
-                  </div>
-                  <p className={`text-xs sm:text-sm font-medium font-sans ${plan.highlighted ? 'text-white/90' : 'text-gray-600'}`}>
-                    {plan.hours}
-                  </p>
                 </div>
-
-                <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
-                  {plan.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-start gap-2">
-                      <CheckCircle className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 mt-0.5 ${plan.highlighted ? 'text-white' : 'text-green-500'}`} />
-                      <span className={`text-xs sm:text-sm font-sans ${plan.highlighted ? 'text-white' : 'text-gray-700'}`}>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="mb-4 sm:mb-6">
-                  <p className={`text-xs font-sans ${plan.highlighted ? 'text-white/80' : 'text-gray-500'}`}>
-                    Best for: {plan.bestFor}
-                  </p>
-                </div>
-
-                <Link href="/signup" className="block">
-                  <button
-                    className={`w-full py-2.5 sm:py-3 rounded-lg font-bold transition-all font-sans text-sm sm:text-base ${
-                      plan.highlighted
-                        ? 'bg-white hover:bg-gray-100'
-                        : 'text-white hover:shadow-lg'
-                    }`}
-                    style={
-                      plan.highlighted
-                        ? { color: '#5A1568' }
-                        : { backgroundColor: '#5A1568' }
-                    }
-                  >
-                    {plan.cta}
-                  </button>
-                </Link>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
-          <div className="mt-8 sm:mt-10 md:mt-12 text-center px-4">
-            <div className="inline-block bg-purple-50 border rounded-xl p-4 sm:p-6 max-w-lg" style={{ borderColor: '#E9D5F5' }}>
-              <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2">
-                <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" style={{ color: '#5A1568' }} />
-                <h3 className="text-base sm:text-lg md:text-xl font-bold text-gray-900 font-sans">Additional Hours</h3>
-              </div>
-              <p className="text-sm sm:text-base text-gray-700 font-sans">
-                Need more than your plan includes? <span className="font-bold" style={{ color: '#5A1568' }}>$100 per additional hour</span>
-              </p>
-              <p className="text-xs sm:text-sm text-gray-600 mt-2 font-sans">Billed monthly, no minimums</p>
-            </div>
+          <div className="mt-8 text-center">
+            <p className="text-sm font-sans" style={{ color: 'rgb(140,140,140)' }}>
+              Need more than your plan includes?{" "}
+              <span className="font-bold text-[#FF9634]">$100 per additional hour</span> — billed monthly, no minimums.
+            </p>
           </div>
         </div>
       </section>
 
       {/* Why Choose Us */}
-      <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+      <section className="py-16 sm:py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-10 sm:mb-12 md:mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4 font-mono">
-              Why Choose Knacksters?
+          <div className="text-center mb-12">
+            <h2 className="font-mono font-normal text-[1.75rem] sm:text-[2rem] md:text-[2.5rem] text-[rgb(38,38,38)] mb-3">
+              Why Knacksters?
             </h2>
-            <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-3xl mx-auto font-sans px-4">
-              Join 200+ enterprise clients who've eliminated hiring hassles and scaled their teams on-demand
+            <p className="font-sans text-base sm:text-lg text-[rgb(89,89,89)] max-w-3xl mx-auto">
+              Join 200+ enterprise clients who've eliminated hiring risk and scaled their teams on-demand
             </p>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {benefits.map((benefit, index) => {
               const IconComponent = benefit.icon;
               return (
                 <div key={index} className="text-center">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center mx-auto mb-6">
+                  <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5"
+                    style={{ backgroundImage: "linear-gradient(135deg, #E9414C, #FF9634)" }}>
                     <IconComponent className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold mb-3 font-sans">{benefit.title}</h3>
-                  <p className="text-gray-300 font-sans">{benefit.description}</p>
+                  <h3 className="text-lg font-bold mb-2 font-sans text-[rgb(38,38,38)]">{benefit.title}</h3>
+                  <p className="text-sm font-sans text-[rgb(89,89,89)] leading-relaxed">{benefit.description}</p>
                 </div>
               );
             })}
@@ -601,30 +733,26 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="py-20 px-4 bg-gradient-to-br from-orange-50 via-red-50 to-pink-50">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 font-mono">
-            Ready to Deploy Your Expert Team?
+      {/* Final CTA — dark, brand aligned */}
+      <section className="py-16 sm:py-20 px-4 bg-[#262626]">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="font-mono font-normal text-[1.75rem] sm:text-[2rem] md:text-[2.5rem] text-white mb-4">
+            Start with 50 Free Hours
           </h2>
-          <p className="text-xl text-gray-700 mb-8 font-sans">
-            Start with a 15-minute consultation. We'll show you exactly how Knacksters works for your specific needs.
+          <p className="font-sans text-base sm:text-lg mb-2" style={{ color: 'rgb(140,140,140)' }}>
+            Try a vetted professional for a full month — hire them full-time or scale with a plan. No credit card needed.
           </p>
-          <div className="flex flex-wrap justify-center gap-4 mb-6">
-            <Link href="/signup" className="inline-block">
-              <div style={{ width: '200px' }}>
-                <PrimaryButton
-                  width="200"
-                  height="56"
-                  wrapperClassName="primary-button-wrapper"
-                  gradientId="paint0_linear_howitworks_cta"
-                />
-              </div>
-            </Link>
-          </div>
-          <p className="text-sm text-gray-600 font-sans">
-            💳 No credit card required • 📞 Free consultation • 🚀 Deploy in minutes
+          <p className="font-sans text-sm mb-8" style={{ color: 'rgb(100,100,100)' }}>
+            Or <Link href="/signup" className="underline text-[#FF9634]">book a free 15-minute consultation</Link> and we'll walk you through it.
           </p>
+          <Link href="/signup" className="inline-block">
+            <PrimaryButton
+              width="256"
+              height="56"
+              wrapperClassName="hero-primary-button-wrapper"
+              gradientId="paint0_linear_hiw_cta"
+            />
+          </Link>
         </div>
       </section>
     </div>
