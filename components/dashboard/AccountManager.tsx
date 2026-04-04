@@ -1,7 +1,6 @@
 'use client'
 
 import React from 'react'
-import Image from 'next/image'
 
 interface AccountManagerProps {
   accountManager: {
@@ -34,12 +33,11 @@ export default function AccountManager({ accountManager }: AccountManagerProps) 
         <div className="relative mb-6">
           {/* Profile Picture */}
           <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-100 shadow-lg">
-            {accountManager.avatarUrl ? (
-              <Image 
-                src={accountManager.avatarUrl} 
+            {accountManager.avatarUrl && !accountManager.avatarUrl.includes('dicebear.com') ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={accountManager.avatarUrl}
                 alt={accountManager.fullName}
-                width={128}
-                height={128}
                 className="object-cover w-full h-full"
               />
             ) : (

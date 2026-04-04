@@ -37,7 +37,7 @@ export function useNewUserTips() {
       // Try to fetch from backend
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/user/preferences/tips`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/user/preferences/tips`,
           {
             credentials: 'include',
             headers: {
@@ -126,7 +126,7 @@ export function useNewUserTips() {
       // Try to send to backend
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/user/preferences/tips/dismiss`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/user/preferences/tips/dismiss`,
           {
             method: 'POST',
             credentials: 'include',
@@ -165,7 +165,7 @@ export function useNewUserTips() {
       // Try to send to backend
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/user/preferences/onboarding/complete`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/user/preferences/onboarding/complete`,
           {
             method: 'POST',
             credentials: 'include',
@@ -193,7 +193,7 @@ export function useNewUserTips() {
   const resetTips = useCallback(async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/user/preferences/tips/reset`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/user/preferences/tips/reset`,
         {
           method: 'POST',
           credentials: 'include',
