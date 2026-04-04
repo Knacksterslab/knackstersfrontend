@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Users as UsersIcon,
   Plus,
   Edit2,
   Search,
-  Filter,
   X,
   Check,
   AlertCircle,
@@ -18,6 +17,8 @@ import {
   Briefcase,
   Star,
   UserCircle2,
+  Camera,
+  Trash2,
 } from 'lucide-react';
 import { adminApi } from '@/lib/api/client';
 
@@ -30,6 +31,7 @@ interface User {
   role: 'ADMIN' | 'CLIENT' | 'MANAGER' | 'TALENT';
   status: string;
   createdAt: string;
+  avatarUrl?: string | null;
   subscriptions?: any[];
   specializations?: string[];
   _count?: {
@@ -40,6 +42,34 @@ interface User {
 
 type RoleFilter = 'ALL' | 'ADMIN' | 'CLIENT' | 'MANAGER' | 'TALENT';
 type StatusFilter = 'ALL' | 'ACTIVE' | 'INACTIVE';
+
+/** Center-crop any image file to a 512×512 JPEG blob using Canvas API */
+function cropToSquare(file: File): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+    img.onload = () => {
+      const size = Math.min(img.width, img.height);
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 512;
+      const ctx = canvas.getContext('2d')!;
+      ctx.drawImage(img, (img.width - size) / 2, (img.height - size) / 2, size, size, 0, 0, 512, 512);
+      URL.revokeObjectURL(objectUrl);
+      canvas.toBlob(
+        (blob) => (blob ? resolve(blob) : reject(new Error('Canvas export failed'))),
+        'image/jpeg',
+        0.92
+      );
+    };
+    img.onerror = () => { URL.revokeObjectURL(objectUrl); reject(new Error('Failed to load image')); };
+    img.src = objectUrl;
+  });
+}
+
+function getInitials(name: string) {
+  return name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
+}
 
 export default function UsersManagementPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -72,6 +102,13 @@ export default function UsersManagementPage() {
     role: 'CLIENT' as 'ADMIN' | 'CLIENT' | 'MANAGER' | 'TALENT',
     active: true,
   });
+
+  // Avatar state for edit modal
+  const editAvatarInputRef = useRef<HTMLInputElement>(null);
+  const [editAvatarPreviewUrl, setEditAvatarPreviewUrl] = useState<string | null>(null);
+  const [editAvatarBlob, setEditAvatarBlob] = useState<Blob | null>(null);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [avatarRemoving, setAvatarRemoving] = useState(false);
 
   // Fetch users
   const fetchUsers = async () => {
@@ -181,13 +218,72 @@ export default function UsersManagementPage() {
       role: user.role,
       active: user.status === 'ACTIVE',
     });
+    setEditAvatarPreviewUrl(null);
+    setEditAvatarBlob(null);
     setIsEditModalOpen(true);
   };
 
   const closeEditModal = () => {
+    if (editAvatarPreviewUrl) URL.revokeObjectURL(editAvatarPreviewUrl);
+    setEditAvatarPreviewUrl(null);
+    setEditAvatarBlob(null);
     setIsEditModalOpen(false);
     setEditingUser(null);
     setError('');
+  };
+
+  const handleEditAvatarSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    e.target.value = '';
+    try {
+      const blob = await cropToSquare(file);
+      const url = URL.createObjectURL(blob);
+      if (editAvatarPreviewUrl) URL.revokeObjectURL(editAvatarPreviewUrl);
+      setEditAvatarPreviewUrl(url);
+      setEditAvatarBlob(blob);
+    } catch {
+      setError('Could not process image. Please try a different file.');
+    }
+  };
+
+  const handleUploadManagerAvatar = async () => {
+    if (!editingUser || !editAvatarBlob) return;
+    setAvatarUploading(true);
+    setError('');
+    try {
+      const res = await adminApi.uploadManagerAvatar(editingUser.id, editAvatarBlob);
+      if (res.success && res.data?.avatarUrl) {
+        setEditingUser((prev) => prev ? { ...prev, avatarUrl: res.data.avatarUrl } : prev);
+        setUsers((prev) => prev.map((u) => u.id === editingUser.id ? { ...u, avatarUrl: res.data.avatarUrl } : u));
+        if (editAvatarPreviewUrl) URL.revokeObjectURL(editAvatarPreviewUrl);
+        setEditAvatarPreviewUrl(null);
+        setEditAvatarBlob(null);
+        setSuccess('Photo updated successfully.');
+      } else {
+        throw new Error(res.error || 'Upload failed');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to upload photo.');
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
+
+  const handleRemoveManagerAvatar = async () => {
+    if (!editingUser) return;
+    setAvatarRemoving(true);
+    setError('');
+    try {
+      await adminApi.removeManagerAvatar(editingUser.id);
+      setEditingUser((prev) => prev ? { ...prev, avatarUrl: null } : prev);
+      setUsers((prev) => prev.map((u) => u.id === editingUser.id ? { ...u, avatarUrl: null } : u));
+      setSuccess('Photo removed.');
+    } catch (err: any) {
+      setError(err.message || 'Failed to remove photo.');
+    } finally {
+      setAvatarRemoving(false);
+    }
   };
 
   // Get role badge
@@ -646,7 +742,7 @@ export default function UsersManagementPage() {
       {/* Edit User Modal */}
       {isEditModalOpen && editingUser && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
             {/* Modal Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h2 className="text-2xl font-bold text-gray-900">Edit User</h2>
@@ -669,6 +765,89 @@ export default function UsersManagementPage() {
                   <div className="text-sm text-gray-500">{editingUser.email}</div>
                 </div>
               </div>
+
+              {/* Avatar section — managers only */}
+              {editingUser.role === 'MANAGER' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    Profile Photo
+                  </label>
+                  <div className="flex items-center gap-4">
+                    {/* Avatar preview */}
+                    <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-100 flex-shrink-0 ring-2 ring-gray-200">
+                      {(editAvatarPreviewUrl ?? editingUser.avatarUrl) ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={editAvatarPreviewUrl ?? editingUser.avatarUrl!}
+                          alt={editingUser.fullName}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                          <span className="text-white text-lg font-bold">{getInitials(editingUser.fullName)}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex-1 space-y-2">
+                      {editAvatarBlob ? (
+                        /* Pending upload */
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={handleUploadManagerAvatar}
+                            disabled={avatarUploading}
+                            className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 disabled:opacity-60 transition-colors"
+                          >
+                            {avatarUploading
+                              ? <span className="animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent" />
+                              : <Check className="w-3 h-3" />}
+                            {avatarUploading ? 'Saving…' : 'Save photo'}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => { if (editAvatarPreviewUrl) URL.revokeObjectURL(editAvatarPreviewUrl); setEditAvatarPreviewUrl(null); setEditAvatarBlob(null); }}
+                            disabled={avatarUploading}
+                            className="px-3 py-1.5 border border-gray-300 text-gray-600 text-xs rounded-lg hover:bg-gray-50 disabled:opacity-60 transition-colors"
+                          >
+                            Discard
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => editAvatarInputRef.current?.click()}
+                            className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 text-gray-700 text-xs font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                          >
+                            <Camera className="w-3 h-3" />
+                            {editingUser.avatarUrl ? 'Change' : 'Upload'}
+                          </button>
+                          {editingUser.avatarUrl && (
+                            <button
+                              type="button"
+                              onClick={handleRemoveManagerAvatar}
+                              disabled={avatarRemoving}
+                              className="flex items-center gap-1.5 px-3 py-1.5 text-red-600 border border-red-200 text-xs font-medium rounded-lg hover:bg-red-50 disabled:opacity-60 transition-colors"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                              {avatarRemoving ? 'Removing…' : 'Remove'}
+                            </button>
+                          )}
+                        </div>
+                      )}
+                      <p className="text-xs text-gray-400">PNG, JPG or WebP · Max 5 MB · Auto-cropped square</p>
+                    </div>
+                  </div>
+                  <input
+                    ref={editAvatarInputRef}
+                    type="file"
+                    accept="image/png,image/jpeg,image/jpg,image/webp"
+                    className="hidden"
+                    onChange={handleEditAvatarSelect}
+                  />
+                </div>
+              )}
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">

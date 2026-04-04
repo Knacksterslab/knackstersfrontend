@@ -756,6 +756,37 @@ export const managerApi = {
       body: JSON.stringify({ projectId }),
     });
   },
+
+  /**
+   * Get own profile
+   */
+  getProfile: async () => {
+    return apiFetch<ApiResponse>('/api/manager/profile');
+  },
+
+  /**
+   * Upload own profile photo (center-cropped JPEG blob from canvas)
+   */
+  uploadAvatar: async (blob: Blob): Promise<ApiResponse> => {
+    const form = new FormData();
+    form.append('file', blob, 'avatar.jpg');
+    const url = `${API_URL}/api/manager/profile/avatar`;
+    const response = await fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      body: form,
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || `Upload failed: ${response.status}`);
+    return data;
+  },
+
+  /**
+   * Remove own profile photo
+   */
+  removeAvatar: async () => {
+    return apiFetch<ApiResponse>('/api/manager/profile/avatar', { method: 'DELETE' });
+  },
 };
 
 /**
@@ -997,6 +1028,30 @@ export const adminApi = {
     return apiFetch<ApiResponse>(`/api/admin/partners?id=${id}`, {
       method: 'DELETE',
     });
+  },
+
+  /**
+   * Upload / replace a manager's avatar (admin override)
+   */
+  uploadManagerAvatar: async (managerId: string, blob: Blob): Promise<ApiResponse> => {
+    const form = new FormData();
+    form.append('file', blob, 'avatar.jpg');
+    const url = `${API_URL}/api/admin/managers/${managerId}/avatar`;
+    const response = await fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      body: form,
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || `Upload failed: ${response.status}`);
+    return data;
+  },
+
+  /**
+   * Remove a manager's avatar (admin override)
+   */
+  removeManagerAvatar: async (managerId: string) => {
+    return apiFetch<ApiResponse>(`/api/admin/managers/${managerId}/avatar`, { method: 'DELETE' });
   },
 };
 

@@ -9,6 +9,7 @@ import {
   Clock,
   Calendar,
   HelpCircle,
+  UserCircle,
 } from 'lucide-react'
 import { useUser } from '@/contexts/UserContext'
 import UnifiedSidebar, { sidebarThemes } from '@/components/shared/UnifiedSidebar'
@@ -29,6 +30,7 @@ export default function ManagerSidebar({ isOpen = false, onClose }: ManagerSideb
     { id: 'timesheets', label: 'Timesheet Approvals', icon: Clock, path: '/manager-dashboard/timesheets' },
     { id: 'meetgreet', label: 'Meet & Greet', icon: Calendar, path: '/manager-dashboard/meet-greet' },
     { id: 'support', label: 'Support / Help', icon: HelpCircle, path: '/manager-dashboard/support' },
+    { id: 'profile', label: 'My Profile', icon: UserCircle, path: '/manager-dashboard/profile' },
   ]
 
   const handleLogout = async () => {
