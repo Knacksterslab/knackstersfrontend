@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Calendar, MessageCircle, Clock } from 'lucide-react'
+import { Calendar, MessageCircle } from 'lucide-react'
 import CalBookingModal, { BookingDetails } from '../shared/CalBookingModal'
 import CancelBookingDialog from '../shared/CancelBookingDialog'
 
@@ -16,14 +16,9 @@ interface UpcomingMeetingProps {
     description?: string | null
     bookingId?: string
   } | null
-  accountManager?: {
-    fullName: string
-    email: string
-    avatarUrl?: string | null
-  } | null
 }
 
-export default function UpcomingMeeting({ meeting, accountManager }: UpcomingMeetingProps) {
+export default function UpcomingMeeting({ meeting }: UpcomingMeetingProps) {
   const router = useRouter()
   const [showModal, setShowModal] = useState(false)
   const [showCancelDialog, setShowCancelDialog] = useState(false)
@@ -72,28 +67,6 @@ export default function UpcomingMeeting({ meeting, accountManager }: UpcomingMee
           </div>
 
           <div className="p-4">
-            {accountManager && (
-              <div className="flex gap-3 mb-4">
-                <img
-                  src={accountManager.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${accountManager.email || accountManager.fullName}`}
-                  alt={accountManager.fullName}
-                  className="w-16 h-16 rounded-full object-cover flex-shrink-0 bg-gray-100"
-                />
-                <div className="flex-1">
-                  <h3 className="text-base font-semibold text-gray-900">{accountManager.fullName}</h3>
-                  <p className="text-xs text-gray-500 mb-1">Customer Success Manager</p>
-                  <div className="flex items-center gap-2 text-xs">
-                    <Clock size={12} className="text-gray-400" />
-                    <span className="text-gray-600">{new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })} local time</span>
-                    <span className="flex items-center gap-1">
-                      <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                      <span className="text-green-600 font-medium">Available now</span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-
             <p className="text-sm text-gray-600 leading-relaxed mb-4">
               Schedule a call with your Customer Success Manager to discuss projects, match with experts, or get support with your subscription.
             </p>
@@ -164,30 +137,6 @@ export default function UpcomingMeeting({ meeting, accountManager }: UpcomingMee
         </div>
 
         <div className="p-4">
-          {accountManager && (
-            <div className="flex gap-3 mb-4">
-              <img
-                src={accountManager.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${accountManager.email || accountManager.fullName}`}
-                alt={accountManager.fullName}
-                className="w-16 h-16 rounded-full object-cover flex-shrink-0 bg-gray-100"
-              />
-              <div className="flex-1">
-                <h3 className="text-base font-semibold text-gray-900">{accountManager.fullName}</h3>
-                <p className="text-xs text-gray-500 mb-1">Customer Success Manager</p>
-                <div className="flex items-center gap-2 text-xs">
-                  <Clock size={12} className="text-gray-400" />
-                  <span className="text-gray-600">{formatTime(meetingDate)}</span>
-                  {isToday && (
-                    <span className="flex items-center gap-1 ml-1">
-                      <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                      <span className="text-green-600 font-medium">Today</span>
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
           <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <div className="flex items-start justify-between gap-4">
               <div>

@@ -181,10 +181,9 @@ export default function DashboardLayout() {
                   <div className="space-y-6">
                     <UpcomingMeeting 
                       meeting={data.upcomingMeeting || null} 
-                      accountManager={data.accountManager || null}
                     />
                     
-                    {data.accountManager && !data.upcomingMeeting && (
+                    {data.accountManager && (
                       <>
                         <AccountManager accountManager={data.accountManager} />
                         <NewUserTip tipId="account-manager" title="Your Dedicated Support" variant="success">
