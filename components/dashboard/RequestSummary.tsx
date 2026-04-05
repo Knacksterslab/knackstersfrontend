@@ -173,18 +173,19 @@ export default function RequestSummary({ projects = [], hasActiveSubscription = 
             return (
               <div key={project.id} className="border border-gray-200 rounded-lg overflow-hidden hover:border-gray-300 hover:shadow-sm transition-all">
                 {/* Project Header */}
-                <div 
-                  className="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
-                  onClick={() => toggleProject(project.id)}
-                >
+                <div className="p-4 hover:bg-gray-50 transition-colors">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-start gap-3 flex-1">
-                      <button className="mt-0.5 text-gray-400 hover:text-gray-600 transition-colors">
+                      <button
+                        className="mt-0.5 text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0"
+                        onClick={() => toggleProject(project.id)}
+                        aria-label={isExpanded ? 'Collapse' : 'Expand'}
+                      >
                         {isExpanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
                       </button>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="text-base font-semibold text-gray-900">
+                      <div className="flex-1 min-w-0 cursor-pointer" onClick={() => router.push(`/tasks-projects/${project.id}`)}>
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
+                          <h3 className="text-base font-semibold text-gray-900 hover:text-blue-600 transition-colors">
                             {project.title}
                           </h3>
                           <span className={`px-2 py-0.5 text-xs font-medium rounded-full whitespace-nowrap ${status.color}`}>
@@ -200,7 +201,7 @@ export default function RequestSummary({ projects = [], hasActiveSubscription = 
                   </div>
 
                   {/* Project Stats */}
-                  <div className="flex items-center gap-6 text-xs text-gray-600 ml-8">
+                  <div className="flex items-center gap-6 text-xs text-gray-600 ml-8 flex-wrap">
                     <div className="flex items-center gap-1.5">
                       <Clock size={14} className="text-gray-400" />
                       <span>{totalHours} logged</span>
@@ -211,6 +212,12 @@ export default function RequestSummary({ projects = [], hasActiveSubscription = 
                     {project.dueDate && (
                       <div>Due {formatDate(project.dueDate)}</div>
                     )}
+                    <button
+                      onClick={() => router.push(`/tasks-projects/${project.id}`)}
+                      className="ml-auto text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1 whitespace-nowrap"
+                    >
+                      View details <ChevronRight size={13} />
+                    </button>
                   </div>
                 </div>
 
