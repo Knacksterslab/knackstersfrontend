@@ -3,7 +3,7 @@
  * Fetches and manages dashboard data
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { dashboardApi } from '@/lib/api/client';
 import Session from 'supertokens-auth-react/recipe/session';
 
@@ -22,40 +22,47 @@ export function useDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchDashboard();
-  }, []);
-
-  const fetchDashboard = async () => {
+  const fetchDashboard = useCallback(async (showSpinner = true) => {
     try {
-      setLoading(true);
+      if (showSpinner) {
+        setLoading(true);
+      }
       setError(null);
-      
+
       const sessionExists = await Session.doesSessionExist();
-      
+
       if (!sessionExists) {
         setError('No active session');
         setLoading(false);
         return;
       }
-      
+
       const response = await dashboardApi.getOverview();
-      
+
       if (response.success && response.data) {
         setData(response.data);
-      } else {
+      } else if (showSpinner) {
         setError('Failed to load dashboard data');
       }
     } catch (err: any) {
-      setError(err.message || 'An error occurred');
+      if (showSpinner) {
+        setError(err.message || 'An error occurred');
+      }
     } finally {
-      setLoading(false);
+      if (showSpinner) {
+        setLoading(false);
+      }
     }
-  };
+  }, []);
 
-  const refresh = () => {
-    fetchDashboard();
-  };
+  useEffect(() => {
+    fetchDashboard(true);
+  }, [fetchDashboard]);
+
+  // Background refresh — updates data silently without showing the loading spinner
+  const refresh = useCallback(() => {
+    fetchDashboard(false);
+  }, [fetchDashboard]);
 
   return {
     data,
