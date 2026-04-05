@@ -6,7 +6,6 @@ import TaskAssignmentModal from './TaskAssignmentModal'
 import ApplyTemplateModal from './ApplyTemplateModal'
 import { 
   ClipboardList, 
-  Plus,
   Calendar,
   Clock,
   User,
@@ -101,13 +100,6 @@ export default function ManagerAssignmentsPage() {
                 >
                   <FileText size={20} />
                   Apply Template
-                </button>
-                <button 
-                  onClick={() => setShowAssignModal(true)}
-                  className="px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
-                >
-                  <Plus size={20} />
-                  Create Task
                 </button>
               </div>
             </div>

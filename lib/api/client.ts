@@ -537,8 +537,11 @@ export const managerApi = {
   /**
    * Get all projects for manager's clients
    */
-  getProjects: async (status?: string) => {
-    const query = status ? `?status=${status}` : '';
+  getProjects: async (filters?: { status?: string; clientId?: string }) => {
+    const params = new URLSearchParams();
+    if (filters?.status) params.set('status', filters.status);
+    if (filters?.clientId) params.set('clientId', filters.clientId);
+    const query = params.toString() ? `?${params}` : '';
     return apiFetch<ApiResponse>(`/api/manager/projects${query}`);
   },
 

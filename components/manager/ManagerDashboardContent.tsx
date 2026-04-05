@@ -126,7 +126,7 @@ export default function ManagerDashboardContent() {
           </Link>
         </div>
 
-        {/* Talent Pool */}
+        {/* Active Projects */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -135,7 +135,7 @@ export default function ManagerDashboardContent() {
           </div>
           <h3 className="text-2xl font-bold text-gray-900 mb-1">{stats?.activeProjects || 0}</h3>
           <p className="text-sm text-gray-600 mb-2">Active Projects</p>
-          <Link href="/manager-dashboard/talent" className="text-xs text-purple-600 hover:text-purple-700 font-medium">
+          <Link href="/manager-dashboard/assignments" className="text-xs text-purple-600 hover:text-purple-700 font-medium">
             View all →
           </Link>
         </div>
@@ -163,7 +163,7 @@ export default function ManagerDashboardContent() {
           </div>
           <h3 className="text-2xl font-bold text-gray-900 mb-1">{stats?.upcomingMeetings || 0}</h3>
           <p className="text-sm text-gray-600 mb-2">Upcoming Meetings</p>
-          <Link href="/manager-dashboard/timesheets" className="text-xs text-orange-600 hover:text-orange-700 font-medium">
+          <Link href="/manager-dashboard/meet-greet" className="text-xs text-orange-600 hover:text-orange-700 font-medium">
             View →
           </Link>
         </div>
@@ -343,13 +343,19 @@ export default function ManagerDashboardContent() {
                   : isTomorrow
                     ? `Tomorrow, ${meetingDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`
                     : meetingDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
-                
-                const colorClass = index === 0 ? 'purple' : index === 1 ? 'blue' : 'green'
+
+                // Static color map — dynamic class interpolation is stripped by Tailwind JIT
+                const rowStyles = [
+                  { row: 'bg-purple-50 border border-purple-100', icon: 'text-purple-600', btn: 'bg-purple-600 hover:bg-purple-700 text-white', outline: 'border-2 border-purple-600 text-purple-600 hover:bg-purple-50' },
+                  { row: 'bg-blue-50 border border-blue-100', icon: 'text-blue-600', btn: 'bg-blue-600 hover:bg-blue-700 text-white', outline: 'border-2 border-blue-600 text-blue-600 hover:bg-blue-50' },
+                  { row: 'bg-green-50 border border-green-100', icon: 'text-green-600', btn: 'bg-green-600 hover:bg-green-700 text-white', outline: 'border-2 border-green-600 text-green-600 hover:bg-green-50' },
+                ]
+                const colors = rowStyles[index] ?? rowStyles[2]
                 
                 return (
-                  <div key={meeting.id} className={`flex items-center justify-between p-4 bg-${colorClass}-50 border border-${colorClass}-100 rounded-lg`}>
+                  <div key={meeting.id} className={`flex items-center justify-between p-4 rounded-lg ${colors.row}`}>
                     <div className="flex items-center gap-3">
-                      <Calendar size={20} className={`text-${colorClass}-600`} />
+                      <Calendar size={20} className={colors.icon} />
                       <div>
                         <p className="font-semibold text-gray-900 text-sm">
                           {meeting.clientName} - {meeting.type.replace('_', ' ')}
@@ -362,12 +368,12 @@ export default function ManagerDashboardContent() {
                         href={meeting.videoUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={`px-4 py-2 bg-${colorClass}-600 text-white text-sm font-semibold rounded-lg hover:bg-${colorClass}-700 transition-colors`}
+                        className={`px-4 py-2 text-sm font-semibold rounded-lg transition-colors ${colors.btn}`}
                       >
                         Join Call
                       </a>
                     ) : (
-                      <button className={`px-4 py-2 border-2 border-${colorClass}-600 text-${colorClass}-600 text-sm font-semibold rounded-lg hover:bg-${colorClass}-50 transition-colors`}>
+                      <button className={`px-4 py-2 text-sm font-semibold rounded-lg transition-colors ${colors.outline}`}>
                         View Details
                       </button>
                     )}

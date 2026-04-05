@@ -19,7 +19,7 @@ import {
   Eye
 } from 'lucide-react'
 import { useManagerDashboard } from '@/hooks/useManagerDashboard'
-import { useClientProjects } from '@/hooks/useManagerClients'
+import { managerApi } from '@/lib/api/client'
 import { getStatusColor, getInitials } from '@/lib/transformers/manager'
 
 export default function ManagerClientsPage() {
@@ -39,10 +39,7 @@ export default function ManagerClientsPage() {
     // Fetch projects for this client if not already loaded
     if (!clientProjects[clientId]) {
       try {
-        const response = await fetch(`/api/manager/projects?clientId=${clientId}`, {
-          credentials: 'include',
-        })
-        const result = await response.json()
+        const result = await managerApi.getProjects({ clientId })
         if (result.success) {
           setClientProjects(prev => ({ ...prev, [clientId]: result.data || [] }))
         }
