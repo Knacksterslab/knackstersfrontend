@@ -10,10 +10,12 @@ interface RequestTaskModalProps {
 }
 
 const CATEGORIES = [
-  { value: 'DEVELOPMENT', label: 'Development' },
-  { value: 'DESIGN', label: 'Design' },
-  { value: 'MARKETING', label: 'Marketing' },
-  { value: 'OPERATIONS', label: 'Operations' },
+  { value: 'AI_SOLUTIONS', label: 'AI Solutions' },
+  { value: 'CYBERSECURITY', label: 'Cybersecurity' },
+  { value: 'DEVELOPMENT_DEVOPS', label: 'Development & DevOps' },
+  { value: 'DESIGN_CREATIVE', label: 'Design & Creative' },
+  { value: 'GROWTH_CUSTOMER_SUCCESS', label: 'Growth & Customer Success' },
+  { value: 'HEALTHCARE_LIFE_SCIENCES', label: 'Healthcare & Life Sciences' },
   { value: 'OTHER', label: 'Other' },
 ]
 
@@ -379,10 +381,7 @@ export default function RequestTaskModal({ isOpen, onClose, onSuccess }: Request
               </div>
               <div>
                 <p className={`text-sm font-semibold ${formData.isTrialToHire ? 'text-blue-800' : 'text-gray-900'}`}>
-                  This is a trial task — I'm evaluating for a longer-term engagement
-                </p>
-                <p className="text-xs text-gray-500 mt-0.5">
-                  Your CSM will ensure the right Knackster is assigned and will follow up about a longer-term subscription arrangement after the task. No placement fees — longer engagements are handled through your subscription.
+                  This task can lead to a permanent hire
                 </p>
               </div>
             </div>
