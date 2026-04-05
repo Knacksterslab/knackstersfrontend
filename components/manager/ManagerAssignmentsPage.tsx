@@ -20,6 +20,14 @@ import { useManagerDashboard } from '@/hooks/useManagerDashboard'
 import { getStatusColor, getPriorityColor } from '@/lib/transformers/manager'
 import { formatDistanceToNow } from 'date-fns'
 
+function parseTaskType(taskType?: string | null): { isTrialToHire: boolean; categoryLabel: string | null } {
+  if (!taskType) return { isTrialToHire: false, categoryLabel: null }
+  const isTrialToHire = taskType.startsWith('TRIAL')
+  const raw = isTrialToHire ? taskType.replace(/^TRIAL_?/, '') : taskType
+  const categoryLabel = raw && raw !== 'HIRE' ? raw.charAt(0) + raw.slice(1).toLowerCase() : null
+  return { isTrialToHire, categoryLabel }
+}
+
 export default function ManagerAssignmentsPage() {
   const [showAssignModal, setShowAssignModal] = useState(false)
   const [showTemplateModal, setShowTemplateModal] = useState(false)
@@ -191,18 +199,34 @@ export default function ManagerAssignmentsPage() {
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      {unassignedTasks.map((task) => (
-                        <div key={task.id} className="border border-gray-200 rounded-lg p-6">
+                      {unassignedTasks.map((task) => {
+                        const { isTrialToHire, categoryLabel } = parseTaskType(task.taskType)
+                        return (
+                        <div key={task.id} className={`border rounded-lg p-6 ${isTrialToHire ? 'border-blue-300 bg-blue-50' : 'border-gray-200'}`}>
+                          {isTrialToHire && (
+                            <div className="flex items-center gap-2 mb-4 p-3 bg-blue-100 border border-blue-200 rounded-lg">
+                              <span className="text-base">⭐</span>
+                              <div>
+                                <p className="text-sm font-semibold text-blue-800">Trial to Hire</p>
+                                <p className="text-xs text-blue-600">Client is evaluating for a longer-term engagement — assign someone available for ongoing subscription work.</p>
+                              </div>
+                            </div>
+                          )}
                           <div className="flex items-start justify-between mb-4">
                             <div className="flex-1">
-                              <div className="flex items-center gap-3 mb-2">
+                              <div className="flex items-center gap-3 mb-2 flex-wrap">
                                 <h3 className="text-lg font-semibold text-gray-900">{task.name}</h3>
                                 <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getPriorityColor(task.priority)}`}>
                                   {task.priority} priority
                                 </span>
+                                {categoryLabel && (
+                                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-purple-50 text-purple-700">
+                                    {categoryLabel}
+                                  </span>
+                                )}
                               </div>
                               {task.description && (
-                                <p className="text-sm text-gray-600 mb-3">{task.description}</p>
+                                <p className="text-sm text-gray-600 mb-3 whitespace-pre-line">{task.description}</p>
                               )}
 
                               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -253,7 +277,8 @@ export default function ManagerAssignmentsPage() {
                             </button>
                           </div>
                         </div>
-                      ))}
+                        )
+                      })}
                     </div>
                   )}
                 </div>
@@ -275,20 +300,30 @@ export default function ManagerAssignmentsPage() {
                   ) : (
                     <div className="space-y-4">
                       {assignedTasks.map((task) => {
-                        // Calculate progress based on estimated vs logged minutes
                         const progress = task.estimatedMinutes && task.estimatedMinutes > 0
                           ? Math.min(Math.round((Number(task.loggedMinutes) / task.estimatedMinutes) * 100), 100)
                           : 0
+                        const { isTrialToHire, categoryLabel } = parseTaskType(task.taskType)
                         
                         return (
-                          <div key={task.id} className="border border-gray-200 rounded-lg p-6">
+                          <div key={task.id} className={`border rounded-lg p-6 ${isTrialToHire ? 'border-blue-300 bg-blue-50' : 'border-gray-200'}`}>
                             <div className="flex items-start justify-between mb-4">
                               <div className="flex-1">
-                                <div className="flex items-center gap-3 mb-2">
+                                <div className="flex items-center gap-3 mb-2 flex-wrap">
                                   <h3 className="text-lg font-semibold text-gray-900">{task.name}</h3>
                                   <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(task.status)}`}>
                                     {task.status.replace('_', ' ')}
                                   </span>
+                                  {isTrialToHire && (
+                                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
+                                      ⭐ Trial to Hire
+                                    </span>
+                                  )}
+                                  {categoryLabel && (
+                                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-purple-50 text-purple-700">
+                                      {categoryLabel}
+                                    </span>
+                                  )}
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
