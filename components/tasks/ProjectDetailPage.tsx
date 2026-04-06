@@ -254,43 +254,34 @@ export default function ProjectDetailPage({ projectId }: ProjectDetailPageProps)
 
                         return (
                           <div key={task.id} className="px-6 py-5">
-                            <div className="flex items-start justify-between gap-4 mb-3">
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                  <h3 className="text-sm font-semibold text-gray-900">{task.name}</h3>
-                                  <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${taskStatus.color}`}>
-                                    {taskStatus.label}
-                                  </span>
-                                </div>
-                                <p className="text-xs text-gray-400 font-mono">{task.taskNumber}</p>
-                              </div>
+                            <div className="flex items-center gap-2 mb-2 flex-wrap">
+                              <h3 className="text-sm font-semibold text-gray-900">{task.name}</h3>
+                              <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${taskStatus.color}`}>
+                                {taskStatus.label}
+                              </span>
                             </div>
 
-                            {task.description && (
-                              <p className="text-sm text-gray-600 mb-3 leading-relaxed">{task.description}</p>
+                            {/* Only show description if it differs from the project description */}
+                            {task.description && task.description !== project.description && (
+                              <p className="text-sm text-gray-600 mb-3 leading-relaxed whitespace-pre-wrap">{task.description}</p>
                             )}
 
                             <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-gray-500">
-                              {/* Assigned To */}
-                              <div className="flex items-center gap-1.5">
-                                <User size={13} />
-                                {task.status === 'PENDING' || !task.assignedTo ? (
-                                  <span className="text-yellow-600 font-medium">Awaiting assignment</span>
-                                ) : (
-                                  <div className="flex items-center gap-1.5">
-                                    <div className="w-5 h-5 rounded-full bg-purple-500 flex items-center justify-center">
-                                      {task.assignedTo.avatarUrl ? (
-                                        <img src={task.assignedTo.avatarUrl} alt="" className="w-5 h-5 rounded-full object-cover" />
-                                      ) : (
-                                        <span className="text-white text-[9px] font-bold">{getInitials(task.assignedTo.fullName)}</span>
-                                      )}
-                                    </div>
-                                    <span className="font-medium text-gray-700">{task.assignedTo.fullName}</span>
+                              {/* Assigned — only show when actually assigned */}
+                              {task.assignedTo && task.status !== 'PENDING' && (
+                                <div className="flex items-center gap-1.5">
+                                  <div className="w-5 h-5 rounded-full bg-purple-500 flex items-center justify-center flex-shrink-0">
+                                    {task.assignedTo.avatarUrl ? (
+                                      <img src={task.assignedTo.avatarUrl} alt="" className="w-5 h-5 rounded-full object-cover" />
+                                    ) : (
+                                      <span className="text-white text-[9px] font-bold">{getInitials(task.assignedTo.fullName)}</span>
+                                    )}
                                   </div>
-                                )}
-                              </div>
+                                  <span className="font-medium text-gray-700">{task.assignedTo.fullName}</span>
+                                </div>
+                              )}
 
-                              {/* Hours */}
+                              {/* Hours — only when logged */}
                               {taskLoggedMinutes > 0 && (
                                 <div className="flex items-center gap-1.5">
                                   <Clock size={13} />

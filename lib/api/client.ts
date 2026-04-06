@@ -507,6 +507,33 @@ export const talentApi = {
     const params = new URLSearchParams(filters as any);
     return apiFetch<ApiResponse>(`/api/talent/time-logs?${params}`);
   },
+
+  /**
+   * Get own talent profile (bio, skills, timezone, etc.)
+   */
+  getProfile: async () => {
+    return apiFetch<ApiResponse>('/api/talent/profile');
+  },
+
+  /**
+   * Update own talent profile fields
+   */
+  updateProfile: async (data: {
+    firstName?: string;
+    lastName?: string;
+    phone?: string;
+    bio?: string;
+    skills?: string[];
+    timezone?: string;
+    weeklyCapacityHours?: number | null;
+    portfolioUrl?: string;
+    linkedinUrl?: string;
+  }) => {
+    return apiFetch<ApiResponse>('/api/talent/profile', {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
 };
 
 /**
@@ -569,6 +596,13 @@ export const managerApi = {
    */
   getAvailableTalent: async () => {
     return apiFetch<ApiResponse>('/api/manager/talent');
+  },
+
+  /**
+   * Get enriched profile for a single talent member
+   */
+  getTalentProfile: async (talentId: string) => {
+    return apiFetch<ApiResponse>(`/api/manager/talent/${talentId}`);
   },
 
   /**
@@ -1006,6 +1040,23 @@ export const adminApi = {
     });
   },
 
+  updateTalentUserProfile: async (
+    applicationId: string,
+    data: {
+      bio?: string;
+      skills?: string[];
+      timezone?: string;
+      weeklyCapacityHours?: number | null;
+      portfolioUrl?: string;
+      linkedinUrl?: string;
+    }
+  ) => {
+    return apiFetch<ApiResponse>(`/api/admin/talent/${applicationId}/user-profile`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+
   /**
    * Admin Partners API
    */
@@ -1055,6 +1106,16 @@ export const adminApi = {
    */
   removeManagerAvatar: async (managerId: string) => {
     return apiFetch<ApiResponse>(`/api/admin/managers/${managerId}/avatar`, { method: 'DELETE' });
+  },
+
+  /**
+   * Update a manager's specializations
+   */
+  updateManagerSpecializations: async (managerId: string, specializations: string[]) => {
+    return apiFetch<ApiResponse>(`/api/admin/managers/${managerId}/specializations`, {
+      method: 'PATCH',
+      body: JSON.stringify({ specializations }),
+    });
   },
 };
 

@@ -111,9 +111,8 @@ export default function RequestSummary({ projects = [], hasActiveSubscription = 
     return { label: project.status.replace('_', ' '), color: 'bg-gray-100 text-gray-800' }
   }
 
-  const getTotalLoggedHours = (project: Project) => {
-    const totalMinutes = project.tasks.reduce((sum, task) => sum + task.loggedMinutes, 0)
-    return formatMinutes(totalMinutes)
+  const getTotalLoggedMinutes = (project: Project) => {
+    return project.tasks.reduce((sum, task) => sum + task.loggedMinutes, 0)
   }
 
   return (
@@ -168,7 +167,7 @@ export default function RequestSummary({ projects = [], hasActiveSubscription = 
           displayedProjects.map((project) => {
             const isExpanded = expandedProjects.has(project.id)
             const status = getProjectStatus(project)
-            const totalHours = getTotalLoggedHours(project)
+            const totalLoggedMinutes = getTotalLoggedMinutes(project)
             
             return (
               <div key={project.id} className="border border-gray-200 rounded-lg overflow-hidden hover:border-gray-300 hover:shadow-sm transition-all">
@@ -202,10 +201,12 @@ export default function RequestSummary({ projects = [], hasActiveSubscription = 
 
                   {/* Project Stats */}
                   <div className="flex items-center gap-6 text-xs text-gray-600 ml-8 flex-wrap">
-                    <div className="flex items-center gap-1.5">
-                      <Clock size={14} className="text-gray-400" />
-                      <span>{totalHours} logged</span>
-                    </div>
+                    {totalLoggedMinutes > 0 && (
+                      <div className="flex items-center gap-1.5">
+                        <Clock size={14} className="text-gray-400" />
+                        <span>{formatMinutes(totalLoggedMinutes)} logged</span>
+                      </div>
+                    )}
                     <div>
                       <span className="font-medium">{project.tasks.length}</span> {project.tasks.length === 1 ? 'task' : 'tasks'}
                     </div>
@@ -242,41 +243,28 @@ export default function RequestSummary({ projects = [], hasActiveSubscription = 
                             </div>
                           </div>
                           
-                          <div className="grid grid-cols-3 gap-4">
-                            <div>
-                              <p className="text-xs text-gray-500 mb-1">Assigned To</p>
-                              {task.status === 'PENDING' ? (
-                                <div className="flex items-center gap-2">
-                                  <Clock size={14} className="text-yellow-600" />
-                                  <p className="text-xs font-medium text-yellow-700">Awaiting assignment</p>
+                          <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-gray-600">
+                            {task.status !== 'PENDING' && task.assignedTo && (
+                              <div className="flex items-center gap-1.5">
+                                <div className="w-5 h-5 bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                  <span className="text-white text-[9px] font-bold">
+                                    {getInitials(task.assignedTo.fullName)}
+                                  </span>
                                 </div>
-                              ) : (
-                                <div className="flex items-center gap-2">
-                                  <div className="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center">
-                                    <span className="text-white text-xs font-semibold">
-                                      {task.assignedTo ? getInitials(task.assignedTo.fullName) : 'NA'}
-                                    </span>
-                                  </div>
-                                  <p className="text-xs font-medium text-gray-900">
-                                    {task.assignedTo?.fullName || 'Unassigned'}
-                                  </p>
-                                </div>
-                              )}
-                            </div>
-                            
-                            <div>
-                              <p className="text-xs text-gray-500 mb-1">Hours Logged</p>
-                              <p className="text-xs font-semibold text-gray-900">
-                                {formatMinutes(task.loggedMinutes)}
-                              </p>
-                            </div>
-                            
-                            <div>
-                              <p className="text-xs text-gray-500 mb-1">Due Date</p>
-                              <p className="text-xs font-medium text-gray-900">
-                                {formatDate(task.dueDate)}
-                              </p>
-                            </div>
+                                <span className="font-medium text-gray-700">{task.assignedTo.fullName}</span>
+                              </div>
+                            )}
+                            {task.loggedMinutes > 0 && (
+                              <div className="flex items-center gap-1.5">
+                                <Clock size={13} className="text-gray-400" />
+                                <span>{formatMinutes(task.loggedMinutes)} logged</span>
+                              </div>
+                            )}
+                            {task.dueDate && (
+                              <div className="flex items-center gap-1.5">
+                                <span>Due {formatDate(task.dueDate)}</span>
+                              </div>
+                            )}
                           </div>
                         </div>
                       ))}

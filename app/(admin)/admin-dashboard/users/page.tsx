@@ -101,6 +101,7 @@ export default function UsersManagementPage() {
   const [editFormData, setEditFormData] = useState({
     role: 'CLIENT' as 'ADMIN' | 'CLIENT' | 'MANAGER' | 'TALENT',
     active: true,
+    specializations: [] as string[],
   });
 
   // Avatar state for edit modal
@@ -168,18 +169,28 @@ export default function UsersManagementPage() {
     }
   };
 
-  // Handle update user role
+  // Handle update user role (and specializations for managers)
   const handleUpdateRole = async () => {
     if (!editingUser) return;
+
+    const isManager = editFormData.role === 'MANAGER';
+    if (isManager && editFormData.specializations.length === 0) {
+      setError('Please select at least one specialization for managers');
+      return;
+    }
 
     try {
       await adminApi.updateUserRole(editingUser.id, editFormData.role);
 
-      setSuccess('User role updated successfully');
+      if (isManager) {
+        await adminApi.updateManagerSpecializations(editingUser.id, editFormData.specializations);
+      }
+
+      setSuccess('User updated successfully');
       fetchUsers();
       closeEditModal();
     } catch (error: any) {
-      setError(error.message || 'Failed to update user role');
+      setError(error.message || 'Failed to update user');
     }
   };
 
@@ -217,6 +228,7 @@ export default function UsersManagementPage() {
     setEditFormData({
       role: user.role,
       active: user.status === 'ACTIVE',
+      specializations: user.specializations ?? [],
     });
     setEditAvatarPreviewUrl(null);
     setEditAvatarBlob(null);
@@ -855,7 +867,7 @@ export default function UsersManagementPage() {
                 </label>
                 <select
                   value={editFormData.role}
-                  onChange={(e) => setEditFormData({ ...editFormData, role: e.target.value as any })}
+                  onChange={(e) => setEditFormData({ ...editFormData, role: e.target.value as any, specializations: [] })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="CLIENT">Client</option>
@@ -864,6 +876,42 @@ export default function UsersManagementPage() {
                   <option value="ADMIN">Admin</option>
                 </select>
               </div>
+
+              {editFormData.role === 'MANAGER' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Specializations *
+                  </label>
+                  <div className="space-y-2 max-h-48 overflow-y-auto border border-gray-300 rounded-lg p-3">
+                    {[
+                      { value: 'AI_MACHINE_LEARNING', label: 'AI & Machine Learning' },
+                      { value: 'CYBERSECURITY', label: 'Cybersecurity' },
+                      { value: 'SOFTWARE_DEVELOPMENT', label: 'Software Development' },
+                      { value: 'DESIGN_CREATIVE', label: 'Design & Creative' },
+                      { value: 'MARKETING_GROWTH', label: 'Marketing & Growth' },
+                      { value: 'HEALTHCARE_LIFE_SCIENCES', label: 'Healthcare & Life Sciences' },
+                    ].map((spec) => (
+                      <label key={spec.value} className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={editFormData.specializations.includes(spec.value)}
+                          onChange={(e) => {
+                            const updated = e.target.checked
+                              ? [...editFormData.specializations, spec.value]
+                              : editFormData.specializations.filter(s => s !== spec.value);
+                            setEditFormData({ ...editFormData, specializations: updated });
+                          }}
+                          className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <span className="text-sm text-gray-700">{spec.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                  {editFormData.specializations.length === 0 && (
+                    <p className="mt-1 text-xs text-red-500">Select at least one specialization</p>
+                  )}
+                </div>
+              )}
 
               <div className="flex items-center gap-3">
                 <input

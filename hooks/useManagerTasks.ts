@@ -91,3 +91,37 @@ export function useAvailableTalent() {
     refresh: fetchTalent,
   };
 }
+
+/**
+ * Hook for fetching an enriched talent profile (for the slide-out panel)
+ */
+export function useTalentProfile(talentId: string | null) {
+  const [profile, setProfile] = useState<any | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchProfile = useCallback(async (id: string) => {
+    try {
+      setLoading(true);
+      setError(null);
+      setProfile(null);
+      const response = await managerApi.getTalentProfile(id);
+      setProfile(response.data || null);
+    } catch (err: any) {
+      console.error('Error fetching talent profile:', err);
+      setError(err.message || 'Failed to load profile');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (talentId) {
+      fetchProfile(talentId);
+    } else {
+      setProfile(null);
+    }
+  }, [talentId, fetchProfile]);
+
+  return { profile, loading, error };
+}

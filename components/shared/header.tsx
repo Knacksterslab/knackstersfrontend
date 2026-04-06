@@ -36,6 +36,8 @@ export default function Header() {
 
     { label: "How it works", href: "/how-it-works" },
 
+    { label: "Pricing", href: "/pricing" },
+
     { label: "Benefits", href: "/#benefits" },
 
     { label: "Use Cases", href: "/#use-cases" },
