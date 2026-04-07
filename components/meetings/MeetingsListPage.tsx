@@ -7,9 +7,11 @@ import { meetingsApi } from '@/lib/api/client'
 import CalBookingModal from '@/components/shared/CalBookingModal'
 import CancelBookingDialog from '@/components/shared/CancelBookingDialog'
 import type { BookingDetails } from '@/components/shared/CalBookingModal'
+import { useUser } from '@/contexts/UserContext'
 
 export default function MeetingsListPage() {
   const router = useRouter()
+  const { user } = useUser()
   const [meetings, setMeetings] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'past'>('upcoming')
@@ -244,8 +246,11 @@ export default function MeetingsListPage() {
           calUrl={process.env.NEXT_PUBLIC_CAL_CLIENT_URL || ''}
           title="Reschedule Your Meeting"
           mode="reschedule"
-          existingBookingUid={selectedMeeting.googleCalendarEventId ?? undefined}
+          existingBookingUid={selectedMeeting.bookingId ?? selectedMeeting.googleCalendarEventId ?? undefined}
+          meetingId={selectedMeeting.id}
           onBookingComplete={handleRescheduleComplete}
+          prefillName={user?.fullName || ''}
+          prefillEmail={user?.email || ''}
         />
       )}
 

@@ -9,6 +9,7 @@ import {
   Image as ImageIcon,
   MessageSquare,
   UserCheck,
+  Ticket,
 } from 'lucide-react';
 import { useUser } from '@/contexts/UserContext';
 import UnifiedSidebar, { sidebarThemes } from '@/components/shared/UnifiedSidebar';
@@ -79,6 +80,12 @@ export default function AdminSidebar({ isOpen = false, onClose }: AdminSidebarPr
       path: '/admin-dashboard/users',
     },
     {
+      id: 'support',
+      label: 'Support Tickets',
+      icon: Ticket,
+      path: '/admin-dashboard/support',
+    },
+    {
       id: 'settings',
       label: 'Settings',
       icon: Settings,
@@ -109,7 +116,6 @@ export default function AdminSidebar({ isOpen = false, onClose }: AdminSidebarPr
         textColor: 'text-red-600',
       }}
       onLogout={handleLogout}
-      showFeedback={true}
     />
   );
 }

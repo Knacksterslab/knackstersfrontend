@@ -295,13 +295,6 @@ export const timeApi = {
  */
 export const billingApi = {
   /**
-   * Get billing summary
-   */
-  getSummary: async () => {
-    return apiFetch<ApiResponse>('/api/client/billing/summary');
-  },
-
-  /**
    * Get all invoices
    */
   getInvoices: async (status?: string) => {
@@ -321,6 +314,23 @@ export const billingApi = {
    */
   getSubscription: async () => {
     return apiFetch<ApiResponse>('/api/client/billing/subscription');
+  },
+
+  /**
+   * Get payment methods
+   */
+  getPaymentMethods: async () => {
+    return apiFetch<ApiResponse>('/api/client/stripe/payment-methods');
+  },
+
+  /**
+   * Upgrade or downgrade subscription plan
+   */
+  changePlan: async (plan: string) => {
+    return apiFetch<ApiResponse>('/api/client/billing/subscription/upgrade', {
+      method: 'POST',
+      body: JSON.stringify({ plan }),
+    });
   },
 };
 
@@ -378,6 +388,23 @@ export const meetingsApi = {
     return apiFetch<ApiResponse>(`/api/client/meetings/${id}/reschedule`, {
       method: 'PATCH',
       body: JSON.stringify({ newScheduledAt, reason }),
+    });
+  },
+
+  /**
+   * Save a Cal.com booking to the backend
+   */
+  saveCalcomBooking: async (data: {
+    bookingId: string;
+    scheduledAt: string;
+    endTime?: string;
+    videoCallUrl?: string | null;
+    title?: string;
+    description?: string;
+  }) => {
+    return apiFetch<ApiResponse>('/api/client/meetings/calcom-booking', {
+      method: 'POST',
+      body: JSON.stringify(data),
     });
   },
 
@@ -460,6 +487,25 @@ export const supportApi = {
    */
   getStats: async () => {
     return apiFetch<ApiResponse>('/api/client/support/stats');
+  },
+};
+
+/**
+ * Admin Support Ticket API
+ */
+export const adminSupportApi = {
+  getTickets: async (params?: { status?: string; priority?: string; search?: string }) => {
+    const q = params ? '?' + new URLSearchParams(Object.entries(params).filter(([, v]) => v) as [string, string][]).toString() : '';
+    return apiFetch<ApiResponse>(`/api/admin/support/tickets${q}`);
+  },
+  getTicket: async (id: string) => {
+    return apiFetch<ApiResponse>(`/api/admin/support/tickets/${id}`);
+  },
+  updateTicket: async (id: string, data: { status?: string; assignedToId?: string; resolutionNotes?: string }) => {
+    return apiFetch<ApiResponse>(`/api/admin/support/tickets/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
+  },
+  getStats: async () => {
+    return apiFetch<ApiResponse>('/api/admin/support/stats');
   },
 };
 

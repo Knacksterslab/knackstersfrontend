@@ -55,7 +55,6 @@ export default function ManagerSidebar({ isOpen = false, onClose }: ManagerSideb
         textColor: 'text-purple-600',
       }}
       onLogout={handleLogout}
-      showFeedback={true}
     />
   )
 }

@@ -51,7 +51,6 @@ export default function TalentSidebar({ isOpen = false, onClose }: TalentSidebar
         textColor: 'text-orange-600',
       }}
       onLogout={handleLogout}
-      showFeedback={true}
     />
   )
 }

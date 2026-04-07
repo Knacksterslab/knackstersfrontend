@@ -1,6 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { CheckCircle, Loader2 } from 'lucide-react';
+import { meetingsApi } from '@/lib/api/client';
 
 export interface BookingDetails {
   bookingId: string;
@@ -17,8 +19,12 @@ interface CalBookingModalProps {
   onClose: () => void;
   calUrl: string;
   title: string;
+  /** 'book' creates a new meeting; 'reschedule' updates an existing one */
   mode: 'book' | 'reschedule';
+  /** Cal.com booking UID — required for reschedule so Cal shows the correct event */
   existingBookingUid?: string;
+  /** Our DB meeting ID — required for reschedule so we can update the backend record */
+  meetingId?: string;
   onBookingComplete: (details: BookingDetails) => void;
   prefillName?: string;
   prefillEmail?: string;
@@ -31,87 +37,105 @@ export default function CalBookingModal({
   title,
   mode,
   existingBookingUid,
+  meetingId,
   onBookingComplete,
   prefillName = '',
   prefillEmail = '',
 }: CalBookingModalProps) {
-  // Listen for booking success events from Cal.com iframe
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [confirmed, setConfirmed] = useState(false);
+
+  // Reset state every time the modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setSaving(false);
+      setSaveError(null);
+      setConfirmed(false);
+    }
+  }, [isOpen]);
+
+  // Listen for booking success events from Cal.com iframe.
+  // Gated by isOpen to prevent double-saves when multiple CalBookingModal
+  // instances exist on the same page but only one is visible.
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    const handleMessage = (event: MessageEvent) => {
-      // Check if message is from Cal.com
-      if (event.origin !== 'https://cal.com' && event.origin !== 'https://app.cal.com') {
-        return;
-      }
+    const handleMessage = async (event: MessageEvent) => {
+      if (!isOpen) return;
+      if (event.origin !== 'https://cal.com' && event.origin !== 'https://app.cal.com') return;
 
       const data = event.data;
+      if (data?.type !== 'bookingSuccessful') return;
 
-      // Cal.com sends { type: 'bookingSuccessful', ... } on successful booking
-      if (data?.type === 'bookingSuccessful') {
-        // Extract booking details if available
-        if (data.data) {
-          const bookingDetails: BookingDetails = {
-            bookingId: data.data.uid || data.data.id || '',
-            meetingLink: data.data.metadata?.videoCallUrl || null,
-            startTime: data.data.startTime || '',
-            endTime: data.data.endTime || '',
-            attendeeName: data.data.attendees?.[0]?.name || null,
-            timezone: data.data.timeZone || null,
-            status: 'confirmed',
-          };
-          onBookingComplete(bookingDetails);
-        } else {
-          // Fallback if no data
-          onBookingComplete({
-            bookingId: '',
-            meetingLink: null,
-            startTime: '',
-            endTime: '',
-            attendeeName: null,
-            timezone: null,
-            status: 'confirmed',
+      const raw = data.data ?? {};
+      const details: BookingDetails = {
+        bookingId: raw.uid || raw.id || '',
+        meetingLink: raw.metadata?.videoCallUrl || null,
+        startTime: raw.startTime || '',
+        endTime: raw.endTime || '',
+        attendeeName: raw.attendees?.[0]?.name || null,
+        timezone: raw.timeZone || null,
+        status: 'confirmed',
+      };
+
+      // Show saving overlay immediately so the user never sees Cal.com's confirmation/login page
+      setSaving(true);
+      setSaveError(null);
+
+      try {
+        if (mode === 'book') {
+          await meetingsApi.saveCalcomBooking({
+            bookingId: details.bookingId,
+            scheduledAt: details.startTime,
+            endTime: details.endTime,
+            videoCallUrl: details.meetingLink,
+            title: raw.title || 'Strategy Call',
+            description: raw.description || undefined,
           });
+        } else if (mode === 'reschedule' && meetingId && details.startTime) {
+          await meetingsApi.reschedule(meetingId, details.startTime);
         }
-        onClose();
+
+        setConfirmed(true);
+        setSaving(false);
+
+        // Give the user a moment to see the confirmation, then close & notify parent
+        setTimeout(() => {
+          onBookingComplete(details);
+          onClose();
+        }, 1500);
+      } catch (err: any) {
+        setSaving(false);
+        setSaveError(err?.message || 'Failed to save your booking. Please try again.');
       }
     };
 
-    // Listen for postMessage events from Cal.com iframe
     window.addEventListener('message', handleMessage);
-
-    return () => {
-      window.removeEventListener('message', handleMessage);
-    };
-  }, [onBookingComplete, onClose]);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [isOpen, mode, meetingId, onBookingComplete, onClose]);
 
   if (!isOpen) return null;
 
-  // Extract the Cal.com username/event-slug from the full URL
+  // Extract the Cal.com slug from full URL
   const getCalLink = () => {
     if (!calUrl) return '';
-
-    // Expected format: https://cal.com/username/event-slug or https://app.cal.com/username/event-slug
     return calUrl
       .replace('https://cal.com/', '')
       .replace('https://app.cal.com/', '')
-      .replace(/^\/+/, ''); // Remove leading slashes
+      .replace(/^\/+/, '');
   };
 
-  // Build iframe URL based on mode
   const getIframeUrl = () => {
     const baseUrl = `https://cal.com/${getCalLink()}`;
-    const params = new URLSearchParams({
-      embed: 'true',
-      theme: 'light',
-    });
+    const params = new URLSearchParams({ embed: 'true', theme: 'light' });
 
     if (mode === 'reschedule' && existingBookingUid) {
       params.append('rescheduleUid', existingBookingUid);
     } else {
       params.append('layout', 'month_view');
-      params.append('name', prefillName);
-      params.append('email', prefillEmail);
+      if (prefillName) params.append('name', prefillName);
+      if (prefillEmail) params.append('email', prefillEmail);
     }
 
     return `${baseUrl}?${params.toString()}`;
@@ -120,33 +144,75 @@ export default function CalBookingModal({
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-      onClick={onClose}
+      onClick={!saving && !confirmed ? onClose : undefined}
     >
       <div
         className="bg-white rounded-lg shadow-2xl w-full max-w-5xl h-[90vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Modal Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
           <h2 className="text-xl font-bold text-gray-900">{title}</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-            aria-label="Close modal"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+          {!saving && !confirmed && (
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+              aria-label="Close modal"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          )}
         </div>
 
-        {/* Modal Body with iframe */}
-        <div className="flex-1 overflow-hidden">
+        {/* Body */}
+        <div className="flex-1 overflow-hidden relative">
+          {/* Cal.com iframe — always rendered so booking flow isn't interrupted */}
           <iframe
             src={getIframeUrl()}
             className="w-full h-full border-0"
             title={title}
           />
+
+          {/* Overlay: shown while saving or after confirmation — prevents Cal.com
+              confirmation/login page from ever being visible to the user */}
+          {(saving || confirmed || saveError) && (
+            <div className="absolute inset-0 bg-white flex flex-col items-center justify-center gap-4 z-10">
+              {saving && !confirmed && !saveError && (
+                <>
+                  <Loader2 size={40} className="animate-spin text-[#FF9634]" />
+                  <p className="text-base font-semibold text-gray-900">Confirming your booking…</p>
+                  <p className="text-sm text-gray-500">Just a moment while we save your meeting.</p>
+                </>
+              )}
+
+              {confirmed && (
+                <>
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                    <CheckCircle size={36} className="text-green-600" />
+                  </div>
+                  <p className="text-xl font-bold text-gray-900">
+                    {mode === 'reschedule' ? 'Meeting Rescheduled!' : 'Meeting Booked!'}
+                  </p>
+                  <p className="text-sm text-gray-500">A calendar invite has been sent to your email.</p>
+                </>
+              )}
+
+              {saveError && (
+                <div className="text-center max-w-sm px-4">
+                  <p className="text-base font-semibold text-red-700 mb-2">Something went wrong</p>
+                  <p className="text-sm text-gray-600 mb-4">{saveError}</p>
+                  <button
+                    onClick={onClose}
+                    className="px-5 py-2.5 bg-gray-900 text-white rounded-lg text-sm font-semibold hover:bg-gray-700"
+                  >
+                    Close
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

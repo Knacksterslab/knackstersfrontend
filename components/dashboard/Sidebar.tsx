@@ -37,7 +37,6 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
       menuItems={menuItems}
       theme={sidebarThemes.client}
       onLogout={handleLogout}
-      showFeedback={true}
     />
   )
 }

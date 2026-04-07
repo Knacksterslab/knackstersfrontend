@@ -1,11 +1,10 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
-import { LogOut, MessageSquare, X, LucideIcon } from 'lucide-react'
-import FeedbackModal from '@/components/feedback/FeedbackModal'
+import { LogOut, X, LucideIcon } from 'lucide-react'
 
 export interface MenuItem {
   id: string
@@ -41,7 +40,6 @@ interface UnifiedSidebarProps {
     textColor: string
   }
   onLogout: () => void | Promise<void>
-  showFeedback?: boolean
 }
 
 export default function UnifiedSidebar({
@@ -51,10 +49,8 @@ export default function UnifiedSidebar({
   theme,
   roleBadge,
   onLogout,
-  showFeedback = true,
 }: UnifiedSidebarProps) {
   const pathname = usePathname()
-  const [showFeedbackModal, setShowFeedbackModal] = useState(false)
 
   const isActive = (path: string) => {
     if (path === '#') return false
@@ -213,29 +209,6 @@ export default function UnifiedSidebar({
           </ul>
         </nav>
 
-        {/* Feedback Section */}
-        {showFeedback && (
-          <div className="p-4 mx-3 mb-4 bg-blue-50 rounded-lg border border-blue-100">
-            <div className="flex items-start gap-3 mb-3">
-              <MessageSquare size={32} className="text-blue-500 flex-shrink-0" />
-              <div>
-                <h3 className="text-sm font-semibold text-gray-900 mb-1">
-                  Have anything to say?
-                </h3>
-                <p className="text-xs text-gray-600">
-                  Feel free to leave any feedback or contact support for help
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={() => setShowFeedbackModal(true)}
-              className="w-full py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Leave Feedback
-            </button>
-          </div>
-        )}
-
         {/* Logout */}
         <div className="p-4 border-t border-gray-200">
           <button
@@ -247,13 +220,6 @@ export default function UnifiedSidebar({
           </button>
         </div>
 
-        {/* Feedback Modal */}
-        {showFeedback && (
-          <FeedbackModal
-            isOpen={showFeedbackModal}
-            onClose={() => setShowFeedbackModal(false)}
-          />
-        )}
       </div>
     </>
   )

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Calendar, MessageCircle } from 'lucide-react'
 import CalBookingModal, { BookingDetails } from '../shared/CalBookingModal'
 import CancelBookingDialog from '../shared/CancelBookingDialog'
+import { useUser } from '@/contexts/UserContext'
 
 interface UpcomingMeetingProps {
   meeting: {
@@ -20,6 +21,7 @@ interface UpcomingMeetingProps {
 
 export default function UpcomingMeeting({ meeting }: UpcomingMeetingProps) {
   const router = useRouter()
+  const { user } = useUser()
   const [showModal, setShowModal] = useState(false)
   const [showCancelDialog, setShowCancelDialog] = useState(false)
 
@@ -100,6 +102,8 @@ export default function UpcomingMeeting({ meeting }: UpcomingMeetingProps) {
           title="Schedule Your Strategy Call"
           mode="book"
           onBookingComplete={handleBookingComplete}
+          prefillName={user?.fullName || ''}
+          prefillEmail={user?.email || ''}
         />
       </>
     )
@@ -185,7 +189,10 @@ export default function UpcomingMeeting({ meeting }: UpcomingMeetingProps) {
         title="Reschedule Your Strategy Call"
         mode="reschedule"
         existingBookingUid={meeting.bookingId}
+        meetingId={meeting.id}
         onBookingComplete={handleBookingComplete}
+        prefillName={user?.fullName || ''}
+        prefillEmail={user?.email || ''}
       />
 
       {/* Cancel Dialog */}

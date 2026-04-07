@@ -7,7 +7,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { billingApi } from '@/lib/api/client';
 
 export function useBilling() {
-  const [summary, setSummary] = useState<any>(null);
   const [subscription, setSubscription] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -17,14 +16,7 @@ export function useBilling() {
       setLoading(true);
       setError(null);
 
-      const [summaryRes, subscriptionRes] = await Promise.all([
-        billingApi.getSummary(),
-        billingApi.getSubscription(),
-      ]);
-
-      if (summaryRes.success && summaryRes.data) {
-        setSummary(summaryRes.data);
-      }
+      const subscriptionRes = await billingApi.getSubscription();
 
       if (subscriptionRes.success && subscriptionRes.data) {
         setSubscription(subscriptionRes.data);
@@ -46,7 +38,6 @@ export function useBilling() {
   };
 
   return {
-    summary,
     subscription,
     loading,
     error,

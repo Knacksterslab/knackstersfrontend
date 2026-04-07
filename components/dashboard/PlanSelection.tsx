@@ -11,9 +11,10 @@ const pricingPlans = getPricingPlansArray('PRO_RETAINER')
 interface PlanSelectionProps {
   onSubscriptionComplete?: () => void
   hasUpcomingMeeting?: boolean
+  onScheduleCall?: () => void
 }
 
-export default function PlanSelection({ onSubscriptionComplete, hasUpcomingMeeting = false }: PlanSelectionProps = {}) {
+export default function PlanSelection({ onSubscriptionComplete, hasUpcomingMeeting = false, onScheduleCall }: PlanSelectionProps = {}) {
   const router = useRouter()
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
@@ -27,10 +28,10 @@ export default function PlanSelection({ onSubscriptionComplete, hasUpcomingMeeti
   }
 
   const handleScheduleCall = () => {
-    // Scroll to or trigger the strategy call booking modal
-    const scheduleButton = document.querySelector('[data-action="schedule-call"]') as HTMLElement;
-    if (scheduleButton) {
-      scheduleButton.click();
+    if (onScheduleCall) {
+      onScheduleCall();
+    } else {
+      router.push('/meetings');
     }
   }
 

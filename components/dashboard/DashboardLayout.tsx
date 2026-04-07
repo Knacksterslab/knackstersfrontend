@@ -13,47 +13,16 @@ import UpcomingMeeting from './UpcomingMeeting';
 import NotificationCenter from './NotificationCenter';
 import DashboardFooter from './DashboardFooter';
 import NewUserTip, { NewUserTipCompact } from './NewUserTip';
-import CalBookingModal, { BookingDetails } from '../shared/CalBookingModal';
-import CancelBookingDialog from '../shared/CancelBookingDialog';
 import RequestTaskModal from './RequestTaskModal';
 import { Menu } from 'lucide-react';
 import { useDashboard } from '@/hooks/useDashboard';
-import { useUser } from '@/contexts/UserContext';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardLayout() {
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showRequestTaskModal, setShowRequestTaskModal] = useState(false);
   const { data, loading, error, refresh } = useDashboard();
-  const { user } = useUser();
-
-  const handleBookingComplete = (details: BookingDetails) => {
-    setShowModal(false);
-    refresh();
-  };
-
-  const handleCancelMeeting = async () => {
-    if (!data?.upcomingMeeting?.bookingId) return;
-
-    try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-      const response = await fetch(`${API_URL}/api/client/meetings/${data.upcomingMeeting.bookingId}/cancel`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        refresh();
-      } else {
-        console.error('Failed to cancel meeting');
-        alert('Failed to cancel meeting. Please try again.');
-      }
-    } catch (error) {
-      console.error('Error cancelling meeting:', error);
-      alert('An error occurred while cancelling the meeting.');
-    }
-  };
 
   const getTipMessage = () => {
     if (data?.subscription?.status === 'ACTIVE') {
@@ -172,6 +141,7 @@ export default function DashboardLayout() {
                       <PlanSelection 
                         onSubscriptionComplete={refresh} 
                         hasUpcomingMeeting={!!data.upcomingMeeting}
+                        onScheduleCall={() => router.push('/meetings')}
                       />
                     ) : (
                       <BillingSummary subscription={data.subscription} />
@@ -205,28 +175,6 @@ export default function DashboardLayout() {
             <DashboardFooter />
           </div>
         </div>
-
-        <CalBookingModal
-          isOpen={showModal}
-          onClose={() => setShowModal(false)}
-          calUrl={process.env.NEXT_PUBLIC_CAL_CLIENT_URL || ''}
-          title={data.upcomingMeeting ? "Reschedule Your Strategy Call" : "Schedule Your Strategy Call"}
-          mode={data.upcomingMeeting ? 'reschedule' : 'book'}
-          existingBookingUid={data.upcomingMeeting?.bookingId}
-          onBookingComplete={handleBookingComplete}
-          prefillName={user?.fullName || ''}
-          prefillEmail={user?.email || ''}
-        />
-
-        <CancelBookingDialog
-          isOpen={showCancelDialog}
-          onClose={() => setShowCancelDialog(false)}
-          bookingDetails={data.upcomingMeeting && data.upcomingMeeting.bookingId ? {
-            startTime: new Date(data.upcomingMeeting.scheduledAt).toISOString(),
-            bookingId: data.upcomingMeeting.bookingId
-          } : null}
-          onConfirmCancel={handleCancelMeeting}
-        />
 
         <RequestTaskModal
           isOpen={showRequestTaskModal}

@@ -6,6 +6,7 @@ import { Calendar, Clock, User, ArrowLeft, Mail } from 'lucide-react'
 import { meetingsApi } from '@/lib/api/client'
 import CalBookingModal from '../shared/CalBookingModal'
 import CancelBookingDialog from '../shared/CancelBookingDialog'
+import { useUser } from '@/contexts/UserContext'
 
 interface MeetingDetailPageProps {
   meetingId: string
@@ -13,6 +14,7 @@ interface MeetingDetailPageProps {
 
 export default function MeetingDetailPage({ meetingId }: MeetingDetailPageProps) {
   const router = useRouter()
+  const { user } = useUser()
   const [meeting, setMeeting] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -260,8 +262,11 @@ export default function MeetingDetailPage({ meetingId }: MeetingDetailPageProps)
         calUrl={process.env.NEXT_PUBLIC_CAL_CLIENT_URL || ''}
         title="Reschedule Your Meeting"
         mode="reschedule"
-        existingBookingUid={meeting.googleCalendarEventId ?? undefined}
+        existingBookingUid={meeting.bookingId ?? meeting.googleCalendarEventId ?? undefined}
+        meetingId={meeting.id}
         onBookingComplete={handleBookingComplete}
+        prefillName={user?.fullName || ''}
+        prefillEmail={user?.email || ''}
       />
 
       {/* Cancel Dialog */}

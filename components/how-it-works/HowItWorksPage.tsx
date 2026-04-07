@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import PrimaryButton from "../svg/primary-button";
 import ComparisonTable from "../shared/ComparisonTable";
+import PricingCards from "../shared/PricingCards";
 
 export default function HowItWorksPage() {
 
@@ -178,106 +179,6 @@ export default function HowItWorksPage() {
   };
 
 
-  const pricingPlans = [
-    {
-      name: "Trial to Hire",
-      price: "Free",
-      period: "",
-      hours: "50 hours",
-      badge: "Hire Risk-Free",
-      badgeStyle: "bg-green-500 text-white",
-      features: [
-        "50 hours of real work — valid 30 days",
-        "Evaluate one role at a time",
-        "One trial per company",
-        "Dedicated Customer Success Manager",
-        "Expert matching in 2–4 hours",
-        "Convert to full-time hire anytime"
-      ],
-      bestFor: "Companies evaluating a professional for a permanent full-time role",
-      cta: "Start Free Trial",
-      highlighted: false,
-      borderStyle: "border-green-400",
-      ctaStyle: "bg-green-600 hover:bg-green-700 text-white",
-    },
-    {
-      name: "Flex Retainer",
-      price: "$7,000",
-      period: "per month",
-      hours: "100 hours",
-      features: [
-        "Dedicated Customer Success Manager",
-        "Access to 10,000+ experts",
-        "All 6 service domains",
-        "Real-time dashboard",
-        "No contracts",
-        "Cancel anytime"
-      ],
-      bestFor: "Focused teams and ongoing projects",
-      cta: "Get Started",
-      highlighted: false,
-      borderStyle: "border-gray-200",
-      ctaStyle: "text-white",
-    },
-    {
-      name: "Pro Retainer",
-      price: "$12,500",
-      period: "per month",
-      hours: "200 hours",
-      badge: "Most Popular",
-      badgeStyle: "bg-yellow-400 text-gray-900",
-      features: [
-        "Everything in Flex, plus:",
-        "Priority matching in under 2 hours",
-        "Priority 24/7 support",
-        "Advanced analytics",
-        "Custom reporting",
-        "Multiple workstreams"
-      ],
-      bestFor: "Teams running multiple projects simultaneously",
-      cta: "Get Started",
-      highlighted: true,
-      borderStyle: "border-[#5A1568]",
-      ctaStyle: "text-white",
-    },
-    {
-      name: "Growth",
-      price: "$25,000",
-      period: "per month",
-      hours: "450 hours",
-      features: [
-        "Everything in Pro, plus:",
-        "Dedicated senior CSM",
-        "Quarterly business reviews",
-        "Custom reporting",
-        "Volume pricing benefits"
-      ],
-      bestFor: "Scaling companies with large teams",
-      cta: "Get Started",
-      highlighted: false,
-      borderStyle: "border-gray-200",
-      ctaStyle: "text-white",
-    },
-    {
-      name: "Enterprise",
-      price: "Custom",
-      period: "pricing",
-      hours: "Custom hours",
-      features: [
-        "Everything in Growth, plus:",
-        "White-label options",
-        "Custom integrations",
-        "Dedicated success team",
-        "SLA guarantees",
-        "Custom workflows"
-      ],
-      bestFor: "Large enterprises with ongoing needs",
-      cta: "Contact Sales",
-      highlighted: false,
-      borderStyle: "border-gray-200",
-      ctaStyle: "text-white",
-    }
-  ];
 
   const benefits = [
     {
@@ -538,61 +439,16 @@ export default function HowItWorksPage() {
             </p>
           </div>
 
-          {/* Scrollable plan cards */}
-          <div className="overflow-x-auto pb-3 pt-5 -mx-4 px-4">
-            <div className="flex gap-4" style={{ width: 'max-content' }}>
-              {pricingPlans.map((plan, index) => (
-                <div
-                  key={index}
-                  style={{ width: '220px', flexShrink: 0 }}
-                  className={`relative flex flex-col rounded-2xl border-2 ${plan.borderStyle} bg-white`}
-                >
-                  {plan.badge && (
-                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
-                      <span className={`${plan.badgeStyle} text-xs font-bold px-3 py-1 rounded-full shadow-sm whitespace-nowrap`}>
-                        {plan.badge}
-                      </span>
-                    </div>
-                  )}
-                  <div className={`h-1 w-full rounded-t-2xl ${plan.name === 'Trial to Hire' ? 'bg-green-400' : plan.highlighted ? 'bg-[#5A1568]' : 'bg-gray-200'}`} />
-                  <div className="p-5 flex flex-col flex-1">
-                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">{plan.name}</h3>
-                    <div className="text-2xl font-extrabold text-[rgb(38,38,38)] mb-0.5">{plan.price}</div>
-                    <div className="text-xs text-gray-400 mb-1">{plan.period || '30-day trial'}</div>
-                    <div className={`text-sm font-bold mb-3 ${plan.name === 'Trial to Hire' ? 'text-green-600' : 'text-[#FF9634]'}`}>{plan.hours}</div>
-                    <p className="text-xs text-gray-400 mb-3 leading-relaxed">{plan.bestFor}</p>
-                    <div className="border-t border-gray-100 mb-4" />
-                    <ul className="space-y-2.5 mb-5 flex-1">
-                      {plan.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-2 text-xs text-[rgb(89,89,89)] leading-snug">
-                          <CheckCircle size={13} className={`flex-shrink-0 mt-0.5 ${plan.name === 'Trial to Hire' ? 'text-green-500' : 'text-[#FF9634]'}`} />
-                          <span className="font-sans">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <Link href="/signup">
-                      <button
-                        className={`w-full py-2.5 rounded-xl text-sm font-bold font-sans transition-all ${plan.ctaStyle}`}
-                        style={
-                          plan.name === 'Trial to Hire' ? {} :
-                          plan.highlighted ? { backgroundColor: '#5A1568' } :
-                          { backgroundImage: "linear-gradient(90deg, #E9414C, #FF9634)" }
-                        }
-                      >
-                        {plan.cta}
-                      </button>
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <PricingCards darkBackground />
 
           <div className="mt-8 text-center">
-            <p className="text-sm font-sans" style={{ color: 'rgb(140,140,140)' }}>
-              Need more than your plan includes?{" "}
-              <span className="font-bold text-[#FF9634]">$100 per additional hour</span> — billed monthly, no minimums.
-            </p>
+            <Link
+              href="/pricing"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold font-sans text-[#FF9634] hover:underline"
+            >
+              See full pricing details, FAQ &amp; comparisons
+              <ArrowRight size={15} />
+            </Link>
           </div>
         </div>
       </section>
