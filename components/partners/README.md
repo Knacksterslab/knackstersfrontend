@@ -1,105 +1,29 @@
-# Partner Logos Management
+# Partner Logos
 
-This directory contains the partner logos section and configuration.
+Partner logos are managed through the admin dashboard and stored in the database.
 
-## Structure
+## How to manage partners
 
-```
-partners/
-├── PartnersComponent.tsx    # Main component that displays partners
-├── partner-config.ts         # Configuration file for all partners
-├── PartnerLogos.tsx         # (Legacy) SVG components - can be deleted
-└── README.md                # This file
-```
+Go to **Admin Dashboard → Content → Partner Logos** (`/admin-dashboard/content/partners`).
 
-## How to Add a New Partner Logo
+From there you can:
+- **Add** a partner — upload a logo (uploaded to Supabase Storage), set a name, category, and optional website URL
+- **Edit** — update any field or replace the logo
+- **Activate / Deactivate** — toggle visibility on the landing page without deleting
+- **Delete** — permanently remove
 
-### 1. Add the Logo File
+Changes appear on the landing page within ~60 seconds (ISR revalidation).
 
-Place the logo file in `/public/images/partners/`:
-- **Preferred format**: SVG (scalable, small file size)
-- **Alternative**: PNG with transparent background
-- **File naming**: Use lowercase with hyphens (e.g., `company-name.svg`)
+## Logo guidelines
 
-### 2. Update the Config
+- Preferred format: PNG with transparent background or SVG
+- Keep files under 2 MB
+- Follow partner brand guidelines
 
-Edit `partner-config.ts` and add a new entry:
+## Architecture
 
-```typescript
-{
-  id: 'company-id',           // Unique identifier
-  name: 'Company Name',       // Display name
-  logoUrl: '/images/partners/company-name.svg',
-  active: true,               // Set to false to hide without deleting
-  category: 'client',         // 'client' or 'technology'
-  website: 'https://...'      // (Optional) Company website
-}
-```
-
-### 3. That's It!
-
-The component will automatically display the new logo. No code changes needed.
-
-## How to Remove a Partner Logo
-
-### Temporary (Hide)
-Set `active: false` in `partner-config.ts`:
-
-```typescript
-{
-  id: 'company-id',
-  name: 'Company Name',
-  active: false,  // ← Logo won't display but config preserved
-  // ...
-}
-```
-
-### Permanent (Delete)
-1. Remove the entry from `partner-config.ts`
-2. Delete the logo file from `/public/images/partners/`
-
-## How to Reorder Logos
-
-Simply reorder the array in `partner-config.ts`. The logos display in array order.
-
-## Filter by Category
-
-Use the helper functions:
-
-```typescript
-import { getPartnersByCategory } from './partner-config';
-
-// Get only client logos
-const clients = getPartnersByCategory('client');
-
-// Get only technology partner logos
-const techPartners = getPartnersByCategory('technology');
-```
-
-## Logo Guidelines
-
-When obtaining real partner logos:
-1. **Get permission** - Use official brand assets or press kits
-2. **Follow brand guidelines** - Respect spacing, colors, sizing
-3. **Use SVG when possible** - Better quality and performance
-4. **Optimize files** - Use SVGO or TinyPNG to reduce file size
-5. **Check licensing** - Ensure you have rights to use the logo
-
-## Technical Details
-
-- **Component**: Next.js Image component for automatic optimization
-- **Responsive**: Grid adapts from 2 columns (mobile) to 4 columns (desktop)
-- **Performance**: Lazy loading and proper sizing hints
-- **Accessibility**: Alt text from partner name
-- **Hover effect**: Opacity fade on hover
-
-## Future Enhancements
-
-Possible improvements you could add:
-
-- **Links**: Click logos to visit partner websites (use `website` field)
-- **Dark mode**: Add `logoUrlDark` for dark theme variants
-- **Tooltips**: Show partner info on hover
-- **Filtering**: Filter by category dynamically
-- **Animation**: Fade in logos on scroll
-- **CMS Integration**: Load partners from a headless CMS
+- Partner data: PostgreSQL `partners` table (via Prisma)
+- Logo files: Supabase Storage `partner-logos` bucket
+- Public API: `GET /api/partners` (active partners only, cached 60 s)
+- Admin API: `GET/POST/PUT/DELETE /api/admin/partners` (auth required)
+- Landing page: `PartnersComponent` — async Next.js server component with `revalidate: 60`

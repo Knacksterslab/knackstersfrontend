@@ -1,14 +1,36 @@
-'use client';
-
 import Image from 'next/image';
-import { getActivePartners } from './partner-config';
 import { defaultLandingContent } from '@/components/landing/landing-content';
 import { getLiveStats } from '@/lib/utils/stats';
 
-export default function PartnersComponent() {
-  const activePartners = getActivePartners();
-  const { title, description } = defaultLandingContent.partners;
-  const { professionals, professionalsLabel, hoursDelivered, hoursDeliveredLabel } = getLiveStats();
+interface Partner {
+  slug: string;
+  name: string;
+  logoUrl: string;
+  logoUrlDark?: string | null;
+  websiteUrl?: string | null;
+  category: string;
+}
+
+async function fetchActivePartners(): Promise<Partner[]> {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/partners`, {
+      next: { revalidate: 60 },
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.partners ?? [];
+  } catch {
+    return [];
+  }
+}
+
+export default async function PartnersComponent() {
+  const [activePartners, { title, description }, { professionals, professionalsLabel, hoursDelivered, hoursDeliveredLabel }] =
+    await Promise.all([
+      fetchActivePartners(),
+      Promise.resolve(defaultLandingContent.partners),
+      Promise.resolve(getLiveStats()),
+    ]);
 
   return (
     <section className="w-full py-12 sm:py-16 md:py-20 lg:py-24 xl:py-28 px-4 sm:px-6 relative overflow-hidden" style={{ backgroundColor: '#7D1F2A' }}>
@@ -49,53 +71,48 @@ export default function PartnersComponent() {
 
           {/* Right Side - Partner Logos Grid */}
           <div className="flex-1 w-full lg:max-w-2xl">
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
-              {activePartners.map((partner, index) => {
-                // Create zigzag effect by alternating vertical offset (only on larger screens)
-                const isEven = index % 2 === 0;
-                const offsetClass = isEven ? 'md:mt-0' : 'md:mt-6 lg:mt-8';
-                
-                const partnerCard = (
-                  <div
-                    className={`flex items-center justify-center partner-logo-container 
-                    transition-all duration-300 group
-                    hover:-translate-y-2
-                    animate-fadeInUp relative ${offsetClass}`}
-                    style={{
-                      animationDelay: `${index * 100}ms`,
-                      animationFillMode: 'both'
-                    }}
-                  >
-                    <div className="w-full aspect-[3/2] relative overflow-hidden bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-md hover:shadow-xl transition-shadow">
-                      <Image
-                        src={partner.logoUrl}
-                        alt={`${partner.name} logo`}
-                        fill
-                        className="object-contain transition-transform duration-300 group-hover:scale-110 p-1"
-                        sizes="(max-width: 640px) 50vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 200px"
-                      />
-                    </div>
-                  </div>
-                );
+            {activePartners.length === 0 ? null : (
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
+                {activePartners.map((partner, index) => {
+                  const isEven = index % 2 === 0;
+                  const offsetClass = isEven ? 'md:mt-0' : 'md:mt-6 lg:mt-8';
 
-                return partner.website ? (
-                  <a
-                    key={partner.id}
-                    href={partner.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block"
-                    title={`Visit ${partner.name} website`}
-                  >
-                    {partnerCard}
-                  </a>
-                ) : (
-                  <div key={partner.id}>
-                    {partnerCard}
-                  </div>
-                );
-              })}
-            </div>
+                  const partnerCard = (
+                    <div
+                      className={`flex items-center justify-center partner-logo-container transition-all duration-300 group hover:-translate-y-2 animate-fadeInUp relative ${offsetClass}`}
+                      style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'both' }}
+                    >
+                      <div className="w-full aspect-[3/2] relative overflow-hidden bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-md hover:shadow-xl transition-shadow">
+                        <Image
+                          src={partner.logoUrl}
+                          alt={`${partner.name} logo`}
+                          fill
+                          className="object-contain transition-transform duration-300 group-hover:scale-110 p-1"
+                          sizes="(max-width: 640px) 50vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 200px"
+                        />
+                      </div>
+                    </div>
+                  );
+
+                  return partner.websiteUrl ? (
+                    <a
+                      key={partner.slug}
+                      href={partner.websiteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block"
+                      title={`Visit ${partner.name} website`}
+                    >
+                      {partnerCard}
+                    </a>
+                  ) : (
+                    <div key={partner.slug}>
+                      {partnerCard}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
       </div>
