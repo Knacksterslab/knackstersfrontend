@@ -10,7 +10,6 @@ import {
   Clock,
   User,
   Users,
-  ArrowRight,
   CheckCircle,
   Loader2,
   FileText
@@ -435,25 +434,6 @@ export default function ManagerAssignmentsPage() {
                 </div>
               )}
             </div>
-
-            {/* Quick Actions */}
-            <div className="bg-purple-50 border border-purple-200 rounded-xl p-6">
-              <h2 className="text-lg font-bold text-gray-900 mb-4">Quick Actions</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <button className="flex items-center justify-between p-4 bg-white border border-purple-200 rounded-lg hover:shadow-md transition-all">
-                  <span className="font-semibold text-gray-900">Match by Skills</span>
-                  <ArrowRight size={20} className="text-purple-600" />
-                </button>
-                <button className="flex items-center justify-between p-4 bg-white border border-purple-200 rounded-lg hover:shadow-md transition-all">
-                  <span className="font-semibold text-gray-900">View Talent Availability</span>
-                  <ArrowRight size={20} className="text-purple-600" />
-                </button>
-                <button className="flex items-center justify-between p-4 bg-white border border-purple-200 rounded-lg hover:shadow-md transition-all">
-                  <span className="font-semibold text-gray-900">Task Reports</span>
-                  <ArrowRight size={20} className="text-purple-600" />
-                </button>
-              </div>
-      </div>
 
       {/* Task Assignment Modal */}
       <TaskAssignmentModal
