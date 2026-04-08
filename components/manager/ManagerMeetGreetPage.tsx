@@ -7,13 +7,13 @@ import {
   Clock,
   Video,
   CheckCircle,
-  Plus,
   AlertCircle,
   Loader2,
   Users,
-  XCircle
+  XCircle,
+  X
 } from 'lucide-react'
-import { useManagerMeetings } from '@/hooks/useManagerMeetings'
+import { useManagerMeetings, useMeetingActions } from '@/hooks/useManagerMeetings'
 import { format, formatDistanceToNow, isToday, isTomorrow } from 'date-fns'
 
 function formatMeetingDate(dateStr: string): string {
@@ -27,8 +27,89 @@ function getMeetingTypeLabel(type: string): string {
   return type.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
 }
 
+// ---------- Complete Meeting Modal ----------
+interface CompleteMeetingModalProps {
+  meeting: any
+  onClose: () => void
+  onSuccess: () => void
+}
+
+function CompleteMeetingModal({ meeting, onClose, onSuccess }: CompleteMeetingModalProps) {
+  const [notes, setNotes] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+  const { completeMeeting } = useMeetingActions()
+
+  const handleComplete = async () => {
+    setSaving(true)
+    setError('')
+    try {
+      await completeMeeting(meeting.id, notes.trim() || undefined)
+      onSuccess()
+    } catch (err: any) {
+      setError(err.message || 'Failed to complete meeting')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const clientName = meeting.client?.fullName || meeting.client?.companyName || 'Client'
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+          <h2 className="text-lg font-bold text-gray-900">Complete Meeting</h2>
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+            <X size={20} />
+          </button>
+        </div>
+        <div className="p-6 space-y-4">
+          <p className="text-sm text-gray-600">
+            Mark the meeting with <strong>{clientName}</strong> as completed. Optionally add notes or action items.
+          </p>
+          {error && (
+            <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+              <AlertCircle size={16} />
+              {error}
+            </div>
+          )}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">Meeting Notes (optional)</label>
+            <textarea
+              value={notes}
+              onChange={e => setNotes(e.target.value)}
+              rows={4}
+              placeholder="Summarise what was discussed, decisions made, next steps…"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm resize-none"
+            />
+          </div>
+        </div>
+        <div className="flex gap-3 px-6 py-4 border-t border-gray-200">
+          <button
+            onClick={onClose}
+            className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors text-sm"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleComplete}
+            disabled={saving}
+            className="flex-1 px-4 py-2.5 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-60"
+          >
+            {saving ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle size={16} />}
+            {saving ? 'Completing…' : 'Mark as Completed'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ---------- Main Page ----------
 export default function ManagerMeetGreetPage() {
   const [selectedTab, setSelectedTab] = useState<'upcoming' | 'completed' | 'all'>('upcoming')
+  const [meetingToComplete, setMeetingToComplete] = useState<any | null>(null)
   const { meetings, loading, error, refresh } = useManagerMeetings()
 
   const upcomingMeetings = meetings.filter(m => m.status === 'SCHEDULED')
@@ -188,16 +269,27 @@ export default function ManagerMeetGreetPage() {
                         </div>
                       </div>
 
-                      {isUpcoming && meeting.videoRoomUrl && (
-                        <a
-                          href={meeting.videoRoomUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-shrink-0 flex items-center gap-2 px-4 py-2 bg-purple-600 text-white text-sm font-semibold rounded-lg hover:bg-purple-700 transition-colors"
-                        >
-                          <Video size={16} />
-                          Join Call
-                        </a>
+                      {isUpcoming && (
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          {meeting.videoRoomUrl && (
+                            <a
+                              href={meeting.videoRoomUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white text-sm font-semibold rounded-lg hover:bg-purple-700 transition-colors"
+                            >
+                              <Video size={16} />
+                              Join Call
+                            </a>
+                          )}
+                          <button
+                            onClick={() => setMeetingToComplete(meeting)}
+                            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition-colors"
+                          >
+                            <CheckCircle size={16} />
+                            Complete
+                          </button>
+                        </div>
                       )}
                     </div>
 
@@ -240,6 +332,15 @@ export default function ManagerMeetGreetPage() {
           </div>
         </div>
       </div>
+
+      {/* Complete Meeting Modal */}
+      {meetingToComplete && (
+        <CompleteMeetingModal
+          meeting={meetingToComplete}
+          onClose={() => setMeetingToComplete(null)}
+          onSuccess={() => { setMeetingToComplete(null); refresh() }}
+        />
+      )}
     </ManagerPageWrapper>
   )
 }

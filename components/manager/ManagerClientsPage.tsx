@@ -16,15 +16,127 @@ import {
   Loader2,
   Calendar,
   FolderOpen,
-  Eye
+  Eye,
+  X,
+  CheckCircle,
+  ClipboardList
 } from 'lucide-react'
 import { useManagerDashboard } from '@/hooks/useManagerDashboard'
 import { managerApi } from '@/lib/api/client'
 import { getStatusColor, getInitials } from '@/lib/transformers/manager'
+import { formatDistanceToNow } from 'date-fns'
+
+function ProjectDetailModal({ project, onClose }: { project: any; onClose: () => void }) {
+  const tasks: any[] = project.tasks || []
+  const completedCount = tasks.filter((t: any) => t.status === 'COMPLETED').length
+
+  const statusColors: Record<string, string> = {
+    NOT_STARTED: 'bg-gray-100 text-gray-700',
+    IN_PROGRESS: 'bg-blue-100 text-blue-700',
+    COMPLETED: 'bg-green-100 text-green-700',
+    ON_HOLD: 'bg-yellow-100 text-yellow-700',
+    CANCELLED: 'bg-red-100 text-red-700',
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 sticky top-0 bg-white z-10">
+          <h2 className="text-lg font-bold text-gray-900">Project Details</h2>
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+            <X size={20} />
+          </button>
+        </div>
+        <div className="p-6 space-y-5">
+          {/* Title + status */}
+          <div>
+            <div className="flex items-center gap-3 mb-1 flex-wrap">
+              <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusColors[project.status] || 'bg-gray-100 text-gray-700'}`}>
+                {project.status?.replace(/_/g, ' ')}
+              </span>
+              {project.projectNumber && (
+                <span className="text-xs text-blue-600 font-medium">{project.projectNumber}</span>
+              )}
+            </div>
+            <h3 className="text-xl font-bold text-gray-900">{project.title}</h3>
+          </div>
+
+          {project.description && (
+            <div>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Description</p>
+              <p className="text-sm text-gray-700 whitespace-pre-line">{project.description}</p>
+            </div>
+          )}
+
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-4">
+            <div className="bg-gray-50 rounded-lg p-3 text-center">
+              <p className="text-2xl font-bold text-gray-900">{tasks.length}</p>
+              <p className="text-xs text-gray-500 mt-0.5">Total Tasks</p>
+            </div>
+            <div className="bg-green-50 rounded-lg p-3 text-center">
+              <p className="text-2xl font-bold text-green-700">{completedCount}</p>
+              <p className="text-xs text-gray-500 mt-0.5">Completed</p>
+            </div>
+            <div className="bg-orange-50 rounded-lg p-3 text-center">
+              <p className="text-2xl font-bold text-orange-700">{tasks.length - completedCount}</p>
+              <p className="text-xs text-gray-500 mt-0.5">Remaining</p>
+            </div>
+          </div>
+
+          {project.estimatedHours && (
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <Clock size={16} className="text-gray-400" />
+              <span><strong>Estimated:</strong> {project.estimatedHours} hours</span>
+            </div>
+          )}
+
+          {/* Task list */}
+          {tasks.length > 0 && (
+            <div>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Tasks</p>
+              <div className="space-y-2">
+                {tasks.map((task: any) => (
+                  <div key={task.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+                    <div className="flex items-center gap-3">
+                      {task.status === 'COMPLETED'
+                        ? <CheckCircle size={16} className="text-green-500 flex-shrink-0" />
+                        : <ClipboardList size={16} className="text-gray-400 flex-shrink-0" />
+                      }
+                      <span className="text-sm text-gray-900">{task.name}</span>
+                    </div>
+                    <span className={`px-2 py-0.5 text-xs font-semibold rounded-full ${getStatusColor(task.status)}`}>
+                      {task.status?.replace(/_/g, ' ')}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {project.createdAt && (
+            <p className="text-xs text-gray-400">
+              Created {formatDistanceToNow(new Date(project.createdAt), { addSuffix: true })}
+            </p>
+          )}
+        </div>
+        <div className="px-6 py-4 border-t border-gray-200">
+          <button
+            onClick={onClose}
+            className="w-full px-4 py-2.5 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition-colors text-sm"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function ManagerClientsPage() {
   const [expandedClient, setExpandedClient] = useState<string | null>(null)
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null)
+  const [selectedProject, setSelectedProject] = useState<any | null>(null)
   const [clientProjects, setClientProjects] = useState<Record<string, any[]>>({})
   const { data, loading, error, refresh } = useManagerDashboard()
 
@@ -282,7 +394,10 @@ export default function ManagerClientsPage() {
                                     )}
                                   </div>
                                 </div>
-                                <button className="px-4 py-2 text-purple-600 hover:bg-purple-100 rounded-lg font-semibold text-sm transition-colors">
+                                <button
+                                  onClick={() => setSelectedProject(project)}
+                                  className="px-4 py-2 text-purple-600 hover:bg-purple-100 rounded-lg font-semibold text-sm transition-colors"
+                                >
                                   View Details
                                 </button>
                               </div>
@@ -305,6 +420,14 @@ export default function ManagerClientsPage() {
         onClose={() => setSelectedClientId(null)}
         clientId={selectedClientId}
       />
+
+      {/* Project Detail Modal */}
+      {selectedProject && (
+        <ProjectDetailModal
+          project={selectedProject}
+          onClose={() => setSelectedProject(null)}
+        />
+      )}
     </ManagerPageWrapper>
   )
 }

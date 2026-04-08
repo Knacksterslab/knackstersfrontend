@@ -771,6 +771,22 @@ export const managerApi = {
   },
 
   /**
+   * Update task fields (name, description, priority, dueDate, estimatedMinutes)
+   */
+  updateTask: async (taskId: string, data: {
+    name?: string;
+    description?: string;
+    priority?: string;
+    dueDate?: string | null;
+    estimatedMinutes?: number | null;
+  }) => {
+    return apiFetch<ApiResponse>(`/api/manager/tasks/${taskId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+
+  /**
    * Log hours for talent work
    */
   logHours: async (data: {
