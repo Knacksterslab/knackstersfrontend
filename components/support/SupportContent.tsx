@@ -199,7 +199,7 @@ export default function SupportContent() {
                   >
                     <option value="">Select priority</option>
                     <option value="low">Low</option>
-                    <option value="medium">Medium</option>
+                    <option value="normal">Normal</option>
                     <option value="high">High</option>
                     <option value="urgent">Urgent</option>
                   </select>

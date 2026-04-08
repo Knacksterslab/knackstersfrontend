@@ -491,6 +491,44 @@ export const supportApi = {
 };
 
 /**
+ * Manager Support Ticket API
+ */
+export const managerSupportApi = {
+  createTicket: async (data: { subject: string; description: string; category?: string; priority?: string }) => {
+    return apiFetch<ApiResponse>('/api/manager/support/tickets', { method: 'POST', body: JSON.stringify(data) });
+  },
+  getTickets: async (status?: string) => {
+    const query = status ? `?status=${status}` : '';
+    return apiFetch<ApiResponse>(`/api/manager/support/tickets${query}`);
+  },
+  getTicketById: async (id: string) => {
+    return apiFetch<ApiResponse>(`/api/manager/support/tickets/${id}`);
+  },
+  getStats: async () => {
+    return apiFetch<ApiResponse>('/api/manager/support/stats');
+  },
+};
+
+/**
+ * Talent Support Ticket API
+ */
+export const talentSupportApi = {
+  createTicket: async (data: { subject: string; description: string; category?: string; priority?: string }) => {
+    return apiFetch<ApiResponse>('/api/talent/support/tickets', { method: 'POST', body: JSON.stringify(data) });
+  },
+  getTickets: async (status?: string) => {
+    const query = status ? `?status=${status}` : '';
+    return apiFetch<ApiResponse>(`/api/talent/support/tickets${query}`);
+  },
+  getTicketById: async (id: string) => {
+    return apiFetch<ApiResponse>(`/api/talent/support/tickets/${id}`);
+  },
+  getStats: async () => {
+    return apiFetch<ApiResponse>('/api/talent/support/stats');
+  },
+};
+
+/**
  * Admin Support Ticket API
  */
 export const adminSupportApi = {
