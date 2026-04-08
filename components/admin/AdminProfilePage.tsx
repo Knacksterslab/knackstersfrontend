@@ -5,9 +5,7 @@ import { useRouter } from 'next/navigation'
 import {
   User,
   Mail,
-  Phone,
-  Building,
-  Globe,
+  Shield,
   Save,
   Pencil,
   Camera,
@@ -22,7 +20,7 @@ import { useUser } from '@/contexts/UserContext'
 import { getInitials } from '@/lib/utils/image'
 import Image from 'next/image'
 
-export default function ClientProfilePage() {
+export default function AdminProfilePage() {
   const router = useRouter()
   const { user, updateProfile, uploadAvatar, removeAvatar } = useUser()
 
@@ -33,13 +31,9 @@ export default function ClientProfilePage() {
 
   const [form, setForm] = useState({
     fullName: user?.fullName || '',
-    phone: user?.phone || '',
-    companyName: user?.companyName || '',
-    bio: user?.bio || '',
-    timezone: user?.timezone || '',
   })
 
-  // Avatar state
+  // Avatar
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
   const [pendingFile, setPendingFile] = useState<File | null>(null)
@@ -49,18 +43,12 @@ export default function ClientProfilePage() {
     ? new Date((user as any).createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
     : null
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
   const handleEdit = () => {
-    setForm({
-      fullName: user?.fullName || '',
-      phone: user?.phone || '',
-      companyName: user?.companyName || '',
-      bio: user?.bio || '',
-      timezone: user?.timezone || '',
-    })
+    setForm({ fullName: user?.fullName || '' })
     setIsEditing(true)
     setError('')
     setSuccess('')
@@ -69,7 +57,6 @@ export default function ClientProfilePage() {
   const handleCancel = () => {
     setIsEditing(false)
     setError('')
-    // Discard any pending avatar
     if (avatarPreview) URL.revokeObjectURL(avatarPreview)
     setAvatarPreview(null)
     setPendingFile(null)
@@ -80,15 +67,9 @@ export default function ClientProfilePage() {
     setIsSaving(true)
     setError('')
     try {
-      await updateProfile({
-        fullName: form.fullName.trim(),
-        phone: form.phone.trim() || undefined,
-        companyName: form.companyName.trim() || undefined,
-        bio: form.bio.trim() || undefined,
-        timezone: form.timezone || undefined,
-      })
+      await updateProfile({ fullName: form.fullName.trim() })
       setIsEditing(false)
-      setSuccess('Profile updated successfully!')
+      setSuccess('Profile updated!')
       setTimeout(() => setSuccess(''), 4000)
     } catch (err: any) {
       setError(err.message || 'Failed to save profile')
@@ -141,10 +122,10 @@ export default function ClientProfilePage() {
   const displayAvatar = avatarPreview ?? user?.avatarUrl
 
   return (
-    <div className="max-w-3xl mx-auto">
-      {/* Back button */}
+    <div className="max-w-2xl mx-auto">
+      {/* Back */}
       <button
-        onClick={() => router.push('/client-dashboard')}
+        onClick={() => router.push('/admin-dashboard')}
         className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 mb-6 transition-colors"
       >
         <ArrowLeft size={16} />
@@ -154,13 +135,13 @@ export default function ClientProfilePage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Profile</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Manage your personal information</p>
+          <h1 className="text-2xl font-bold text-gray-900">Admin Profile</h1>
+          <p className="text-sm text-gray-500 mt-0.5">Manage your administrator account details</p>
         </div>
         {!isEditing ? (
           <button
             onClick={handleEdit}
-            className="flex items-center gap-2 px-5 py-2.5 bg-[#FF9634] text-white font-semibold rounded-lg hover:bg-[#E88530] transition-colors self-start sm:self-auto"
+            className="flex items-center gap-2 px-5 py-2.5 bg-[#E9414C] text-white font-semibold rounded-lg hover:bg-[#D03841] transition-colors self-start sm:self-auto"
           >
             <Pencil size={16} />
             Edit Profile
@@ -178,7 +159,7 @@ export default function ClientProfilePage() {
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="flex items-center gap-2 px-5 py-2.5 bg-[#FF9634] text-white font-semibold rounded-lg hover:bg-[#E88530] transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-5 py-2.5 bg-[#E9414C] text-white font-semibold rounded-lg hover:bg-[#D03841] transition-colors disabled:opacity-50"
             >
               {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
               {isSaving ? 'Saving…' : 'Save Changes'}
@@ -202,15 +183,15 @@ export default function ClientProfilePage() {
       )}
 
       {/* Profile card */}
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         {/* Banner */}
-        <div className="h-28 bg-gradient-to-r from-[#E9414C] to-[#FF9634]" />
+        <div className="h-28 bg-gradient-to-r from-[#E9414C] to-[#c0392b]" />
 
         <div className="px-6 pb-6">
           {/* Avatar row */}
           <div className="flex flex-col sm:flex-row sm:items-end gap-4 -mt-14 mb-5">
             <div className="relative inline-block flex-shrink-0">
-              <div className="w-28 h-28 rounded-full border-4 border-white shadow-lg overflow-hidden bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
+              <div className="w-28 h-28 rounded-full border-4 border-white shadow-lg overflow-hidden bg-gradient-to-br from-red-400 to-red-700 flex items-center justify-center">
                 {displayAvatar ? (
                   <Image src={displayAvatar} alt="Avatar" width={112} height={112} className="object-cover w-full h-full" unoptimized />
                 ) : (
@@ -220,7 +201,7 @@ export default function ClientProfilePage() {
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={avatarUploading}
-                className="absolute bottom-0 right-0 w-9 h-9 bg-[#FF9634] text-white rounded-full border-2 border-white flex items-center justify-center shadow hover:bg-[#E88530] transition-colors disabled:opacity-50"
+                className="absolute bottom-0 right-0 w-9 h-9 bg-[#E9414C] text-white rounded-full border-2 border-white flex items-center justify-center shadow hover:bg-[#D03841] transition-colors disabled:opacity-50"
                 title="Change photo"
               >
                 <Camera size={15} />
@@ -233,7 +214,7 @@ export default function ClientProfilePage() {
                 <button
                   onClick={handleUploadAvatar}
                   disabled={avatarUploading}
-                  className="flex items-center gap-1.5 px-4 py-2 bg-[#FF9634] text-white text-sm font-semibold rounded-lg hover:bg-[#E88530] disabled:opacity-50 transition-colors"
+                  className="flex items-center gap-1.5 px-4 py-2 bg-[#E9414C] text-white text-sm font-semibold rounded-lg hover:bg-[#D03841] disabled:opacity-50 transition-colors"
                 >
                   {avatarUploading ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
                   {avatarUploading ? 'Saving…' : 'Save photo'}
@@ -257,14 +238,21 @@ export default function ClientProfilePage() {
             ) : null}
           </div>
 
-          {memberSince && (
-            <div className="flex items-center gap-1.5 text-xs text-gray-400 mb-5">
-              <Calendar size={13} />
-              Member since {memberSince}
-            </div>
-          )}
+          {/* Admin badge + member since */}
+          <div className="flex items-center gap-3 mb-5">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 border border-red-200 rounded-full text-xs font-semibold text-red-700">
+              <Shield size={11} />
+              Administrator
+            </span>
+            {memberSince && (
+              <span className="flex items-center gap-1.5 text-xs text-gray-400">
+                <Calendar size={12} />
+                Member since {memberSince}
+              </span>
+            )}
+          </div>
 
-          {/* Form fields */}
+          {/* Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Full Name</label>
@@ -275,7 +263,7 @@ export default function ClientProfilePage() {
                   value={isEditing ? form.fullName : (user?.fullName || '')}
                   onChange={handleChange}
                   disabled={!isEditing}
-                  className="w-full pl-9 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF9634] disabled:bg-gray-50 disabled:text-gray-600"
+                  className="w-full pl-9 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#E9414C] disabled:bg-gray-50 disabled:text-gray-600"
                 />
               </div>
             </div>
@@ -291,76 +279,6 @@ export default function ClientProfilePage() {
                 />
               </div>
               <p className="text-xs text-gray-400 mt-1">Email cannot be changed.</p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Phone</label>
-              <div className="relative">
-                <Phone size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  name="phone"
-                  value={isEditing ? form.phone : (user?.phone || '')}
-                  onChange={handleChange}
-                  disabled={!isEditing}
-                  placeholder="e.g. +1 555 000 0000"
-                  className="w-full pl-9 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF9634] disabled:bg-gray-50 disabled:text-gray-600"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Company</label>
-              <div className="relative">
-                <Building size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  name="companyName"
-                  value={isEditing ? form.companyName : (user?.companyName || '')}
-                  onChange={handleChange}
-                  disabled={!isEditing}
-                  placeholder="Your company name"
-                  className="w-full pl-9 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF9634] disabled:bg-gray-50 disabled:text-gray-600"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Timezone</label>
-              <div className="relative">
-                <Globe size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                {isEditing ? (
-                  <select
-                    name="timezone"
-                    value={form.timezone}
-                    onChange={handleChange}
-                    className="w-full pl-9 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF9634] bg-white appearance-none"
-                  >
-                    <option value="">Select timezone</option>
-                    {['UTC','America/New_York','America/Chicago','America/Denver','America/Los_Angeles','America/Toronto','Europe/London','Europe/Paris','Europe/Berlin','Africa/Lagos','Africa/Nairobi','Asia/Dubai','Asia/Kolkata','Asia/Singapore','Asia/Tokyo','Australia/Sydney'].map(tz => (
-                      <option key={tz} value={tz}>{tz}</option>
-                    ))}
-                  </select>
-                ) : (
-                  <input
-                    value={user?.timezone || ''}
-                    disabled
-                    placeholder="Not set"
-                    className="w-full pl-9 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm bg-gray-50 text-gray-600"
-                  />
-                )}
-              </div>
-            </div>
-
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Bio</label>
-              <textarea
-                name="bio"
-                value={isEditing ? form.bio : (user?.bio || '')}
-                onChange={handleChange}
-                disabled={!isEditing}
-                rows={3}
-                placeholder="Tell us a bit about yourself"
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#FF9634] disabled:bg-gray-50 disabled:text-gray-600"
-              />
             </div>
           </div>
         </div>

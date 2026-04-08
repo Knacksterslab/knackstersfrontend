@@ -10,6 +10,7 @@ import {
   MessageSquare,
   UserCheck,
   Ticket,
+  User,
 } from 'lucide-react';
 import { useUser } from '@/contexts/UserContext';
 import UnifiedSidebar, { sidebarThemes } from '@/components/shared/UnifiedSidebar';
@@ -86,11 +87,16 @@ export default function AdminSidebar({ isOpen = false, onClose }: AdminSidebarPr
       path: '/admin-dashboard/support',
     },
     {
+      id: 'profile',
+      label: 'My Profile',
+      icon: User,
+      path: '/admin-dashboard/profile',
+    },
+    {
       id: 'settings',
       label: 'Settings',
       icon: Settings,
       path: '/admin-dashboard/settings',
-      badge: 'Soon',
     },
   ];
 

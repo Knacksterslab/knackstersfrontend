@@ -1,9 +1,11 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
-import { Camera, Trash2, Check, AlertCircle, User, Mail, Briefcase, Users } from 'lucide-react'
+import { Camera, Trash2, Check, AlertCircle, User, Mail, Briefcase, Users, ArrowLeft } from 'lucide-react'
 import { managerApi } from '@/lib/api/client'
 import { useUser } from '@/contexts/UserContext'
+import { useRouter } from 'next/navigation'
+import { cropToSquare } from '@/lib/utils/image'
 
 interface ManagerProfile {
   id: string
@@ -29,40 +31,10 @@ const SPECIALIZATION_LABELS: Record<string, string> = {
   OTHER: 'Other',
 }
 
-/**
- * Center-crop any image file to a 512×512 JPEG blob using the Canvas API.
- * No external library required.
- */
-function cropToSquare(file: File): Promise<Blob> {
-  return new Promise((resolve, reject) => {
-    const img = new Image()
-    const objectUrl = URL.createObjectURL(file)
-    img.onload = () => {
-      const size = Math.min(img.width, img.height)
-      const canvas = document.createElement('canvas')
-      canvas.width = 512
-      canvas.height = 512
-      const ctx = canvas.getContext('2d')!
-      const sx = (img.width - size) / 2
-      const sy = (img.height - size) / 2
-      ctx.drawImage(img, sx, sy, size, size, 0, 0, 512, 512)
-      URL.revokeObjectURL(objectUrl)
-      canvas.toBlob(
-        (blob) => (blob ? resolve(blob) : reject(new Error('Canvas export failed'))),
-        'image/jpeg',
-        0.92
-      )
-    }
-    img.onerror = () => {
-      URL.revokeObjectURL(objectUrl)
-      reject(new Error('Failed to load image'))
-    }
-    img.src = objectUrl
-  })
-}
 
 export default function ManagerProfilePage() {
   const { user, refresh: refreshUser } = useUser()
+  const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [profile, setProfile] = useState<ManagerProfile | null>(null)
@@ -188,6 +160,15 @@ export default function ManagerProfilePage() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
+      {/* Back button */}
+      <button
+        onClick={() => router.push('/manager-dashboard')}
+        className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 transition-colors"
+      >
+        <ArrowLeft size={16} />
+        Back to Dashboard
+      </button>
+
       {/* Page header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">My Profile</h1>

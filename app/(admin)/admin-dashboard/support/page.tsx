@@ -58,11 +58,16 @@ function TicketModal({ ticket, onClose, onUpdated }: { ticket: SupportTicket; on
   const [notes, setNotes] = useState(ticket.resolutionNotes || '');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  const [replyMessage, setReplyMessage] = useState('');
+  const [sendingReply, setSendingReply] = useState(false);
+  const [replySent, setReplySent] = useState(false);
+  const [replyError, setReplyError] = useState<string | null>(null);
 
   const handleSave = async () => {
     setSaving(true);
-    setError(null);
+    setSaveError(null);
     try {
       const res = await adminSupportApi.updateTicket(ticket.id, {
         status,
@@ -73,12 +78,36 @@ function TicketModal({ ticket, onClose, onUpdated }: { ticket: SupportTicket; on
         onUpdated();
         setTimeout(() => setSaved(false), 2000);
       } else {
-        setError((res as any).error || 'Failed to update ticket');
+        setSaveError((res as any).error || 'Failed to update ticket');
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to update');
+      setSaveError(err.message || 'Failed to update');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleSendReply = async () => {
+    if (!replyMessage.trim()) return setReplyError('Please enter a reply message');
+    setSendingReply(true);
+    setReplyError(null);
+    try {
+      const res = await adminSupportApi.replyToTicket(ticket.id, {
+        replyMessage: replyMessage.trim(),
+        status,
+      });
+      if ((res as any).success) {
+        setReplySent(true);
+        setReplyMessage('');
+        onUpdated();
+        setTimeout(() => setReplySent(false), 3000);
+      } else {
+        setReplyError((res as any).error || 'Failed to send reply');
+      }
+    } catch (err: any) {
+      setReplyError(err.message || 'Failed to send reply');
+    } finally {
+      setSendingReply(false);
     }
   };
 
@@ -90,6 +119,7 @@ function TicketModal({ ticket, onClose, onUpdated }: { ticket: SupportTicket; on
             <div className="flex items-center gap-2 mb-1">
               <span className="font-mono text-sm font-bold text-gray-500">{ticket.ticketNumber}</span>
               <span className={`px-2 py-0.5 rounded-full text-xs font-semibold border ${PRIORITY_STYLES[ticket.priority] || ''}`}>{ticket.priority}</span>
+              <span className={`px-2 py-0.5 rounded-full text-xs font-semibold border ${STATUS_STYLES[ticket.status] || ''}`}>{ticket.status.replace('_', ' ')}</span>
             </div>
             <h2 className="text-xl font-bold text-gray-900">{ticket.subject}</h2>
           </div>
@@ -117,45 +147,87 @@ function TicketModal({ ticket, onClose, onUpdated }: { ticket: SupportTicket; on
             </div>
           </div>
 
-          {/* Status change */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Update Status</label>
-            <div className="relative">
-              <select
-                value={status}
-                onChange={e => setStatus(e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm"
-              >
-                {STATUSES.map(s => <option key={s} value={s}>{s.replace('_', ' ')}</option>)}
-              </select>
-              <ChevronDown size={16} className="absolute right-3 top-3 text-gray-400 pointer-events-none" />
+          {/* Previous reply if exists */}
+          {(ticket as any).lastReply && (
+            <div>
+              <p className="text-sm font-medium text-gray-700 mb-2">Previous Reply Sent</p>
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">
+                {(ticket as any).lastReply}
+              </div>
+              {(ticket as any).repliedAt && (
+                <p className="text-xs text-gray-400 mt-1">Sent {formatDate((ticket as any).repliedAt)}</p>
+              )}
             </div>
+          )}
+
+          {/* ── Reply to Client ─────────────────────────────────────────── */}
+          <div className="border border-blue-200 rounded-xl p-4 bg-blue-50">
+            <p className="text-sm font-semibold text-blue-900 mb-1">Reply to Client</p>
+            <p className="text-xs text-blue-600 mb-3">This message will be emailed to the client and visible in their ticket history.</p>
+
+            {replySent && (
+              <div className="mb-3 flex items-center gap-2 text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+                <CheckCircle size={14} />
+                Reply sent to client successfully.
+              </div>
+            )}
+            {replyError && <p className="text-xs text-red-600 mb-2">{replyError}</p>}
+
+            <div className="mb-3">
+              <label className="block text-xs font-medium text-gray-700 mb-1.5">Update Status (optional)</label>
+              <div className="relative">
+                <select
+                  value={status}
+                  onChange={e => setStatus(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white appearance-none focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
+                >
+                  {STATUSES.map(s => <option key={s} value={s}>{s.replace('_', ' ')}</option>)}
+                </select>
+                <ChevronDown size={14} className="absolute right-3 top-2.5 text-gray-400 pointer-events-none" />
+              </div>
+            </div>
+
+            <textarea
+              value={replyMessage}
+              onChange={e => { setReplyMessage(e.target.value); setReplyError(null); }}
+              rows={4}
+              placeholder="Type your reply to the client here..."
+              className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white mb-3"
+            />
+            <button
+              onClick={handleSendReply}
+              disabled={sendingReply || !replyMessage.trim()}
+              className="w-full px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm transition-colors"
+            >
+              {sendingReply ? 'Sending...' : 'Send Reply to Client'}
+            </button>
           </div>
 
-          {/* Resolution notes */}
+          {/* ── Internal Notes ──────────────────────────────────────────── */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Resolution Notes</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Internal Notes</label>
+            <p className="text-xs text-gray-400 mb-2">Private notes — not visible to the client.</p>
             <textarea
               value={notes}
               onChange={e => setNotes(e.target.value)}
-              rows={4}
-              placeholder="Add internal notes or resolution details..."
+              rows={3}
+              placeholder="Add internal notes for your team..."
               className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-orange-400"
             />
           </div>
 
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {saveError && <p className="text-sm text-red-600">{saveError}</p>}
 
           <div className="flex gap-3">
             <button onClick={onClose} className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 text-sm">
-              Cancel
+              Close
             </button>
             <button
               onClick={handleSave}
               disabled={saving}
               className="flex-1 px-4 py-2.5 bg-gradient-to-r from-[#E9414C] to-[#FF9634] text-white font-semibold rounded-lg hover:opacity-90 disabled:opacity-50 text-sm"
             >
-              {saved ? '✓ Saved' : saving ? 'Saving...' : 'Save Changes'}
+              {saved ? '✓ Saved' : saving ? 'Saving...' : 'Save Notes & Status'}
             </button>
           </div>
         </div>

@@ -5,11 +5,26 @@ import { User, Settings, LogOut, ChevronDown } from 'lucide-react'
 import { useUser } from '@/contexts/UserContext'
 import { useRouter } from 'next/navigation'
 
+/** Return the correct profile/settings paths based on the user's role. */
+function getProfilePaths(role?: string) {
+  switch (role) {
+    case 'ADMIN':
+      return { profile: '/admin-dashboard/profile', settings: '/admin-dashboard/settings' }
+    case 'MANAGER':
+      return { profile: '/manager-dashboard/profile', settings: '/manager-dashboard/profile' }
+    case 'TALENT':
+      return { profile: '/talent-dashboard/profile', settings: '/talent-dashboard/profile' }
+    default:
+      return { profile: '/profile', settings: '/settings' }
+  }
+}
+
 export default function ProfileDropdown() {
   const { user, logout } = useUser()
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const paths = getProfilePaths(user?.role)
 
   const getInitials = (name?: string) => {
     if (!name) return 'U'
@@ -56,13 +71,15 @@ export default function ProfileDropdown() {
 
   const handleProfile = () => {
     setIsOpen(false)
-    router.push('/profile')
+    router.push(paths.profile)
   }
 
   const handleSettings = () => {
     setIsOpen(false)
-    router.push('/settings')
+    router.push(paths.settings)
   }
+
+  const avatarUrl = user?.avatarUrl
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -70,10 +87,15 @@ export default function ProfileDropdown() {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 sm:gap-3 pl-2 sm:pl-3 pr-1 sm:pr-2 py-1.5 hover:bg-gray-100 rounded-lg transition-colors"
       >
-        <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-          <span className="text-white text-xs sm:text-sm font-semibold">
-            {getInitials(userName)}
-          </span>
+        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden flex-shrink-0 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
+          {avatarUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={avatarUrl} alt={userName || 'Avatar'} className="w-full h-full object-cover" />
+          ) : (
+            <span className="text-white text-xs sm:text-sm font-semibold">
+              {getInitials(userName)}
+            </span>
+          )}
         </div>
         {userName && (
           <span className="hidden md:block text-sm font-medium text-gray-900">
@@ -93,10 +115,13 @@ export default function ProfileDropdown() {
           {/* User Info */}
           <div className="px-4 py-3 border-b border-gray-100">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                <span className="text-white text-sm font-semibold">
-                  {getInitials(userName)}
-                </span>
+              <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
+                {avatarUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={avatarUrl} alt={userName || 'Avatar'} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-white text-sm font-semibold">{getInitials(userName)}</span>
+                )}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-900 truncate">

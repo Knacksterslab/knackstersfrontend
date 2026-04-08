@@ -18,7 +18,9 @@ import {
   Camera,
   Linkedin,
   Link,
+  ArrowLeft,
 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { talentApi } from '@/lib/api/client'
 
 const TIMEZONES = [
@@ -131,6 +133,7 @@ function SkillTagInput({ skills, onChange }: { skills: string[]; onChange: (s: s
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function TalentProfilePage() {
+  const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [successMsg, setSuccessMsg] = useState('')
@@ -268,6 +271,14 @@ export default function TalentProfilePage() {
 
   return (
     <TalentPageWrapper>
+      <button
+        onClick={() => router.push('/talent-dashboard')}
+        className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 mb-6 transition-colors"
+      >
+        <ArrowLeft size={16} />
+        Back to Dashboard
+      </button>
+
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Profile & Settings</h1>
         <p className="text-gray-600">

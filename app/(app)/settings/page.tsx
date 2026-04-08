@@ -1,5 +1,10 @@
+import ClientPageWrapper from '@/components/dashboard/ClientPageWrapper'
 import ClientSettingsPage from '@/components/settings/ClientSettingsPage'
 
 export default function SettingsPage() {
-  return <ClientSettingsPage />
+  return (
+    <ClientPageWrapper>
+      <ClientSettingsPage />
+    </ClientPageWrapper>
+  )
 }

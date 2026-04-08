@@ -3,7 +3,6 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
-  Bell,
   Shield,
   Eye,
   EyeOff,
@@ -15,10 +14,9 @@ import {
 } from 'lucide-react'
 import { userApi } from '@/lib/api/client'
 
-export default function ClientSettingsPage() {
+export default function AdminSettingsPage() {
   const router = useRouter()
 
-  // ── Password change ────────────────────────────────────────────────────────
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: '',
     newPassword: '',
@@ -31,15 +29,6 @@ export default function ClientSettingsPage() {
   const [passwordSuccess, setPasswordSuccess] = useState('')
   const [passwordError, setPasswordError] = useState('')
 
-  // ── Notification preferences (persisted locally — backend hook-up later) ──
-  const [notifications, setNotifications] = useState({
-    emailProjectUpdates: true,
-    emailTaskAssignments: true,
-    emailMeetingReminders: true,
-    emailBillingNotices: true,
-    emailWeeklyReports: false,
-  })
-
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPasswordForm({ ...passwordForm, [e.target.name]: e.target.value })
     setPasswordError('')
@@ -50,7 +39,7 @@ export default function ClientSettingsPage() {
     if (!passwordForm.currentPassword) return setPasswordError('Please enter your current password')
     if (passwordForm.newPassword.length < 8) return setPasswordError('New password must be at least 8 characters')
     if (passwordForm.newPassword !== passwordForm.confirmPassword) return setPasswordError('New passwords do not match')
-    if (passwordForm.newPassword === passwordForm.currentPassword) return setPasswordError('New password must be different from current password')
+    if (passwordForm.newPassword === passwordForm.currentPassword) return setPasswordError('New password must differ from current password')
 
     setPasswordSaving(true)
     try {
@@ -72,19 +61,11 @@ export default function ClientSettingsPage() {
     }
   }
 
-  const NOTIFICATION_LABELS: Record<string, string> = {
-    emailProjectUpdates: 'Project status updates',
-    emailTaskAssignments: 'Task assignments & completions',
-    emailMeetingReminders: 'Meeting reminders',
-    emailBillingNotices: 'Billing & invoice notices',
-    emailWeeklyReports: 'Weekly activity reports',
-  }
-
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-2xl mx-auto">
       {/* Back */}
       <button
-        onClick={() => router.push('/client-dashboard')}
+        onClick={() => router.push('/admin-dashboard')}
         className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 mb-6 transition-colors"
       >
         <ArrowLeft size={16} />
@@ -94,18 +75,18 @@ export default function ClientSettingsPage() {
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-        <p className="text-sm text-gray-500 mt-0.5">Manage your account security and notification preferences</p>
+        <p className="text-sm text-gray-500 mt-0.5">Manage your administrator account security</p>
       </div>
 
-      {/* ── Security ──────────────────────────────────────────────────────── */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      {/* Security */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6">
         <div className="flex items-center gap-3 mb-5">
           <div className="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center">
-            <Shield size={18} className="text-red-500" />
+            <Shield size={18} className="text-red-600" />
           </div>
           <div>
             <h2 className="text-base font-bold text-gray-900">Password & Security</h2>
-            <p className="text-xs text-gray-500">Change your account password</p>
+            <p className="text-xs text-gray-500">Change your administrator password</p>
           </div>
         </div>
 
@@ -138,7 +119,7 @@ export default function ClientSettingsPage() {
                   value={passwordForm[name as keyof typeof passwordForm]}
                   onChange={handlePasswordChange}
                   disabled={passwordSaving}
-                  className="w-full pl-9 pr-10 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF9634] disabled:bg-gray-50"
+                  className="w-full pl-9 pr-10 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#E9414C] disabled:bg-gray-50"
                 />
                 <button
                   type="button"
@@ -154,49 +135,12 @@ export default function ClientSettingsPage() {
           <button
             onClick={handleChangePassword}
             disabled={passwordSaving}
-            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#E9414C] to-[#FF9634] text-white font-semibold rounded-lg hover:opacity-90 disabled:opacity-50 text-sm transition-opacity"
+            className="flex items-center gap-2 px-5 py-2.5 bg-[#E9414C] text-white font-semibold rounded-lg hover:bg-[#D03841] disabled:opacity-50 text-sm transition-colors"
           >
             {passwordSaving ? <Loader2 size={15} className="animate-spin" /> : <Shield size={15} />}
             {passwordSaving ? 'Changing Password…' : 'Change Password'}
           </button>
         </div>
-      </div>
-
-      {/* ── Notifications ─────────────────────────────────────────────────── */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <div className="flex items-center gap-3 mb-5">
-          <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
-            <Bell size={18} className="text-blue-600" />
-          </div>
-          <div>
-            <h2 className="text-base font-bold text-gray-900">Email Notifications</h2>
-            <p className="text-xs text-gray-500">Choose which emails you receive from Knacksters</p>
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          {Object.entries(notifications).map(([key, value]) => (
-            <label key={key} className="flex items-center justify-between py-2 cursor-pointer group">
-              <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">
-                {NOTIFICATION_LABELS[key]}
-              </span>
-              <div
-                onClick={() => setNotifications(prev => ({ ...prev, [key]: !prev[key as keyof typeof prev] }))}
-                className={`relative w-10 h-5.5 rounded-full transition-colors cursor-pointer flex-shrink-0 ${value ? 'bg-[#FF9634]' : 'bg-gray-200'}`}
-                style={{ height: '22px', width: '40px' }}
-              >
-                <span
-                  className={`absolute top-0.5 left-0.5 w-4.5 h-4.5 bg-white rounded-full shadow transition-transform ${value ? 'translate-x-[18px]' : 'translate-x-0'}`}
-                  style={{ width: '18px', height: '18px' }}
-                />
-              </div>
-            </label>
-          ))}
-        </div>
-
-        <p className="text-xs text-gray-400 mt-4">
-          Notification preferences are saved locally on this device.
-        </p>
       </div>
     </div>
   )

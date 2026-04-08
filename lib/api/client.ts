@@ -41,6 +41,74 @@ async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise
 /**
  * Dashboard API
  */
+/**
+ * Shared User Profile & Settings API
+ * Works for any authenticated role — single source of truth.
+ */
+export const userApi = {
+  /**
+   * Fetch the current user's full profile.
+   */
+  getProfile: async () => {
+    return apiFetch<ApiResponse>('/api/user/profile');
+  },
+
+  /**
+   * Update editable profile fields (name, phone, company, bio, timezone).
+   */
+  updateProfile: async (data: {
+    fullName?: string;
+    firstName?: string;
+    lastName?: string;
+    phone?: string;
+    companyName?: string;
+    bio?: string;
+    timezone?: string;
+  }) => {
+    return apiFetch<ApiResponse>('/api/user/profile', {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+
+  /**
+   * Upload a new avatar photo (center-cropped JPEG blob from canvas).
+   */
+  uploadAvatar: async (blob: Blob): Promise<ApiResponse> => {
+    const form = new FormData();
+    form.append('file', blob, 'avatar.jpg');
+    const url = `${API_URL}/api/user/profile/avatar`;
+    const response = await fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      body: form,
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || `Upload failed: ${response.status}`);
+    return data;
+  },
+
+  /**
+   * Remove the current avatar (sets to null).
+   */
+  removeAvatar: async () => {
+    return apiFetch<ApiResponse>('/api/user/profile/avatar', { method: 'DELETE' });
+  },
+
+  /**
+   * Change password — verifies current password before updating.
+   */
+  changePassword: async (data: {
+    currentPassword: string;
+    newPassword: string;
+  }) => {
+    return apiFetch<ApiResponse>('/api/user/settings/password', {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+};
+
 export const dashboardApi = {
   /**
    * Get dashboard overview
@@ -541,6 +609,9 @@ export const adminSupportApi = {
   },
   updateTicket: async (id: string, data: { status?: string; assignedToId?: string; resolutionNotes?: string }) => {
     return apiFetch<ApiResponse>(`/api/admin/support/tickets/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
+  },
+  replyToTicket: async (id: string, data: { replyMessage: string; status?: string }) => {
+    return apiFetch<ApiResponse>(`/api/admin/support/tickets/${id}/reply`, { method: 'POST', body: JSON.stringify(data) });
   },
   getStats: async () => {
     return apiFetch<ApiResponse>('/api/admin/support/stats');

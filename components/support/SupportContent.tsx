@@ -19,9 +19,12 @@ interface Ticket {
   id: string
   ticketNumber: string
   subject: string
+  description: string
   status: string
   priority: string
   createdAt: string
+  lastReply?: string | null
+  repliedAt?: string | null
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -61,6 +64,7 @@ export default function SupportContent() {
   const [tickets, setTickets] = useState<Ticket[]>([])
   const [ticketsLoading, setTicketsLoading] = useState(true)
   const [showTickets, setShowTickets] = useState(false)
+  const [expandedTicketId, setExpandedTicketId] = useState<string | null>(null)
 
   // Fetch past tickets on mount
   useEffect(() => {
@@ -254,22 +258,69 @@ export default function SupportContent() {
                   <div className="p-6 text-center text-sm text-gray-500">No tickets submitted yet.</div>
                 ) : (
                   <div className="divide-y divide-gray-100">
-                    {tickets.map(ticket => (
-                      <div key={ticket.id} className="px-5 py-4 flex items-center justify-between gap-3">
-                        <div className="min-w-0 flex-1">
-                          <p className="text-sm font-semibold text-gray-900 truncate">{ticket.subject}</p>
-                          <p className="text-xs text-gray-500 mt-0.5 font-mono">{ticket.ticketNumber} · {formatDate(ticket.createdAt)}</p>
+                    {tickets.map(ticket => {
+                      const isExpanded = expandedTicketId === ticket.id
+                      const hasReply = !!ticket.lastReply
+                      return (
+                        <div key={ticket.id}>
+                          {/* Row header — clickable */}
+                          <button
+                            onClick={() => setExpandedTicketId(isExpanded ? null : ticket.id)}
+                            className="w-full px-5 py-4 flex items-center justify-between gap-3 text-left hover:bg-gray-50 transition-colors"
+                          >
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center gap-2 mb-0.5">
+                                <p className="text-sm font-semibold text-gray-900 truncate">{ticket.subject}</p>
+                                {hasReply && (
+                                  <span className="flex-shrink-0 px-1.5 py-0.5 bg-green-50 text-green-600 text-xs font-medium rounded">
+                                    Reply received
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-xs text-gray-500 font-mono">{ticket.ticketNumber} · {formatDate(ticket.createdAt)}</p>
+                            </div>
+                            <div className="flex items-center gap-2 flex-shrink-0">
+                              <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${PRIORITY_STYLES[ticket.priority] || 'bg-gray-100 text-gray-500'}`}>
+                                {ticket.priority}
+                              </span>
+                              <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${STATUS_STYLES[ticket.status] || 'bg-gray-100 text-gray-500'}`}>
+                                {ticket.status.replace('_', ' ')}
+                              </span>
+                              {isExpanded ? <ChevronUp size={14} className="text-gray-400" /> : <ChevronDown size={14} className="text-gray-400" />}
+                            </div>
+                          </button>
+
+                          {/* Expanded detail */}
+                          {isExpanded && (
+                            <div className="px-5 pb-5 space-y-3 bg-gray-50 border-t border-gray-100">
+                              <div className="pt-4">
+                                <p className="text-xs font-medium text-gray-500 mb-1.5">Your message</p>
+                                <div className="bg-white border border-gray-200 rounded-lg p-3 text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">
+                                  {ticket.description}
+                                </div>
+                              </div>
+
+                              {hasReply ? (
+                                <div>
+                                  <p className="text-xs font-medium text-gray-500 mb-1.5">
+                                    Support reply
+                                    {ticket.repliedAt && <span className="ml-1 text-gray-400">· {formatDate(ticket.repliedAt)}</span>}
+                                  </p>
+                                  <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">
+                                    {ticket.lastReply}
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-2 text-xs text-gray-400 pt-1">
+                                  <Clock size={12} />
+                                  <span>No reply yet — we typically respond within 2–4 hours during business hours.</span>
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
-                        <div className="flex items-center gap-2 flex-shrink-0">
-                          <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${PRIORITY_STYLES[ticket.priority] || 'bg-gray-100 text-gray-500'}`}>
-                            {ticket.priority}
-                          </span>
-                          <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${STATUS_STYLES[ticket.status] || 'bg-gray-100 text-gray-500'}`}>
-                            {ticket.status.replace('_', ' ')}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
+                      )
+                    })}
                   </div>
                 )}
               </div>
