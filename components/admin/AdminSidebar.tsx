@@ -61,6 +61,12 @@ export default function AdminSidebar({ isOpen = false, onClose }: AdminSidebarPr
           path: '/admin-dashboard/content/partners',
         },
         {
+          id: 'social-proof',
+          label: 'Social Proof',
+          icon: FileText,
+          path: '/admin-dashboard/content/social-proof',
+        },
+        {
           id: 'faq',
           label: 'FAQ',
           icon: MessageSquare,

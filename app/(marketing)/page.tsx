@@ -7,6 +7,7 @@ import Banner from "@/components/sections/banner";
 import ProcessFlowComponent from "@/components/process-flow/ProcessFlowComponent";
 import Scroller from "@/components/shared/Scroller";
 import PartnersComponent from "@/components/partners/PartnersComponent";
+import SocialProofSection from "@/components/sections/SocialProofSection";
 import { defaultLandingContent } from "@/components/landing/landing-content";
 import JsonLd, { organizationSchema, websiteSchema } from "@/components/seo/JsonLd";
 
@@ -113,6 +114,7 @@ export default async function Home() {
       </div>
       <ProcessFlowComponent />
       <PartnersComponent />
+      <SocialProofSection />
       <SolutionsComponent />
       <BenefitsComponent />
       <UseCases />

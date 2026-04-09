@@ -1243,15 +1243,33 @@ export const adminApi = {
   },
 
   updatePartner: async (data: { id: string; name?: string; logoUrl?: string; websiteUrl?: string; active?: boolean }) => {
-    return apiFetch<ApiResponse>('/api/admin/partners', {
+    const { id, ...rest } = data;
+    return apiFetch<ApiResponse>(`/api/admin/partners/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(data),
+      body: JSON.stringify(rest),
     });
   },
 
   deletePartner: async (id: string) => {
-    return apiFetch<ApiResponse>(`/api/admin/partners?id=${id}`, {
+    return apiFetch<ApiResponse>(`/api/admin/partners/${id}`, {
       method: 'DELETE',
+    });
+  },
+
+  /**
+   * Fetch social proof content (metrics + testimonials)
+   */
+  getSocialProofContent: async () => {
+    return apiFetch<ApiResponse>('/api/admin/content/social-proof');
+  },
+
+  /**
+   * Save social proof content
+   */
+  updateSocialProofContent: async (content: unknown) => {
+    return apiFetch<ApiResponse>('/api/admin/content/social-proof', {
+      method: 'PUT',
+      body: JSON.stringify({ content }),
     });
   },
 

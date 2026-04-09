@@ -65,7 +65,7 @@ export default function Footer() {
     {
       icon: <FaLinkedin className="h-4 w-4" />,
       label: "LinkedIn",
-      href: "#", // TODO: Add your LinkedIn URL
+      href: "https://www.linkedin.com/company/knacksters/",
     },
   ];
   
@@ -128,6 +128,8 @@ export default function Footer() {
                   key={index}
                   href={social.href}
                   aria-label={social.label}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="transition-colors hover:text-[#fc882f]"
                 >
                   {social.icon}

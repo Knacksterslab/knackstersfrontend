@@ -278,3 +278,18 @@
 .animate-fadeInUp {
   animation: fadeInUp 0.6s ease-out;
 }
+
+/* Partner logos marquee — horizontal infinite scroll */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  animation: marquee 28s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
