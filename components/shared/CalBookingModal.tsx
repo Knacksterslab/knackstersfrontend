@@ -66,7 +66,7 @@ export default function CalBookingModal({
       if (event.origin !== 'https://cal.com' && event.origin !== 'https://app.cal.com') return;
 
       const data = event.data;
-      if (data?.type !== 'bookingSuccessful') return;
+      if (data?.type !== 'bookingSuccessful' && data?.type !== 'rescheduleBookingSuccessful') return;
 
       // #region agent log
       fetch('http://127.0.0.1:7529/ingest/4f423655-0235-4d51-bfe9-13de49008459',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'72358f'},body:JSON.stringify({sessionId:'72358f',runId:'post-fix',location:'CalBookingModal.tsx:69',message:'bookingSuccessful postMessage received',data:{isOpen,bookingUid:data?.data?.booking?.uid,bookingStartTime:data?.data?.booking?.startTime},timestamp:Date.now(),hypothesisId:'H-A'})}).catch(()=>{});
