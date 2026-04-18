@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+import { BACKEND_URL } from '@/lib/config/env';
 
 /**
  * GET /api/admin/talent/[id]
@@ -13,7 +13,7 @@ export async function GET(
   try {
     const talentId = params.id;
     
-    const response = await fetch(`${API_URL}/api/admin/talent/${talentId}`, {
+    const response = await fetch(`${BACKEND_URL}/api/admin/talent/${talentId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ export async function PATCH(
     const talentId = params.id;
     const body = await request.json();
     
-    const response = await fetch(`${API_URL}/api/admin/talent/${talentId}/status`, {
+    const response = await fetch(`${BACKEND_URL}/api/admin/talent/${talentId}/status`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

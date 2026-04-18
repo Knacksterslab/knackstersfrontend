@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { BACKEND_URL } from "@/lib/config/env";
 import CallToAction from "@/components/sections/CallToAction";
 import SolutionsComponent from "@/components/sections/SolutionsComponent";
 import BenefitsComponent from "@/components/sections/BenefitsComponent";
@@ -46,9 +47,7 @@ export const metadata: Metadata = {
 // Fetch talent cards server-side
 async function getTalentCards() {
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-    
-    const response = await fetch(`${apiUrl}/api/public/content/landing-hero`, {
+    const response = await fetch(`${BACKEND_URL}/api/public/content/landing-hero`, {
       next: { revalidate: 60 },
     });
 
@@ -56,7 +55,7 @@ async function getTalentCards() {
       console.error('Landing hero API returned non-OK status', {
         status: response.status,
         statusText: response.statusText,
-        apiUrl,
+        apiUrl: BACKEND_URL,
       });
       return defaultLandingContent.hero.talentCards;
     }
@@ -65,7 +64,7 @@ async function getTalentCards() {
     if (data.success && Array.isArray(data.data?.content?.talentCards) && data.data.content.talentCards.length > 0) {
       if (shouldLogLandingDiagnostics) {
         console.info("[landing-hero] using API content", {
-          apiUrl,
+          apiUrl: BACKEND_URL,
           cardsCount: data.data.content.talentCards.length,
           firstCardName: data.data.content.talentCards[0]?.name || null,
         });
@@ -74,7 +73,7 @@ async function getTalentCards() {
     }
 
     console.error('Landing hero API returned unexpected payload shape', {
-      apiUrl,
+      apiUrl: BACKEND_URL,
       hasSuccess: !!data?.success,
       hasData: !!data?.data,
       hasContent: !!data?.data?.content,

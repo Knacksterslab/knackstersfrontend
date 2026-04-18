@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+import { BACKEND_URL } from '@/lib/config/env';
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const url = `${API_URL}/api/admin/users?${searchParams.toString()}`;
+    const url = `${BACKEND_URL}/api/admin/users?${searchParams.toString()}`;
     
     const response = await fetch(url, {
       method: 'GET',
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const url = `${API_URL}/api/admin/users`;
+    const url = `${BACKEND_URL}/api/admin/users`;
     
     const response = await fetch(url, {
       method: 'POST',

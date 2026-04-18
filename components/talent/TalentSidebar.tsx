@@ -9,8 +9,8 @@ import {
   User,
   HelpCircle,
 } from 'lucide-react'
-import { useUser } from '@/contexts/UserContext'
 import UnifiedSidebar, { sidebarThemes } from '@/components/shared/UnifiedSidebar'
+import { useLogout } from '@/hooks/useLogout'
 
 interface TalentSidebarProps {
   isOpen?: boolean
@@ -18,7 +18,7 @@ interface TalentSidebarProps {
 }
 
 export default function TalentSidebar({ isOpen = false, onClose }: TalentSidebarProps) {
-  const { logout } = useUser()
+  const { handleLogout } = useLogout()
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/talent-dashboard' },
@@ -28,16 +28,6 @@ export default function TalentSidebar({ isOpen = false, onClose }: TalentSidebar
     { id: 'profile', label: 'Profile & Settings', icon: User, path: '/talent-dashboard/profile' },
     { id: 'support', label: 'Support / Help', icon: HelpCircle, path: '/talent-dashboard/support' },
   ]
-
-  const handleLogout = async () => {
-    try {
-      await logout()
-      window.location.href = '/'
-    } catch (error) {
-      console.error('Logout error:', error)
-      window.location.href = '/'
-    }
-  }
 
   return (
     <UnifiedSidebar

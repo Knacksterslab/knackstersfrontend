@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+import { BACKEND_URL } from '@/lib/config/env';
 
 /**
  * GET /api/admin/talent
@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     // Get query parameters
     const searchParams = request.nextUrl.searchParams;
     const queryString = searchParams.toString();
-    const url = `${API_URL}/api/admin/talent${queryString ? `?${queryString}` : ''}`;
+    const url = `${BACKEND_URL}/api/admin/talent${queryString ? `?${queryString}` : ''}`;
 
     const response = await fetch(url, {
       method: 'GET',

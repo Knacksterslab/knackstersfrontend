@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+import { BACKEND_URL } from '@/lib/config/env';
 
 /**
  * GET /api/admin/notifications
@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     // Get query parameters
     const searchParams = request.nextUrl.searchParams;
     const queryString = searchParams.toString();
-    const url = `${API_URL}/api/admin/notifications${queryString ? `?${queryString}` : ''}`;
+    const url = `${BACKEND_URL}/api/admin/notifications${queryString ? `?${queryString}` : ''}`;
 
     const response = await fetch(url, {
       method: 'GET',
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
  */
 export async function PATCH(request: NextRequest) {
   try {
-    const response = await fetch(`${API_URL}/api/admin/notifications/read-all`, {
+    const response = await fetch(`${BACKEND_URL}/api/admin/notifications/read-all`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+import { BACKEND_URL } from '@/lib/config/env';
 
 export async function GET(
   request: NextRequest,
@@ -9,7 +9,7 @@ export async function GET(
   try {
     const { slug } = params;
     const path = slug.join('/');
-    const url = `${API_URL}/api/admin/pages/${path}`;
+    const url = `${BACKEND_URL}/api/admin/pages/${path}`;
     
     const response = await fetch(url, {
       method: 'GET',
@@ -39,7 +39,7 @@ export async function PUT(
     const body = await request.json();
     const { slug } = params;
     const path = slug.join('/');
-    const url = `${API_URL}/api/admin/pages/${path}`;
+    const url = `${BACKEND_URL}/api/admin/pages/${path}`;
     
     const response = await fetch(url, {
       method: 'PUT',

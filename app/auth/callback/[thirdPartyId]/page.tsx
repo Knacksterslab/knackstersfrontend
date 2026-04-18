@@ -3,11 +3,19 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signInAndUp } from 'supertokens-auth-react/recipe/thirdparty';
+import EmailVerification from 'supertokens-auth-react/recipe/emailverification';
 import Logo from '@/components/ui/logo';
+import { API_URL } from '@/lib/config/env';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+async function routeBySession(router: ReturnType<typeof useRouter>) {
+  // Check email verification status first (only relevant for email/password users;
+  // Google already verifies ownership, so isVerified will be true for them).
+  const verificationStatus = await EmailVerification.isEmailVerified().catch(() => null);
+  if (verificationStatus && !verificationStatus.isVerified) {
+    router.push('/auth/verify-email');
+    return true;
+  }
 
-async function routeBySession(router: ReturnType<typeof useRouter>, API_URL: string) {
   const sessionRes = await fetch(`${API_URL}/api/auth/session`, { credentials: 'include' });
   const sessionData = await sessionRes.json();
   const user = sessionData?.data;
@@ -29,11 +37,7 @@ async function routeBySession(router: ReturnType<typeof useRouter>, API_URL: str
     return true;
   }
 
-  if (!user.hasMeeting) {
-    router.push('/schedule/client');
-    return true;
-  }
-
+  // Booking is optional — go straight to dashboard; a CTA banner will prompt them
   router.push('/client-dashboard');
   return true;
 }
@@ -55,7 +59,7 @@ export default function OAuthCallbackPage() {
         const response = await signInAndUp();
 
         if (response.status === 'OK') {
-          await routeBySession(router, API_URL);
+          await routeBySession(router);
         } else if (response.status === 'NO_EMAIL_GIVEN_BY_PROVIDER') {
           setError('Google did not provide an email address. Please use a Google account with an email address.');
         } else if (response.status === 'SIGN_IN_UP_NOT_ALLOWED') {
@@ -63,13 +67,12 @@ export default function OAuthCallbackPage() {
         } else {
           setError('An unexpected error occurred. Please try again.');
         }
-      } catch (err) {
-        console.error('OAuth callback error:', err);
+      } catch {
         // signInAndUp() can throw when the backend returns 500 (e.g. a transient
         // SuperTokens Core hiccup). The session may still have been established
         // before the error — check before showing a failure message.
         try {
-          const routed = await routeBySession(router, API_URL);
+          const routed = await routeBySession(router);
           if (!routed) setError('Failed to complete sign-in. Please try again.');
         } catch {
           setError('Failed to complete sign-in. Please try again.');

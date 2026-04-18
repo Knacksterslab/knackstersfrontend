@@ -10,11 +10,13 @@ import OnboardingFooter from '@/components/shared/OnboardingFooter';
 import { toast } from 'react-toastify';
 import { signUp } from 'supertokens-auth-react/recipe/emailpassword';
 import { getAuthorisationURLWithQueryParamsAndSetState } from 'supertokens-auth-react/recipe/thirdparty';
+import EmailVerification from 'supertokens-auth-react/recipe/emailverification';
 import SolutionSelector, { SolutionType } from './signup/SolutionSelector';
 
 export default function SignUpPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [currentStep, setCurrentStep] = useState(1); // 1: Account Details, 2: Solution Selection
@@ -24,6 +26,7 @@ export default function SignUpPage() {
     company: '',
     email: '',
     password: '',
+    confirmPassword: '',
     selectedSolution: null as SolutionType | null,
     solutionNotes: ''
   });
@@ -72,6 +75,11 @@ export default function SignUpPage() {
       return;
     }
 
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
     // Move to step 2
     setCurrentStep(2);
     setError('');
@@ -104,17 +112,17 @@ export default function SignUpPage() {
       });
 
       if (response.status === 'OK') {
-        toast.success('Account created successfully! Let\'s schedule your onboarding call.');
-
-        // Store name and email for Cal.com pre-fill on the next page
+        // Store name and email for Cal.com pre-fill after verification
         sessionStorage.setItem('clientName', `${formData.firstName} ${formData.lastName}`);
         sessionStorage.setItem('clientEmail', formData.email);
-        
-        // Wait for session to be fully established
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Redirect to schedule page to book onboarding call
-        router.push('/schedule/client');
+
+        // Explicitly request the verification email — with a custom UI SuperTokens
+        // does not send it automatically; we must call this to trigger the backend
+        // emailDelivery hook and send via Resend.
+        await EmailVerification.sendVerificationEmail().catch(() => {});
+
+        toast.success('Account created! Please check your email to verify your address.');
+        router.push('/auth/verify-email');
       } else if (response.status === 'FIELD_ERROR') {
         const fieldErrors = response.formFields
           .filter((f: any) => f.error)
@@ -266,6 +274,37 @@ export default function SignUpPage() {
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
+            </div>
+
+            {/* Confirm Password */}
+            <div>
+              <label className="block text-sm text-gray-700 mb-2">
+                Confirm Password*
+              </label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="••••••••••"
+                  className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent pr-12 ${
+                    formData.confirmPassword && formData.confirmPassword !== formData.password
+                      ? 'border-red-400 bg-red-50'
+                      : 'border-gray-300'
+                  }`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+              {formData.confirmPassword && formData.confirmPassword !== formData.password && (
+                <p className="text-xs text-red-500 mt-1">Passwords do not match</p>
+              )}
             </div>
 
             {/* Terms and Privacy */}

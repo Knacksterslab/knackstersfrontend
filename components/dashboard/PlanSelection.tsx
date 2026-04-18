@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { CheckCircle, Sparkles, Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { API_URL } from '@/lib/config/env'
 import PaymentMethodModal from './PaymentMethodModal'
 import { getPricingPlansArray } from '@/lib/config/plans'
 
@@ -37,7 +38,6 @@ export default function PlanSelection({ onSubscriptionComplete, hasUpcomingMeeti
 
   const checkPaymentMethod = async () => {
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
       const response = await fetch(`${API_URL}/api/client/stripe/payment-methods`, {
         credentials: 'include',
       })
@@ -63,7 +63,6 @@ export default function PlanSelection({ onSubscriptionComplete, hasUpcomingMeeti
     setError(null)
 
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
       const response = await fetch(`${API_URL}/api/client/stripe/subscribe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

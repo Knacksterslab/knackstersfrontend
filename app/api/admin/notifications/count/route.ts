@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+import { BACKEND_URL } from '@/lib/config/env';
 
 /**
  * GET /api/admin/notifications/count
@@ -8,7 +8,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
  */
 export async function GET(request: NextRequest) {
   try {
-    const response = await fetch(`${API_URL}/api/admin/notifications/count`, {
+    const response = await fetch(`${BACKEND_URL}/api/admin/notifications/count`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

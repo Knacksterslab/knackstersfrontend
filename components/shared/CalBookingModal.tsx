@@ -68,14 +68,22 @@ export default function CalBookingModal({
       const data = event.data;
       if (data?.type !== 'bookingSuccessful') return;
 
+      // #region agent log
+      fetch('http://127.0.0.1:7529/ingest/4f423655-0235-4d51-bfe9-13de49008459',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'72358f'},body:JSON.stringify({sessionId:'72358f',runId:'post-fix',location:'CalBookingModal.tsx:69',message:'bookingSuccessful postMessage received',data:{isOpen,bookingUid:data?.data?.booking?.uid,bookingStartTime:data?.data?.booking?.startTime},timestamp:Date.now(),hypothesisId:'H-A'})}).catch(()=>{});
+      // #endregion
+
       const raw = data.data ?? {};
+      // Cal.com wraps booking fields under raw.booking (confirmed via runtime log)
+      const booking = raw.booking ?? raw;
       const details: BookingDetails = {
-        bookingId: raw.uid || raw.id || '',
-        meetingLink: raw.metadata?.videoCallUrl || null,
-        startTime: raw.startTime || '',
-        endTime: raw.endTime || '',
-        attendeeName: raw.attendees?.[0]?.name || null,
-        timezone: raw.timeZone || null,
+        bookingId: booking.uid || String(booking.id || ''),
+        meetingLink: booking.videoCallUrl
+          || (booking.references as any[])?.find((r: any) => r.type === 'daily_video')?.meetingUrl
+          || null,
+        startTime: booking.startTime || raw.date || '',
+        endTime: booking.endTime || '',
+        attendeeName: booking.attendees?.[0]?.name || null,
+        timezone: booking.attendees?.[0]?.timeZone || null,
         status: 'confirmed',
       };
 
@@ -90,8 +98,8 @@ export default function CalBookingModal({
             scheduledAt: details.startTime,
             endTime: details.endTime,
             videoCallUrl: details.meetingLink,
-            title: raw.title || 'Strategy Call',
-            description: raw.description || undefined,
+            title: booking.title || raw.eventType?.title || 'Strategy Call',
+            description: booking.description || undefined,
           });
         } else if (mode === 'reschedule' && meetingId && details.startTime) {
           await meetingsApi.reschedule(meetingId, details.startTime);

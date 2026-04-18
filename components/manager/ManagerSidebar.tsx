@@ -11,8 +11,8 @@ import {
   HelpCircle,
   UserCircle,
 } from 'lucide-react'
-import { useUser } from '@/contexts/UserContext'
 import UnifiedSidebar, { sidebarThemes } from '@/components/shared/UnifiedSidebar'
+import { useLogout } from '@/hooks/useLogout'
 
 interface ManagerSidebarProps {
   isOpen?: boolean
@@ -20,7 +20,7 @@ interface ManagerSidebarProps {
 }
 
 export default function ManagerSidebar({ isOpen = false, onClose }: ManagerSidebarProps) {
-  const { logout } = useUser()
+  const { handleLogout } = useLogout()
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/manager-dashboard' },
@@ -32,16 +32,6 @@ export default function ManagerSidebar({ isOpen = false, onClose }: ManagerSideb
     { id: 'support', label: 'Support / Help', icon: HelpCircle, path: '/manager-dashboard/support' },
     { id: 'profile', label: 'My Profile', icon: UserCircle, path: '/manager-dashboard/profile' },
   ]
-
-  const handleLogout = async () => {
-    try {
-      await logout()
-      window.location.href = '/'
-    } catch (error) {
-      console.error('Logout error:', error)
-      window.location.href = '/'
-    }
-  }
 
   return (
     <UnifiedSidebar

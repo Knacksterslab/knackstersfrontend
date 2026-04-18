@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { X, Loader2 } from 'lucide-react'
+import { API_URL } from '@/lib/config/env'
 import { Elements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
 import PaymentMethodForm from './PaymentMethodForm'
@@ -31,7 +32,6 @@ export default function PaymentMethodModal({ isOpen, onClose, onSuccess }: Payme
     setError(null)
 
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
       const response = await fetch(`${API_URL}/api/client/stripe/setup-intent`, {
         method: 'POST',
         credentials: 'include',

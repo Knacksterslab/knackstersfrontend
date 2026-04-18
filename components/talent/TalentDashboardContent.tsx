@@ -16,41 +16,13 @@ import {
   Loader2
 } from 'lucide-react'
 import { useTalentDashboard, useTalentEarnings } from '@/hooks/useTalentDashboard'
+import { useTaskTimer } from '@/hooks/useTaskTimer'
 import { format } from 'date-fns'
 
 export default function TalentDashboardContent() {
   const { data: dashboardData, loading, error } = useTalentDashboard()
   const { data: earningsData } = useTalentEarnings()
-  
-  const [activeTimer, setActiveTimer] = React.useState<string | null>(null)
-  const [timerSeconds, setTimerSeconds] = React.useState(0)
-
-  React.useEffect(() => {
-    let interval: NodeJS.Timeout
-    if (activeTimer) {
-      interval = setInterval(() => {
-        setTimerSeconds((prev) => prev + 1)
-      }, 1000)
-    }
-    return () => clearInterval(interval)
-  }, [activeTimer])
-
-  const formatTime = (seconds: number) => {
-    const hrs = Math.floor(seconds / 3600)
-    const mins = Math.floor((seconds % 3600) / 60)
-    const secs = seconds % 60
-    return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
-  }
-
-  const toggleTimer = (taskId: string) => {
-    if (activeTimer === taskId) {
-      setActiveTimer(null)
-      setTimerSeconds(0)
-    } else {
-      setActiveTimer(taskId)
-      setTimerSeconds(0)
-    }
-  }
+  const { activeTimer, timerSeconds, toggleTimer, formatTime } = useTaskTimer()
 
   const getStatusColor = (status: string) => {
     switch (status.toUpperCase()) {

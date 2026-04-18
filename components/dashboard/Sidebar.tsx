@@ -2,8 +2,8 @@
 
 import React from 'react'
 import { LayoutDashboard, FolderKanban, CreditCard, HelpCircle } from 'lucide-react'
-import { useUser } from '@/contexts/UserContext'
 import UnifiedSidebar, { sidebarThemes } from '@/components/shared/UnifiedSidebar'
+import { useLogout } from '@/hooks/useLogout'
 
 interface SidebarProps {
   isOpen?: boolean
@@ -11,7 +11,7 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
-  const { logout } = useUser()
+  const { handleLogout } = useLogout()
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/client-dashboard' },
@@ -19,16 +19,6 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
     { id: 'billing', label: 'Billing & Subscription', icon: CreditCard, path: '/billing' },
     { id: 'support', label: 'Support / Help', icon: HelpCircle, path: '/support' },
   ]
-
-  const handleLogout = async () => {
-    try {
-      await logout()
-      window.location.href = '/'
-    } catch (error) {
-      console.error('Logout error:', error)
-      window.location.href = '/'
-    }
-  }
 
   return (
     <UnifiedSidebar

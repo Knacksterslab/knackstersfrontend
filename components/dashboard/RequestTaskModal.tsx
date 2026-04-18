@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { X, Loader2, CheckCircle } from 'lucide-react'
+import { API_URL } from '@/lib/config/env'
 
 interface RequestTaskModalProps {
   isOpen: boolean
@@ -65,8 +66,6 @@ export default function RequestTaskModal({ isOpen, onClose, onSuccess }: Request
     setError(null)
 
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
-
       const complexity = COMPLEXITY_OPTIONS.find(o => o.value === formData.estimatedComplexity)
       const estimatedHours = complexity?.hours
 

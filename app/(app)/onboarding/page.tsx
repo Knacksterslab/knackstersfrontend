@@ -4,8 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Logo from '@/components/ui/logo';
 import SolutionSelector, { SolutionType } from '@/components/signup/SolutionSelector';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+import { API_URL } from '@/lib/config/env';
 
 export default function OnboardingPage() {
   const router = useRouter();

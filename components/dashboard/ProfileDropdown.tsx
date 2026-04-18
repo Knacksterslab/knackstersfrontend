@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { User, Settings, LogOut, ChevronDown } from 'lucide-react'
 import { useUser } from '@/contexts/UserContext'
+import { useLogout } from '@/hooks/useLogout'
 import { useRouter } from 'next/navigation'
 
 /** Return the correct profile/settings paths based on the user's role. */
@@ -20,7 +21,8 @@ function getProfilePaths(role?: string) {
 }
 
 export default function ProfileDropdown() {
-  const { user, logout } = useUser()
+  const { user } = useUser()
+  const { handleLogout } = useLogout()
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -55,19 +57,6 @@ export default function ProfileDropdown() {
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [isOpen])
-
-  const handleLogout = async () => {
-    try {
-      setIsOpen(false)
-      await logout()
-      // Force navigation to home page
-      window.location.href = '/'
-    } catch (error) {
-      console.error('Logout error:', error)
-      // Still navigate even if logout fails
-      window.location.href = '/'
-    }
-  }
 
   const handleProfile = () => {
     setIsOpen(false)

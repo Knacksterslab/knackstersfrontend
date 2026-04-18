@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Save, RefreshCw, CheckCircle, AlertCircle } from 'lucide-react';
+import { useAutoReset } from '@/hooks/useAutoReset';
 
 interface LegalContent {
   content: string;
@@ -16,6 +17,8 @@ export default function LegalEditor() {
   const [isSaving, setIsSaving] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
+  useAutoReset(success, () => setSuccess(''), 5000);
+  useAutoReset(error, () => setError(''), 5000);
 
   // Fetch content
   const fetchContent = async () => {
@@ -68,7 +71,6 @@ export default function LegalEditor() {
       }
 
       setSuccess(`${activeTab === 'privacy' ? 'Privacy Policy' : 'Terms of Service'} saved successfully!`);
-      setTimeout(() => setSuccess(''), 5000);
     } catch (error: any) {
       setError(error.message || 'Failed to save content');
     } finally {

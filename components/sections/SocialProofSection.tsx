@@ -1,4 +1,5 @@
 import TestimonialCarousel from './TestimonialCarousel';
+import { BACKEND_URL } from '@/lib/config/env';
 
 interface Metric {
   id: string;
@@ -26,7 +27,7 @@ interface SocialProofContent {
 
 async function fetchSocialProof(): Promise<SocialProofContent | null> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/public/content/social-proof`, {
+    const res = await fetch(`${BACKEND_URL}/api/public/content/social-proof`, {
       next: { revalidate: 60 },
     });
     if (!res.ok) return null;

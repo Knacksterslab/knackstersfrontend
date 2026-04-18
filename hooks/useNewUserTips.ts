@@ -4,6 +4,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
+import { API_URL } from '@/lib/config/env';
 
 interface DismissedTip {
   dismissed: boolean;
@@ -37,7 +38,7 @@ export function useNewUserTips() {
       // Try to fetch from backend
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/user/preferences/tips`,
+          `${API_URL}/api/user/preferences/tips`,
           {
             credentials: 'include',
             headers: {
@@ -58,9 +59,8 @@ export function useNewUserTips() {
             return;
           }
         }
-      } catch (fetchError) {
+      } catch {
         // Endpoint not available, fall back to localStorage
-        console.log('Tips endpoint not available, using localStorage');
       }
 
       // Fallback to localStorage
@@ -73,8 +73,8 @@ export function useNewUserTips() {
         loading: false,
         error: null,
       });
-    } catch (error: any) {
-      console.error('Error fetching dismissed tips:', error);
+    } catch {
+      // Non-critical — tips will fall back to localStorage
       setTipState(prev => ({
         ...prev,
         loading: false,
@@ -126,7 +126,7 @@ export function useNewUserTips() {
       // Try to send to backend
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/user/preferences/tips/dismiss`,
+          `${API_URL}/api/user/preferences/tips/dismiss`,
           {
             method: 'POST',
             credentials: 'include',
@@ -137,18 +137,11 @@ export function useNewUserTips() {
           }
         );
 
-        if (response.ok) {
-          const data = await response.json();
-          if (!data.success) {
-            console.log('Backend tip dismissal failed, using localStorage');
-          }
-        }
-      } catch (fetchError) {
-        // Backend not available, localStorage is already saved
-        console.log('Tips endpoint not available, saved to localStorage');
+      } catch {
+        // Backend not available; localStorage already updated above
       }
-    } catch (error: any) {
-      console.error('Error dismissing tip:', error);
+    } catch {
+      // Dismissal is best-effort — ignore failures
     }
   }, []);
 
@@ -165,7 +158,7 @@ export function useNewUserTips() {
       // Try to send to backend
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/user/preferences/onboarding/complete`,
+          `${API_URL}/api/user/preferences/onboarding/complete`,
           {
             method: 'POST',
             credentials: 'include',
@@ -175,17 +168,11 @@ export function useNewUserTips() {
           }
         );
 
-        if (response.ok) {
-          const data = await response.json();
-          if (!data.success) {
-            console.log('Backend onboarding completion failed, using localStorage');
-          }
-        }
-      } catch (fetchError) {
-        console.log('Onboarding endpoint not available, saved to localStorage');
+      } catch {
+        // Backend not available; localStorage already updated above
       }
-    } catch (error: any) {
-      console.error('Error completing onboarding:', error);
+    } catch {
+      // Best-effort — ignore failures
     }
   }, []);
 
@@ -193,7 +180,7 @@ export function useNewUserTips() {
   const resetTips = useCallback(async () => {
     try {
       const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/user/preferences/tips/reset`,
+          `${API_URL}/api/user/preferences/tips/reset`,
         {
           method: 'POST',
           credentials: 'include',
@@ -214,8 +201,8 @@ export function useNewUserTips() {
       } else {
         throw new Error(data.message || 'Failed to reset tips');
       }
-    } catch (error: any) {
-      console.error('Error resetting tips:', error);
+    } catch {
+      // Best-effort
     }
   }, [fetchDismissedTips]);
 

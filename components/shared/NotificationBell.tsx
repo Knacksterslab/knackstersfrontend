@@ -35,8 +35,8 @@ export default function NotificationBell() {
           const payload = await Session.getAccessTokenPayloadSecurely();
           setUserRole(payload.role);
         }
-      } catch (error) {
-        console.error('Failed to get user role:', error);
+      } catch {
+        // Non-critical — notification bell will remain empty
       }
     }
     getUserRole();
@@ -57,8 +57,8 @@ export default function NotificationBell() {
       if (data.success) {
         setNotifications(data.data || []);
       }
-    } catch (error) {
-      console.error('Failed to fetch notifications:', error);
+    } catch {
+      // Silently fail — bell will show stale/empty state
     }
   };
 
@@ -77,8 +77,8 @@ export default function NotificationBell() {
       if (data.success) {
         setUnreadCount(data.data?.count || 0);
       }
-    } catch (error) {
-      console.error('Failed to fetch unread count:', error);
+    } catch {
+      // Silently fail
     }
   };
 
@@ -100,8 +100,8 @@ export default function NotificationBell() {
         ));
         fetchUnreadCount();
       }
-    } catch (error) {
-      console.error('Failed to mark as read:', error);
+    } catch {
+      // Best-effort
     }
   };
 
@@ -122,8 +122,8 @@ export default function NotificationBell() {
         setNotifications(notifications.map(n => ({ ...n, isRead: true })));
         setUnreadCount(0);
       }
-    } catch (error) {
-      console.error('Failed to mark all as read:', error);
+    } catch {
+      // Best-effort
     } finally {
       setLoading(false);
     }

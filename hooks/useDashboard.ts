@@ -15,6 +15,7 @@ interface DashboardData {
   notifications: any[];
   accountManager: any;
   upcomingMeeting?: any;
+  totalMeetingCount: number;
 }
 
 export function useDashboard() {

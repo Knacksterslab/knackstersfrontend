@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Search, X, Folder, CheckSquare, Calendar, ArrowRight, Loader } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { API_URL } from '@/lib/config/env'
 
 interface SearchModalProps {
   isOpen: boolean
@@ -33,7 +34,6 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const performSearch = async (searchQuery: string) => {
     try {
       setLoading(true)
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
       const types = selectedType === 'all' ? 'projects,tasks,meetings' : selectedType
       const response = await fetch(`${API_URL}/api/client/search?q=${encodeURIComponent(searchQuery)}&types=${types}`, {
         credentials: 'include',

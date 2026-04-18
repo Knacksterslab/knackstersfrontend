@@ -12,8 +12,8 @@ import {
   Ticket,
   User,
 } from 'lucide-react';
-import { useUser } from '@/contexts/UserContext';
 import UnifiedSidebar, { sidebarThemes } from '@/components/shared/UnifiedSidebar';
+import { useLogout } from '@/hooks/useLogout';
 
 interface AdminSidebarProps {
   isOpen?: boolean
@@ -21,7 +21,7 @@ interface AdminSidebarProps {
 }
 
 export default function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
-  const { logout } = useUser()
+  const { handleLogout } = useLogout()
 
   const menuItems = [
     {
@@ -105,16 +105,6 @@ export default function AdminSidebar({ isOpen = false, onClose }: AdminSidebarPr
       path: '/admin-dashboard/settings',
     },
   ];
-
-  const handleLogout = async () => {
-    try {
-      await logout()
-      window.location.href = '/'
-    } catch (error) {
-      console.error('Logout error:', error)
-      window.location.href = '/'
-    }
-  };
 
   return (
     <UnifiedSidebar

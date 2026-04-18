@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+import { BACKEND_URL } from '@/lib/config/env';
 
 export async function PUT(
   request: NextRequest,
@@ -9,7 +9,7 @@ export async function PUT(
   try {
     const body = await request.json();
     const { id } = params;
-    const response = await fetch(`${API_URL}/api/admin/partners/${id}`, {
+    const response = await fetch(`${BACKEND_URL}/api/admin/partners/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -31,7 +31,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = params;
-    const response = await fetch(`${API_URL}/api/admin/partners/${id}`, {
+    const response = await fetch(`${BACKEND_URL}/api/admin/partners/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

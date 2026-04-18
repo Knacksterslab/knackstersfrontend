@@ -14,15 +14,20 @@ import NotificationCenter from './NotificationCenter';
 import DashboardFooter from './DashboardFooter';
 import NewUserTip, { NewUserTipCompact } from './NewUserTip';
 import RequestTaskModal from './RequestTaskModal';
-import { Menu } from 'lucide-react';
+import { Menu, Calendar, X } from 'lucide-react';
 import { useDashboard } from '@/hooks/useDashboard';
 import { useRouter } from 'next/navigation';
+import CalBookingModal from '@/components/shared/CalBookingModal';
 
 export default function DashboardLayout() {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showRequestTaskModal, setShowRequestTaskModal] = useState(false);
+  const [bookingBannerDismissed, setBookingBannerDismissed] = useState(false);
+  const [showBookingModal, setShowBookingModal] = useState(false);
   const { data, loading, error, refresh } = useDashboard();
+
+  const isFirstBooking = (data?.totalMeetingCount ?? 0) === 0;
 
   const getTipMessage = () => {
     if (data?.subscription?.status === 'ACTIVE') {
@@ -79,6 +84,40 @@ export default function DashboardLayout() {
                 >
                   <Menu size={24} className="text-gray-600" />
                 </button>
+
+                {/* Booking CTA banner — shown when client has no meeting booked yet */}
+                {!data.upcomingMeeting && !bookingBannerDismissed && (
+                  <div className="mb-6 flex items-start gap-4 bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-xl px-5 py-4">
+                    <div className="flex-shrink-0 w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                      <Calendar className="w-5 h-5 text-orange-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-gray-900">
+                        {isFirstBooking ? 'Book your free onboarding call' : 'Book a strategy call'}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        {isFirstBooking
+                          ? 'Schedule a 15-min call with your Customer Success Manager to get started.'
+                          : 'Schedule a call with your Customer Success Manager to discuss your projects.'}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <button
+                        onClick={() => setShowBookingModal(true)}
+                        className="px-4 py-1.5 bg-gradient-to-r from-[#E9414C] to-[#FF9634] text-white text-xs font-semibold rounded-lg hover:opacity-90 transition-opacity whitespace-nowrap"
+                      >
+                        Book now
+                      </button>
+                      <button
+                        onClick={() => setBookingBannerDismissed(true)}
+                        className="text-gray-400 hover:text-gray-600 transition-colors"
+                        aria-label="Dismiss"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                )}
 
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6 sm:mb-8">
                   <div>
@@ -141,7 +180,7 @@ export default function DashboardLayout() {
                       <PlanSelection 
                         onSubscriptionComplete={refresh} 
                         hasUpcomingMeeting={!!data.upcomingMeeting}
-                        onScheduleCall={() => router.push('/meetings')}
+                        onScheduleCall={() => setShowBookingModal(true)}
                       />
                     ) : (
                       <BillingSummary subscription={data.subscription} />
@@ -150,7 +189,8 @@ export default function DashboardLayout() {
 
                   <div className="space-y-6">
                     <UpcomingMeeting 
-                      meeting={data.upcomingMeeting || null} 
+                      meeting={data.upcomingMeeting || null}
+                      onRefresh={refresh}
                     />
                     
                     {data.accountManager && (
@@ -180,6 +220,21 @@ export default function DashboardLayout() {
           isOpen={showRequestTaskModal}
           onClose={() => setShowRequestTaskModal(false)}
           onSuccess={refresh}
+        />
+
+        <CalBookingModal
+          isOpen={showBookingModal}
+          onClose={() => setShowBookingModal(false)}
+          calUrl={process.env.NEXT_PUBLIC_CAL_CLIENT_URL || ''}
+          title={isFirstBooking ? 'Book Your Onboarding Call' : 'Book a Strategy Call'}
+          mode="book"
+          prefillName={data?.user?.fullName || ''}
+          prefillEmail={data?.user?.email || ''}
+          onBookingComplete={() => {
+            setShowBookingModal(false);
+            setBookingBannerDismissed(true);
+            refresh();
+          }}
         />
       </>
     </RoleGuard>

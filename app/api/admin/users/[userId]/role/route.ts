@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+import { BACKEND_URL } from '@/lib/config/env';
 
 export async function PATCH(
   request: NextRequest,
@@ -9,7 +9,7 @@ export async function PATCH(
   try {
     const body = await request.json();
     const { userId } = params;
-    const url = `${API_URL}/api/admin/users/${userId}/role`;
+    const url = `${BACKEND_URL}/api/admin/users/${userId}/role`;
     
     const response = await fetch(url, {
       method: 'PATCH',

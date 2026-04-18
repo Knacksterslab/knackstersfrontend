@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { defaultLandingContent } from '@/components/landing/landing-content';
 import { getLiveStats } from '@/lib/utils/stats';
+import { BACKEND_URL } from '@/lib/config/env';
 
 interface Partner {
   slug: string;
@@ -13,7 +14,7 @@ interface Partner {
 
 async function fetchActivePartners(): Promise<Partner[]> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/partners`, {
+    const res = await fetch(`${BACKEND_URL}/api/partners`, {
       next: { revalidate: 60 },
     });
     if (!res.ok) return [];

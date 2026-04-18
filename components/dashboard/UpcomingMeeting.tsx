@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Calendar, MessageCircle } from 'lucide-react'
+import { API_URL } from '@/lib/config/env'
 import CalBookingModal, { BookingDetails } from '../shared/CalBookingModal'
 import CancelBookingDialog from '../shared/CancelBookingDialog'
 import { useUser } from '@/contexts/UserContext'
@@ -17,32 +18,32 @@ interface UpcomingMeetingProps {
     description?: string | null
     bookingId?: string
   } | null
+  onRefresh?: () => void
 }
 
-export default function UpcomingMeeting({ meeting }: UpcomingMeetingProps) {
+export default function UpcomingMeeting({ meeting, onRefresh }: UpcomingMeetingProps) {
   const router = useRouter()
   const { user } = useUser()
   const [showModal, setShowModal] = useState(false)
   const [showCancelDialog, setShowCancelDialog] = useState(false)
 
-  const handleBookingComplete = (details: BookingDetails) => {
+  const handleBookingComplete = (_details: BookingDetails) => {
     setShowModal(false)
-    // Refresh dashboard data to show new meeting
-    router.refresh()
+    if (onRefresh) onRefresh();
+    else router.refresh();
   }
 
   const handleCancelMeeting = async () => {
     if (!meeting?.bookingId) return
 
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
       const response = await fetch(`${API_URL}/api/client/meetings/${meeting.bookingId}/cancel`, {
         method: 'DELETE',
         credentials: 'include',
       })
 
       if (response.ok) {
-        router.refresh() // Refresh to remove meeting from UI
+        if (onRefresh) onRefresh(); else router.refresh();
       } else {
         console.error('Failed to cancel meeting')
         alert('Failed to cancel meeting. Please try again.')

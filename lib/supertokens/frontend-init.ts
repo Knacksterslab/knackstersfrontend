@@ -1,5 +1,6 @@
 import SuperTokens from 'supertokens-auth-react';
 import EmailPassword from 'supertokens-auth-react/recipe/emailpassword';
+import EmailVerification from 'supertokens-auth-react/recipe/emailverification';
 import ThirdParty from 'supertokens-auth-react/recipe/thirdparty';
 import Session from 'supertokens-auth-react/recipe/session';
 
@@ -46,6 +47,9 @@ export function initSuperTokensFrontend() {
       },
       recipeList: [
         EmailPassword.init(),
+        EmailVerification.init({
+          mode: 'REQUIRED',
+        }),
         ThirdParty.init({
           signInAndUpFeature: {
             providers: [

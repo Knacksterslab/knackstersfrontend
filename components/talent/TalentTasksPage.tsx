@@ -14,38 +14,11 @@ import {
   Upload,
   Plus
 } from 'lucide-react'
+import { useTaskTimer } from '@/hooks/useTaskTimer'
 
 export default function TalentTasksPage() {
-  const [activeTimer, setActiveTimer] = useState<string | null>(null)
-  const [timerSeconds, setTimerSeconds] = useState(0)
+  const { activeTimer, timerSeconds, toggleTimer, formatTime } = useTaskTimer()
   const [selectedTab, setSelectedTab] = useState<'all' | 'active' | 'completed'>('all')
-
-  React.useEffect(() => {
-    let interval: NodeJS.Timeout
-    if (activeTimer) {
-      interval = setInterval(() => {
-        setTimerSeconds((prev) => prev + 1)
-      }, 1000)
-    }
-    return () => clearInterval(interval)
-  }, [activeTimer])
-
-  const formatTime = (seconds: number) => {
-    const hrs = Math.floor(seconds / 3600)
-    const mins = Math.floor((seconds % 3600) / 60)
-    const secs = seconds % 60
-    return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
-  }
-
-  const toggleTimer = (taskId: string) => {
-    if (activeTimer === taskId) {
-      setActiveTimer(null)
-      setTimerSeconds(0)
-    } else {
-      setActiveTimer(taskId)
-      setTimerSeconds(0)
-    }
-  }
 
   const allTasks = [
     {

@@ -3,7 +3,7 @@
  * Handles all API requests to the backend
  */
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+import { API_URL } from '../config/env';
 
 interface ApiResponse<T = any> {
   success: boolean;
