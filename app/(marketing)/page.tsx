@@ -30,6 +30,7 @@ export const metadata: Metadata = {
     "remote talent",
     "staff augmentation",
   ],
+  alternates: { canonical: "https://www.knacksters.co" },
   openGraph: {
     title: defaultLandingContent.seo.pageTitle,
     description: defaultLandingContent.seo.metaDescription,

@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
     "Learn how Knacksters collects, uses, and protects your personal information. We're committed to transparency and data security.",
+  alternates: { canonical: "https://www.knacksters.co/privacy" },
   openGraph: {
     title: "Privacy Policy - Knacksters",
     description: "Learn how Knacksters collects, uses, and protects your personal information.",

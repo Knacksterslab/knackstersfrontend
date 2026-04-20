@@ -1,0 +1,38 @@
+# Knacksters
+
+> Knacksters is a managed on-demand talent platform that connects businesses with pre-vetted professionals across six specialised domains: AI, cybersecurity, software development, design, growth marketing & customer success, and healthcare & life sciences. Clients get matched with expert talent within 48 hours and can start with 50 free hours — no credit card required. Knacksters handles contracts, onboarding, invoicing, and talent management end-to-end through a dedicated Customer Success Manager.
+
+## Pages
+
+- [Home](https://www.knacksters.co): Main landing page — platform overview, value proposition, featured talent, and social proof.
+- [How It Works](https://www.knacksters.co/how-it-works): Step-by-step explanation of the hiring and deployment process — from booking a strategy call to deploying talent and scaling.
+- [Solutions](https://www.knacksters.co/solutions): Overview of all six service domains with descriptions and entry points.
+- [AI Solutions](https://www.knacksters.co/solutions/ai-solutions): AI strategy, machine learning engineering, data science, MLOps, AI governance, and domain-specific AI implementations.
+- [Cybersecurity](https://www.knacksters.co/solutions/cybersecurity): Blue team defense, red team penetration testing, SOC operations, DFIR (digital forensics & incident response), GRC, and privacy engineering.
+- [Development & DevOps](https://www.knacksters.co/solutions/development-devops): Frontend, backend, full-stack, mobile, cloud engineering, SRE, platform engineering, and DevOps.
+- [Design & Creative](https://www.knacksters.co/solutions/design-creative): UX research, UI design, brand identity, motion graphics, design systems, and product design.
+- [Growth & Customer Success](https://www.knacksters.co/solutions/marketing): Growth marketing, SEO, paid media, content marketing, RevOps, customer success management, and churn reduction.
+- [Healthcare & Life Sciences](https://www.knacksters.co/solutions/healthcare-life-sciences): Clinical trial management, regulatory affairs, biostatistics, clinical data management, and medical research staffing for pharma, biotech, and medical device companies.
+- [Pricing](https://www.knacksters.co/pricing): Subscription plans — 50 free hours to start, then Flex Retainer, Pro Retainer, Growth, and Enterprise tiers. No hidden fees, no long-term contracts.
+- [FAQ](https://www.knacksters.co/faq): Answers to common questions about the platform, talent vetting, pricing, onboarding, and engagement models.
+- [Privacy Policy](https://www.knacksters.co/privacy): How Knacksters collects, uses, and protects user data.
+- [Terms of Service](https://www.knacksters.co/terms): Rights and responsibilities for platform users.
+
+## About
+
+Knacksters operates as a 360° on-demand cloud workforce. Unlike traditional staffing agencies or freelance marketplaces, every professional on the platform is pre-vetted through a rigorous screening process covering technical skills, communication, and culture fit. Engagements are fully managed — clients do not need to handle sourcing, contracts, payroll, or performance management.
+
+Key facts:
+- 10,000+ vetted professionals across six domains
+- 960,000+ hours delivered
+- Clients matched within 48 hours
+- Dedicated Customer Success Manager per client
+- Start with 50 free hours, no credit card required
+- Subscription-based pricing with flexible plans
+
+## Contact
+
+- Email: connect@knacksters.co
+- Twitter/X: https://twitter.com/knackstersco
+- LinkedIn: https://www.linkedin.com/company/knacksters
+- YouTube: https://www.youtube.com/@KnackstersLab

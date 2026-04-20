@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "FAQ - Frequently Asked Questions",
   description: "Get answers to common questions about Knacksters' managed talent platform, pricing, professionals, and how we help businesses scale with expert talent.",
   keywords: ["FAQ", "frequently asked questions", "talent platform pricing", "how to hire", "knacksters help"],
+  alternates: { canonical: "https://www.knacksters.co/faq" },
   openGraph: {
     title: "FAQ - Knacksters | Frequently Asked Questions",
     description: "Get answers to common questions about Knacksters' managed talent platform, pricing, and how we help businesses scale.",

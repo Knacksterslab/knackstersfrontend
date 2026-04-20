@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PrimaryButton from "@/components/svg/primary-button";
+import JsonLd from "@/components/seo/JsonLd";
 
 export const metadata: Metadata = {
   title: "Solutions - Knacksters",
@@ -11,17 +12,43 @@ export const metadata: Metadata = {
     "design creative", "growth marketing", "customer success", "healthcare staffing",
     "cloud workforce", "Knacksters"
   ],
+  alternates: { canonical: "https://www.knacksters.co/solutions" },
   openGraph: {
     title: "Solutions - Knacksters",
     description: "Access expert talent across every domain — from AI and cybersecurity to growth marketing and customer success.",
     url: "https://www.knacksters.co/solutions",
-    images: [{ url: "/hero-bg.png", width: 1200, height: 630 }],
+    images: [{ url: "/hero-bg.png", width: 1200, height: 630, alt: "Knacksters Solutions" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Solutions - Knacksters",
     description: "Access expert talent across every domain — from AI and cybersecurity to growth marketing and customer success.",
   },
+};
+
+const itemListSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Knacksters Solution Domains",
+  description: "Pre-vetted on-demand professionals across six specialised domains.",
+  url: "https://www.knacksters.co/solutions",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "AI Solutions", url: "https://www.knacksters.co/solutions/ai-solutions" },
+    { "@type": "ListItem", position: 2, name: "Cybersecurity", url: "https://www.knacksters.co/solutions/cybersecurity" },
+    { "@type": "ListItem", position: 3, name: "Development & DevOps", url: "https://www.knacksters.co/solutions/development-devops" },
+    { "@type": "ListItem", position: 4, name: "Design & Creative", url: "https://www.knacksters.co/solutions/design-creative" },
+    { "@type": "ListItem", position: 5, name: "Growth & Customer Success", url: "https://www.knacksters.co/solutions/marketing" },
+    { "@type": "ListItem", position: 6, name: "Healthcare & Life Sciences", url: "https://www.knacksters.co/solutions/healthcare-life-sciences" },
+  ],
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: "https://www.knacksters.co" },
+    { "@type": "ListItem", position: 2, name: "Solutions", item: "https://www.knacksters.co/solutions" },
+  ],
 };
 
 const solutions = [
@@ -96,6 +123,9 @@ const solutions = [
 
 export default function SolutionsPage() {
   return (
+    <>
+      <JsonLd data={itemListSchema} />
+      <JsonLd data={breadcrumbSchema} />
     <div className="min-h-screen">
 
       {/* Hero — matches brand: light bg, hero-bg.png, font-mono headline */}
@@ -290,5 +320,6 @@ export default function SolutionsPage() {
         </div>
       </section>
     </div>
+    </>
   );
 }
