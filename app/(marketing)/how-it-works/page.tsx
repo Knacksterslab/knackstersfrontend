@@ -26,7 +26,7 @@ const howToSchema = {
   "@type": "HowTo",
   name: "How to Hire On-Demand Talent with Knacksters",
   description: "Deploy pre-vetted expert professionals in minutes using Knacksters' managed talent platform.",
-  totalTime: "PT48H",
+  totalTime: "PT30M",
   step: [
     {
       "@type": "HowToStep",
@@ -38,7 +38,7 @@ const howToSchema = {
       "@type": "HowToStep",
       position: 2,
       name: "Get Matched with Vetted Talent",
-      text: "Within 48 hours, we match you with pre-vetted professionals who have been screened for skills, experience, and culture fit.",
+      text: "In under 30 minutes, we match you with pre-vetted professionals who have been screened for skills, experience, and culture fit.",
     },
     {
       "@type": "HowToStep",

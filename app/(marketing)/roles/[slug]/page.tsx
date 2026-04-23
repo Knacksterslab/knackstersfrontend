@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!role) return {}
 
   const title = role.seoTitle ?? `Hire a ${role.title} | Knacksters`
-  const description = role.seoDescription ?? role.shortIntro ?? `Find pre-vetted ${role.title} professionals on demand. Matched within 48 hours. Start with 50 free hours.`
+  const description = role.seoDescription ?? role.shortIntro ?? `Find pre-vetted ${role.title} professionals on demand. Matched in under 30 minutes. Start with 50 free hours.`
   const url = `https://www.knacksters.co/roles/${params.slug}`
 
   return {
@@ -169,7 +169,7 @@ export default async function RolePage({ params }: Props) {
       <section className="py-8 px-4 bg-[#262626]">
         <div className="max-w-4xl mx-auto grid grid-cols-3 gap-6 text-center">
           {[
-            { value: '48h', label: 'Matched within' },
+            { value: '<30 min', label: 'Matched within' },
             { value: '50 hrs', label: 'Free to start' },
             { value: '100%', label: 'Pre-vetted' },
           ].map((stat) => (
@@ -204,7 +204,7 @@ export default async function RolePage({ params }: Props) {
             Ready to hire a {role.title}?
           </h2>
           <p className="font-sans text-base text-[rgb(140,140,140)] mb-8">
-            Get matched with pre-vetted talent within 48 hours. Start with 50 free hours.
+            Get matched with pre-vetted talent in under 30 minutes. Start with 50 free hours.
           </p>
           <Link
             href="/signup"

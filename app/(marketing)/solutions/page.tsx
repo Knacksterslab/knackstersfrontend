@@ -207,7 +207,7 @@ export default function SolutionsPage() {
               className="font-sans text-base sm:text-lg max-w-2xl mx-auto"
               style={{ color: "rgb(140,140,140)", lineHeight: "1.57" }}
             >
-              Each domain gives you access to deeply specialised, vetted talent — ready to embed in your team within 48 hours.
+              Each domain gives you access to deeply specialised, vetted talent — ready to embed in your team in under 30 minutes.
             </p>
           </div>
 
@@ -305,7 +305,7 @@ export default function SolutionsPage() {
             className="font-sans text-base sm:text-lg mb-8"
             style={{ color: "rgb(140,140,140)", lineHeight: "1.57" }}
           >
-            Start with 50 free hours, get matched with expert talent in 48 hours, and scale as you grow — no credit card needed.
+            Start with 50 free hours, get matched with expert talent in under 30 minutes, and scale as you grow — no credit card needed.
           </p>
           <div className="flex justify-center">
             <Link href="/signup" className="inline-block">

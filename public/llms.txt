@@ -1,6 +1,6 @@
 # Knacksters
 
-> Knacksters is a managed on-demand talent platform that connects businesses with pre-vetted professionals across six specialised domains: AI, cybersecurity, software development, design, growth marketing & customer success, and healthcare & life sciences. Clients get matched with expert talent within 48 hours and can start with 50 free hours — no credit card required. Knacksters handles contracts, onboarding, invoicing, and talent management end-to-end through a dedicated Customer Success Manager.
+> Knacksters is a managed on-demand talent platform that connects businesses with pre-vetted professionals across six specialised domains: AI, cybersecurity, software development, design, growth marketing & customer success, and healthcare & life sciences. Clients get matched with expert talent in under 30 minutes and can start with 50 free hours — no credit card required. Knacksters handles contracts, onboarding, invoicing, and talent management end-to-end through a dedicated Customer Success Manager.
 
 ## Pages
 
@@ -25,7 +25,7 @@ Knacksters operates as a 360° on-demand cloud workforce. Unlike traditional sta
 Key facts:
 - 10,000+ vetted professionals across six domains
 - 960,000+ hours delivered
-- Clients matched within 48 hours
+- Clients matched in under 30 minutes
 - Dedicated Customer Success Manager per client
 - Start with 50 free hours, no credit card required
 - Subscription-based pricing with flexible plans

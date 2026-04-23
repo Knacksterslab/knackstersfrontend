@@ -257,7 +257,7 @@ export default function MarketingPage() {
     { value: "3.5×", label: "Average ROI on growth campaigns" },
     { value: "40%", label: "Average churn reduction" },
     { value: "2.8×", label: "Net Revenue Retention improvement" },
-    { value: "< 48hrs", label: "Time to first expert matched" },
+    { value: "< 30 min", label: "Time to first expert matched" },
   ];
 
   const benefits = [
