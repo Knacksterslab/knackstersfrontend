@@ -3,6 +3,7 @@
 import { UserProvider } from '@/contexts/UserContext'
 import AuthGuard from '@/components/auth/AuthGuard'
 import { usePathname } from 'next/navigation'
+import SuperTokensProvider from '@/components/providers/SuperTokensProvider'
 
 export default function AppLayout({
   children,
@@ -16,17 +17,19 @@ export default function AppLayout({
   const isPublicPath = publicPaths.some(path => pathname?.startsWith(path))
 
   return (
-    <UserProvider>
-      {isPublicPath ? (
-        // Public routes - no auth required
-        children
-      ) : (
-        // Protected routes - require authentication
-        <AuthGuard>
-          {children}
-        </AuthGuard>
-      )}
-    </UserProvider>
+    <SuperTokensProvider>
+      <UserProvider>
+        {isPublicPath ? (
+          // Public routes - no auth required
+          children
+        ) : (
+          // Protected routes - require authentication
+          <AuthGuard>
+            {children}
+          </AuthGuard>
+        )}
+      </UserProvider>
+    </SuperTokensProvider>
   )
 }
 

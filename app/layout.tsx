@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { Inter, Public_Sans, Space_Mono, Lato } from 'next/font/google'
 import './globals.css'
 import ToastProvider from '@/components/providers/ToastProvider'
-import SuperTokensProvider from '@/components/providers/SuperTokensProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 const publicSans = Public_Sans({ 
@@ -61,10 +60,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} ${publicSans.variable} ${spaceMono.variable} ${lato.variable} antialiased`}>
-        <SuperTokensProvider>
-          {children}
-          <ToastProvider />
-        </SuperTokensProvider>
+        {children}
+        <ToastProvider />
       </body>
     </html>
   )
