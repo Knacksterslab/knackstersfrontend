@@ -22,6 +22,7 @@ export default function Header() {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const solutions = [
+    { label: "Try Before You Hire", href: "/solutions/try-before-you-hire", icon: "✅" },
     { label: "AI Solutions", href: "/solutions/ai-solutions", icon: "🤖" },
     { label: "Cybersecurity", href: "/solutions/cybersecurity", icon: "🛡️" },
     { label: "Development & DevOps", href: "/solutions/development-devops", icon: "💻" },

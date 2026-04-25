@@ -30,15 +30,16 @@ const itemListSchema = {
   "@context": "https://schema.org",
   "@type": "ItemList",
   name: "Knacksters Solution Domains",
-  description: "Pre-vetted on-demand professionals across six specialised domains.",
+  description: "Pre-vetted on-demand professionals and hiring models across seven specialised domains.",
   url: "https://www.knacksters.co/solutions",
   itemListElement: [
-    { "@type": "ListItem", position: 1, name: "AI Solutions", url: "https://www.knacksters.co/solutions/ai-solutions" },
-    { "@type": "ListItem", position: 2, name: "Cybersecurity", url: "https://www.knacksters.co/solutions/cybersecurity" },
-    { "@type": "ListItem", position: 3, name: "Development & DevOps", url: "https://www.knacksters.co/solutions/development-devops" },
-    { "@type": "ListItem", position: 4, name: "Design & Creative", url: "https://www.knacksters.co/solutions/design-creative" },
-    { "@type": "ListItem", position: 5, name: "Growth & Customer Success", url: "https://www.knacksters.co/solutions/marketing" },
-    { "@type": "ListItem", position: 6, name: "Healthcare & Life Sciences", url: "https://www.knacksters.co/solutions/healthcare-life-sciences" },
+    { "@type": "ListItem", position: 1, name: "Try Before You Hire", url: "https://www.knacksters.co/solutions/try-before-you-hire" },
+    { "@type": "ListItem", position: 2, name: "AI Solutions", url: "https://www.knacksters.co/solutions/ai-solutions" },
+    { "@type": "ListItem", position: 3, name: "Cybersecurity", url: "https://www.knacksters.co/solutions/cybersecurity" },
+    { "@type": "ListItem", position: 4, name: "Development & DevOps", url: "https://www.knacksters.co/solutions/development-devops" },
+    { "@type": "ListItem", position: 5, name: "Design & Creative", url: "https://www.knacksters.co/solutions/design-creative" },
+    { "@type": "ListItem", position: 6, name: "Growth & Customer Success", url: "https://www.knacksters.co/solutions/marketing" },
+    { "@type": "ListItem", position: 7, name: "Healthcare & Life Sciences", url: "https://www.knacksters.co/solutions/healthcare-life-sciences" },
   ],
 };
 
@@ -52,6 +53,18 @@ const breadcrumbSchema = {
 };
 
 const solutions = [
+  {
+    emoji: "✅",
+    title: "Try Before You Hire",
+    tagline: "Evaluate Real Work First",
+    description:
+      "A low-risk model to validate execution, communication, and fit through real scoped work, then choose your next step: subscription continuity or direct hire conversion.",
+    href: "/solutions/try-before-you-hire",
+    cta: "Explore the Model",
+    accentColor: "#F97316",
+    tags: ["Trial-to-Hire", "Subscription Path", "Direct Hire Path", "<30 Min Match"],
+    isNew: true,
+  },
   {
     emoji: "🤖",
     title: "AI Solutions",

@@ -129,6 +129,14 @@ export const defaultLandingContent: LandingContent = {
     "subtitle": "Empower Your Business with Our Comprehensive Professional Ecosystem!",
     "items": [
       {
+        "id": "try-before-you-hire",
+        "title": "Try Before You Hire",
+        "description": "Reduce hiring risk by evaluating real execution first. Start with a structured trial, then choose your best-fit path: continue via subscription or convert to direct hire.",
+        "buttonText": "Explore the Model",
+        "buttonLink": "/solutions/try-before-you-hire",
+        "icon": "customer-service"
+      },
+      {
         "id": "ai-solutions",
         "title": "Harness the Power of AI",
         "description": "From strategy to implementation and compliance—our AI specialists help you adopt, optimize, and scale intelligent solutions tailored to your business needs.",

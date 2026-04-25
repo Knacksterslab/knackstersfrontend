@@ -7,6 +7,7 @@
 - [Home](https://www.knacksters.co): Main landing page — platform overview, value proposition, featured talent, and social proof.
 - [How It Works](https://www.knacksters.co/how-it-works): Step-by-step explanation of the hiring and deployment process — from booking a strategy call to deploying talent and scaling.
 - [Solutions](https://www.knacksters.co/solutions): Overview of all six service domains with descriptions and entry points.
+- [Try Before You Hire](https://www.knacksters.co/solutions/try-before-you-hire): A low-risk trial-to-hire model to evaluate real execution, communication, and fit before long-term commitment.
 - [AI Solutions](https://www.knacksters.co/solutions/ai-solutions): AI strategy, machine learning engineering, data science, MLOps, AI governance, and domain-specific AI implementations.
 - [Cybersecurity](https://www.knacksters.co/solutions/cybersecurity): Blue team defense, red team penetration testing, SOC operations, DFIR (digital forensics & incident response), GRC, and privacy engineering.
 - [Development & DevOps](https://www.knacksters.co/solutions/development-devops): Frontend, backend, full-stack, mobile, cloud engineering, SRE, platform engineering, and DevOps.
