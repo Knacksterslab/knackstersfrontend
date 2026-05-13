@@ -143,15 +143,17 @@ export function calculateMonthlyStats(clients: BackendClient[]) {
     return subscription?.status === 'ACTIVE';
   }).length;
 
-  // Calculate average hourly rate from subscriptions
+  // Use the ongoing standard rate (recurringPriceAmount) for rate analytics;
+  // this avoids deflating the blended rate during a client's onboarding month.
   const subscriptionsWithRate = clients
     .map((c) => c.subscriptions[0])
-    .filter((s) => s && s.priceAmount && s.monthlyHours);
+    .filter((s) => s && s.monthlyHours);
 
   const avgHourlyRate =
     subscriptionsWithRate.length > 0
       ? subscriptionsWithRate.reduce((sum, s) => {
-          return sum + Number(s.priceAmount) / s.monthlyHours!;
+          const rate = Number(s.recurringPriceAmount ?? s.priceAmount);
+          return sum + rate / s.monthlyHours!;
         }, 0) / subscriptionsWithRate.length
       : 0;
 

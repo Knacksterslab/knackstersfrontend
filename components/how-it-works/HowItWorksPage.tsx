@@ -49,7 +49,7 @@ export default function HowItWorksPage() {
       title: "Subscribe & Scale",
       subtitle: "Need ongoing expert capacity?",
       description: "Choose a monthly plan and get a managed team of vetted professionals across any of our 6 domains — deployed within hours, managed end-to-end by your dedicated Customer Success Manager.",
-      steps: ["Choose a plan from $7,000/mo", "15-min onboarding call", "Experts deployed same day", "Scale up or down monthly"],
+      steps: ["First month from $3,500", "15-min onboarding call", "Experts deployed same day", "Scale up or down monthly"],
       cta: "View Plans",
       ctaHref: "/signup",
       accentColor: "border-[#FF9634]",
@@ -67,7 +67,7 @@ export default function HowItWorksPage() {
       outcome: "Account created & plan selected",
       details: [
         "Trial to Hire — free, 50 hours, evaluate one professional for a permanent role",
-        "Flex Retainer ($7,000/mo) — 100 hours for focused ongoing projects",
+        "Flex Retainer — $3,500 onboarding month, then $7,000/mo — 100 hours",
         "Pro Retainer ($12,500/mo) — 200 hours for teams running multiple workstreams",
         "Growth ($25,000/mo) — 450 hours for scaling businesses",
         "Enterprise — custom pricing and hours for large organisations",

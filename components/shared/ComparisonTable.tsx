@@ -44,7 +44,7 @@ export const differentiators: DifferentiatorRow[] = [
   },
   {
     feature: "True Monthly Cost*",
-    knacksters: "From $7,000 managed",
+    knacksters: "From $3,500 onboarding, then $7,000/mo",
     freelance: "$15–25K unmanaged",
     staffing: "$20–40K + agency fee",
     fulltime: "$10–15K + overhead",

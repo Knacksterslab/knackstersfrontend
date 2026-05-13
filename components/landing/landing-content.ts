@@ -1,5 +1,6 @@
 export interface LandingContent {
   hero: {
+    tagline: string;
     headline: string;
     subheadline: string;
     ctaButtonText: string;
@@ -65,8 +66,9 @@ export interface LandingContent {
 
 export const defaultLandingContent: LandingContent = {
   "hero": {
+    "tagline": "Meet Knacksters · 360° On-Demand Cloud Workforce",
     "headline": "Revolutionize the Way You Work",
-    "subheadline": "Meet Knacksters, 360° On-Demand Cloud Workforce!",
+    "subheadline": "Deploy vetted experts in hours — not weeks. Start with 50 free hours.",
     "ctaButtonText": "Get Started",
     "talentCards": [
       {
@@ -205,7 +207,7 @@ export const defaultLandingContent: LandingContent = {
     "buttonText": "Join Knacksters Now"
   },
   "seo": {
-    "pageTitle": "Knacksters - 360° On-Demand Cloud Workforce",
-    "metaDescription": "Access a 360° on-demand cloud workforce with Knacksters. Connect with pre-vetted professionals across AI, cybersecurity, development, design, marketing, and healthcare."
+    "pageTitle": "Deploy Vetted Experts in Hours — Not Weeks | 50 Free Hours",
+    "metaDescription": "Deploy pre-vetted professionals in hours — not weeks. Start with 50 free hours across AI, cybersecurity, development, design, marketing, and healthcare. No contracts."
   }
 };

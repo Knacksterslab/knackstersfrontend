@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next';
 import { sanityClient } from '@/lib/sanity/client';
-import { ALL_POST_SLUGS_QUERY, ALL_ROLE_SLUGS_QUERY, ALL_CASE_STUDY_SLUGS_QUERY, ALL_COMPARISON_SLUGS_QUERY } from '@/lib/sanity/queries';
+import { ALL_POST_SLUGS_QUERY, ALL_ROLE_SLUGS_QUERY } from '@/lib/sanity/queries';
 
 const BASE_URL = 'https://www.knacksters.co';
 
@@ -26,11 +26,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   try {
-    const [postSlugs, roleSlugs, caseStudySlugs, comparisonSlugs] = await Promise.all([
+    const [postSlugs, roleSlugs] = await Promise.all([
       sanityClient.fetch<{ slug: string }[]>(ALL_POST_SLUGS_QUERY),
       sanityClient.fetch<{ slug: string }[]>(ALL_ROLE_SLUGS_QUERY),
-      sanityClient.fetch<{ slug: string }[]>(ALL_CASE_STUDY_SLUGS_QUERY),
-      sanityClient.fetch<{ slug: string }[]>(ALL_COMPARISON_SLUGS_QUERY),
     ]);
 
     const blogPages: MetadataRoute.Sitemap = postSlugs
@@ -51,25 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
       }));
 
-    const caseStudyPages: MetadataRoute.Sitemap = caseStudySlugs
-      .filter((s) => s.slug)
-      .map((s) => ({
-        url: `${BASE_URL}/case-studies/${s.slug}`,
-        lastModified: now,
-        changeFrequency: 'monthly',
-        priority: 0.7,
-      }));
-
-    const comparisonPages: MetadataRoute.Sitemap = comparisonSlugs
-      .filter((s) => s.slug)
-      .map((s) => ({
-        url: `${BASE_URL}/compare/${s.slug}`,
-        lastModified: now,
-        changeFrequency: 'monthly',
-        priority: 0.7,
-      }));
-
-    return [...staticPages, ...blogPages, ...rolePages, ...caseStudyPages, ...comparisonPages];
+    return [...staticPages, ...blogPages, ...rolePages];
   } catch {
     return staticPages;
   }

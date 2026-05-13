@@ -189,7 +189,7 @@ export default function PlanSelection({ onSubscriptionComplete, hasUpcomingMeeti
                 {(isPopular || plan.badge) && (
                   <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
                     <span className={`${isTrial ? 'bg-green-500' : 'bg-gradient-to-r from-[#E9414C] to-[#FF9634]'} text-white px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap shadow-sm`}>
-                      {plan.badge ?? 'Most Popular'}
+                      {plan.badge ?? (isPopular ? 'Most Popular' : '')}
                     </span>
                   </div>
                 )}
@@ -208,11 +208,11 @@ export default function PlanSelection({ onSubscriptionComplete, hasUpcomingMeeti
                   {/* Price */}
                   <div className="mb-0.5">
                     <span className="text-2xl font-extrabold text-gray-900 leading-none">
-                      {plan.price}
+                      {plan.displayPrice}
                     </span>
                   </div>
                   <div className="text-xs text-gray-400 mb-1">
-                    {plan.price === 'Free' ? '30-day trial' : 'per month'}
+                    {plan.displayPeriod}
                   </div>
 
                   {/* Hours */}
@@ -222,7 +222,7 @@ export default function PlanSelection({ onSubscriptionComplete, hasUpcomingMeeti
 
                   {/* Description */}
                   <p className="text-xs text-gray-400 mb-3 leading-relaxed">
-                    {plan.description}
+                    {plan.displayDescription}
                   </p>
 
                   {/* Divider */}

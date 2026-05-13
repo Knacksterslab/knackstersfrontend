@@ -45,7 +45,7 @@ export default function FAQPage() {
             <>
               <p className="mb-3">Knacksters is a managed talent platform that provides on-demand access to vetted professionals across multiple domains. Here's how it works:</p>
               <ol className="list-decimal list-inside space-y-2 ml-2">
-                <li><strong>Try Before You Hire:</strong> Start with our Trial to Hire plan — 50 hours of real work to evaluate a professional for a permanent role, completely free. Or jump straight into a paid plan from $7,000/mo</li>
+                <li><strong>Try Before You Hire:</strong> Start with our Trial to Hire plan — 50 hours of real work to evaluate a professional for a permanent role, completely free. Or jump straight into a Flex Retainer with a $3,500 onboarding month (then $7,000/mo)</li>
                 <li><strong>Meet Your CSM:</strong> Get assigned a dedicated Customer Success Manager who understands your goals</li>
                 <li><strong>Deploy Talent:</strong> We match you with expert professionals in minutes (not weeks)</li>
                 <li><strong>Flexible Allocation:</strong> Spread your hours across multiple experts or focus on specific priorities</li>
@@ -90,7 +90,7 @@ export default function FAQPage() {
         },
         {
           question: "Is there a subscription fee?",
-          answer: "Yes. Our pricing is simple and transparent. We offer a free Trial to Hire plan (50 hours, 30 days, one domain). Paid plans start at $7,000/month for 100 hours (Flex Retainer — $70/hr effective). All plans include a dedicated Customer Success Manager and access to our full network of 10,000+ vetted professionals. Unused hours don't roll over, but you can scale up or down monthly."
+          answer: "Yes. Our pricing is simple and transparent. We offer a free Trial to Hire plan (50 hours, 30 days, one domain). The Flex Retainer starts with a $3,500 onboarding month (100 hours, $35/hr effective) — we use that time to map your needs and build your delivery workflow. From month two the standard rate of $7,000/month ($70/hr effective) applies. All plans include a dedicated Customer Success Manager and access to 10,000+ vetted professionals."
         }
       ]
     },
@@ -142,9 +142,9 @@ export default function FAQPage() {
                   <div className="font-semibold text-gray-900 mb-1">Trial to Hire — Free</div>
                   <div className="text-sm text-gray-600">Evaluate a professional for a full-time role — 50 hours of real work • Valid 30 days • One role at a time • One per company</div>
                 </li>
-                <li className="p-3 bg-gray-50 rounded-lg">
-                  <div className="font-semibold text-gray-900 mb-1">Flex Retainer — $7,000/month</div>
-                  <div className="text-sm text-gray-600">100 hours/month • Effective rate: $70/hour</div>
+                <li className="p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                  <div className="font-semibold text-gray-900 mb-1">Flex Retainer — $3,500 first month, then $7,000/month</div>
+                  <div className="text-sm text-gray-600">100 hours/month • Onboarding month: $35/hr effective • Ongoing: $70/hr effective</div>
                 </li>
                 <li className="p-3 bg-gray-50 rounded-lg">
                   <div className="font-semibold text-gray-900 mb-1">Pro Retainer — $12,500/month</div>

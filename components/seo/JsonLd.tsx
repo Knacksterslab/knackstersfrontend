@@ -17,7 +17,7 @@ export const organizationSchema = {
   name: 'Knacksters',
   url: 'https://www.knacksters.co',
   logo: 'https://www.knacksters.co/logo.svg',
-  description: '360° on-demand cloud workforce with pre-vetted professionals across AI, cybersecurity, development, design, marketing, and healthcare.',
+  description: 'Deploy pre-vetted professionals in hours — not weeks. On-demand expert access across AI, cybersecurity, development, design, marketing, and healthcare. Start with 50 free hours.',
   contactPoint: {
     '@type': 'ContactPoint',
     email: 'connect@knacksters.co',

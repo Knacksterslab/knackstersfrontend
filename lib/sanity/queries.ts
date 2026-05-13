@@ -51,11 +51,3 @@ export const ROLE_BY_SLUG_QUERY = `
 export const ALL_ROLE_SLUGS_QUERY = `
   *[_type == "rolePage"] { "slug": slug.current }
 `
-
-export const ALL_CASE_STUDY_SLUGS_QUERY = `
-  *[_type == "caseStudy"] { "slug": slug.current, publishedAt }
-`
-
-export const ALL_COMPARISON_SLUGS_QUERY = `
-  *[_type == "comparisonPage"] { "slug": slug.current }
-`

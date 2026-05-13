@@ -171,7 +171,7 @@ const FeatureIcon = ({ type }: { type: string }) => {
 };
 
 export default function Banner({ talentCards: talentCardsProp }: BannerProps) {
-  const { headline, subheadline, ctaButtonText } = defaultLandingContent.hero;
+  const { tagline, headline, subheadline, ctaButtonText } = defaultLandingContent.hero;
   
   // Use provided talent cards or fall back to defaults
   const talentCards = talentCardsProp || defaultLandingContent.hero.talentCards;
@@ -233,6 +233,13 @@ export default function Banner({ talentCards: talentCardsProp }: BannerProps) {
       {/* Middle Section - Content area */}
       <div className="middle-section flex flex-col items-center justify-center px-4 sm:px-6">
         <div className="w-full max-w-4xl mx-auto flex flex-col items-center">
+          {/* Eyebrow tagline */}
+          {tagline && (
+            <div className="inline-flex items-center gap-2 bg-white/80 border border-gray-200 rounded-full px-4 py-1.5 mb-5 shadow-sm">
+              <span className="text-sm font-sans text-[rgb(89,89,89)]">{tagline}</span>
+            </div>
+          )}
+
           {/* Main Headline */}
           <h1 className="m-0 leading-[1.15] sm:leading-[1.21] font-mono font-normal text-[2rem] sm:text-[2.5rem] md:text-[3rem] lg:text-[4rem] xl:text-[4.5rem] text-center text-[rgb(38,38,38)] mb-2">
             {headline}

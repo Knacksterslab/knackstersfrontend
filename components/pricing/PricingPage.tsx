@@ -34,7 +34,7 @@ const allIncluded = [
 const faqs = [
   {
     q: 'Is there a setup fee or cancellation penalty?',
-    a: 'No setup fees, no onboarding charges, no cancellation penalties. You can cancel at the end of any billing month — no notice required.',
+    a: 'No setup fees, no cancellation penalties. Your first month on Flex Retainer is an onboarding period at $3,500 — we use that time to map your needs, assign talent, and build your delivery workflow. From month two the standard rate of $7,000/month applies. You can cancel at the end of any billing month — no notice required.',
   },
   {
     q: 'What exactly counts as an "hour"?',
@@ -185,7 +185,7 @@ export default function PricingPage() {
       <section className="py-16 sm:py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <ComparisonTable
-            heading="Why $7,000/month is cheaper than you think"
+            heading="Why Knacksters is cheaper than you think"
             subheading="Compare the real cost of Knacksters against unmanaged alternatives — and see what you're actually saving"
             footerNote="💡 With Knacksters, you get management, vetting, and flexibility included. Alternatives charge extra for each."
           />

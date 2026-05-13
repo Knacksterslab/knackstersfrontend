@@ -9,6 +9,7 @@ interface BillingSummaryProps {
     plan: string
     monthlyHours: number
     priceAmount: number
+    recurringPriceAmount?: number | null
     nextBillingDate?: Date | null
     currentPeriodEnd: Date
   } | null
@@ -37,7 +38,7 @@ export default function BillingSummary({ subscription }: BillingSummaryProps) {
             <div className="flex-1">
               <h3 className="text-sm font-semibold text-gray-900">{formatPlanName(subscription.plan)} Plan</h3>
               <p className="text-xs text-gray-600">
-                ${(subscription.priceAmount / 100).toLocaleString()} / mo • {subscription.monthlyHours} hours included
+                ${((subscription.recurringPriceAmount ?? subscription.priceAmount) / 100).toLocaleString()} / mo • {subscription.monthlyHours} hours included
               </p>
             </div>
             <div className="sm:text-right">

@@ -38,7 +38,7 @@ const faqSchema = {
       name: 'How much does Knacksters cost?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'We offer a free Trial to Hire plan (50 hours, 30 days, one domain, one per company). Paid plans start at $7,000/month for 100 hours (Flex Retainer). Pro Retainer is $12,500/month for 200 hours. Growth is $25,000/month for 450 hours. Enterprise plans are custom. All plans include a dedicated Customer Success Manager.',
+        text: 'We offer a free Trial to Hire plan (50 hours, 30 days, one domain, one per company). The Flex Retainer starts at $3,500 for the first onboarding month (100 hours), then $7,000/month. Pro Retainer is $12,500/month for 200 hours. Growth is $25,000/month for 450 hours. Enterprise plans are custom. All plans include a dedicated Customer Success Manager.',
       },
     },
     {

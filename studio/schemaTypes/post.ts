@@ -23,11 +23,13 @@ export const postType = defineType({
       title: 'Excerpt',
       type: 'text',
       rows: 3,
+      validation: Rule => Rule.max(220),
     }),
     defineField({
       name: 'publishedAt',
       title: 'Published At',
       type: 'datetime',
+      validation: Rule => Rule.required(),
     }),
     defineField({
       name: 'category',
@@ -46,17 +48,34 @@ export const postType = defineType({
       title: 'Body',
       type: 'array',
       of: [{type: 'block'}],
+      validation: Rule => Rule.required().min(1),
     }),
     defineField({
       name: 'seoTitle',
       title: 'SEO Title',
       type: 'string',
+      validation: Rule => Rule.max(60),
     }),
     defineField({
       name: 'seoDescription',
       title: 'SEO Description',
       type: 'text',
       rows: 3,
+      validation: Rule => Rule.max(160),
     }),
   ],
+  preview: {
+    select: {
+      title: 'title',
+      category: 'category',
+      publishedAt: 'publishedAt',
+    },
+    prepare({title, category, publishedAt}) {
+      const date = publishedAt ? new Date(publishedAt).toLocaleDateString('en-US') : 'Unpublished'
+      return {
+        title,
+        subtitle: [category, date].filter(Boolean).join(' | '),
+      }
+    },
+  },
 })

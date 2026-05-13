@@ -16,11 +16,10 @@ import NewUserTip, { NewUserTipCompact } from './NewUserTip';
 import RequestTaskModal from './RequestTaskModal';
 import { Menu, Calendar, X } from 'lucide-react';
 import { useDashboard } from '@/hooks/useDashboard';
-import { useRouter } from 'next/navigation';
 import CalBookingModal from '@/components/shared/CalBookingModal';
+import AssignedTalentCard from './AssignedTalentCard';
 
 export default function DashboardLayout() {
-  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showRequestTaskModal, setShowRequestTaskModal] = useState(false);
   const [bookingBannerDismissed, setBookingBannerDismissed] = useState(false);
@@ -188,6 +187,8 @@ export default function DashboardLayout() {
                   </div>
 
                   <div className="space-y-6">
+                    <AssignedTalentCard projects={data.recentProjects} />
+
                     <UpcomingMeeting 
                       meeting={data.upcomingMeeting || null}
                       onRefresh={refresh}

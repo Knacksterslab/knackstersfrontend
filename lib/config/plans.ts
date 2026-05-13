@@ -31,11 +31,15 @@ export const PLAN_CONFIG = {
   FLEX_RETAINER: {
     name: 'FLEX_RETAINER',
     displayName: 'Flex Retainer',
+    // First-month onboarding rate; ongoing standard rate applies from month 2
+    onboardingPrice: 3500,
+    onboardingPriceDisplay: '$3,500',
     price: 7000,
     priceDisplay: '$7,000',
     hours: 100,
     hoursDisplay: '100 hours',
     description: 'Perfect for focused, ongoing projects.',
+    onboardingDescription: 'Start with 100 managed hours for $3,500 while we map your needs, assign talent, build your delivery workflow, and prove fit. Then $7,000/month.',
     features: [
       '100 hours per month',
       'Dedicated Customer Success Manager',
@@ -104,17 +108,40 @@ export function getPlanConfig(planName: PlanType) {
   return PLAN_CONFIG[planName];
 }
 
-// Convert config to pricing plans array format for UI components
+// Convert config to a UI-ready shape.
+// All display-logic decisions live here — consumers use displayPrice / displayPeriod /
+// displayDescription with no conditionals.
 export function getPricingPlansArray(popularPlan: PlanType = 'PRO_RETAINER') {
-  return Object.values(PLAN_CONFIG).map(plan => ({
-    name: plan.name,
-    displayName: plan.displayName,
-    price: plan.priceDisplay,
-    priceValue: plan.price,
-    hours: plan.hoursDisplay,
-    description: plan.description,
-    features: plan.features,
-    badge: 'badge' in plan ? plan.badge : undefined,
-    popular: plan.name === popularPlan,
-  }));
+  return Object.values(PLAN_CONFIG).map(plan => {
+    const hasOnboarding = 'onboardingPriceDisplay' in plan;
+    const onboardingPriceDisplay = hasOnboarding ? (plan as any).onboardingPriceDisplay as string : undefined;
+    const onboardingDescription  = hasOnboarding ? (plan as any).onboardingDescription  as string : undefined;
+
+    const displayPrice = onboardingPriceDisplay ?? plan.priceDisplay;
+
+    const displayPeriod =
+      plan.priceDisplay === 'Free'    ? '30-day trial'   :
+      plan.priceDisplay === 'Custom'  ? 'contact sales'  :
+      hasOnboarding                   ? `first month · then ${plan.priceDisplay}/mo` :
+                                        'per month';
+
+    const displayDescription = onboardingDescription ?? plan.description;
+
+    const badge = hasOnboarding
+      ? 'First-Month Onboarding Rate'
+      : ('badge' in plan ? (plan as any).badge as string : undefined);
+
+    return {
+      name: plan.name,
+      displayName: plan.displayName,
+      displayPrice,
+      displayPeriod,
+      displayDescription,
+      priceValue: plan.price,
+      hours: plan.hoursDisplay,
+      features: plan.features,
+      badge,
+      popular: plan.name === popularPlan,
+    };
+  });
 }

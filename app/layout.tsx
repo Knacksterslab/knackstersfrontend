@@ -23,10 +23,10 @@ const lato = Lato({
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.knacksters.co'),
   title: {
-    default: 'Knacksters - 360° On-Demand Cloud Workforce',
+    default: 'Knacksters — Deploy Vetted Experts in Hours, Not Weeks',
     template: '%s | Knacksters',
   },
-  description: 'Access a 360° on-demand cloud workforce with pre-vetted professionals across AI, cybersecurity, development, design, marketing, and healthcare.',
+  description: 'Deploy pre-vetted professionals in hours — not weeks. On-demand expert access across AI, cybersecurity, development, design, marketing, and healthcare. Start with 50 free hours.',
   icons: {
     icon: [
       { url: '/logo.svg', type: 'image/svg+xml' },
@@ -37,15 +37,15 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     siteName: 'Knacksters',
-    title: 'Knacksters - 360° On-Demand Cloud Workforce',
-    description: 'Access a 360° on-demand cloud workforce with pre-vetted professionals across AI, cybersecurity, development, design, marketing, and healthcare.',
+    title: 'Knacksters — Deploy Vetted Experts in Hours, Not Weeks',
+    description: 'Deploy pre-vetted professionals in hours — not weeks. On-demand expert access across AI, cybersecurity, development, design, marketing, and healthcare. Start with 50 free hours.',
     url: 'https://www.knacksters.co',
-    images: [{ url: '/hero-bg.png', width: 1200, height: 630, alt: 'Knacksters - On-Demand Cloud Workforce' }],
+    images: [{ url: '/hero-bg.png', width: 1200, height: 630, alt: 'Knacksters - On-Demand Expert Platform' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Knacksters - 360° On-Demand Cloud Workforce',
-    description: 'Access a 360° on-demand cloud workforce with pre-vetted professionals across AI, cybersecurity, development, design, marketing, and healthcare.',
+    title: 'Knacksters — Deploy Vetted Experts in Hours, Not Weeks',
+    description: 'Deploy pre-vetted professionals in hours — not weeks. Start with 50 free hours. No contracts.',
     images: ['/hero-bg.png'],
     site: '@knackstersco',
     creator: '@knackstersco',

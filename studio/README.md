@@ -2,6 +2,12 @@
 
 Congratulations, you have now installed the Sanity Content Studio, an open-source real-time content editing environment connected to the Sanity backend.
 
+## Local setup
+
+1. Copy `.env.example` to `.env`.
+2. Set `SANITY_STUDIO_PROJECT_ID` and `SANITY_STUDIO_DATASET`.
+3. Run `npm run dev`.
+
 Now you can do the following things:
 
 - [Read “getting started” in the docs](https://www.sanity.io/docs/introduction/getting-started?utm_source=readme)

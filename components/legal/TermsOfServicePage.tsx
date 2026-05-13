@@ -19,7 +19,7 @@ export default function TermsOfServicePage() {
       subsections: [
         {
           title: "2.1 Service Plans",
-          content: "We offer five subscription tiers: (1) Trial to Hire — free, 50 hours, valid 30 days, limited to one domain and one use per company; (2) Flex Retainer — $7,000/month for 100 hours; (3) Pro Retainer — $12,500/month for 200 hours; (4) Growth — $25,000/month for 450 hours; and (5) Enterprise — custom pricing and hours. All paid plans include access to our full talent network and dedicated Customer Success Manager support."
+          content: "We offer five subscription tiers: (1) Trial to Hire — free, 50 hours, valid 30 days, limited to one domain and one use per company; (2) Flex Retainer — $3,500 for the first month (onboarding period), then $7,000/month for 100 hours; (3) Pro Retainer — $12,500/month for 200 hours; (4) Growth — $25,000/month for 450 hours; and (5) Enterprise — custom pricing and hours. All paid plans include access to our full talent network and dedicated Customer Success Manager support."
         },
         {
           title: "2.2 Additional Hours",
