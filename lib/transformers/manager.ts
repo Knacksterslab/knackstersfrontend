@@ -20,6 +20,7 @@ interface BackendClient {
     status: string;
     monthlyHours?: number;
     priceAmount?: number;
+    recurringPriceAmount?: number | null;
   }>;
   hoursBalances: Array<{
     allocatedHours: number;
