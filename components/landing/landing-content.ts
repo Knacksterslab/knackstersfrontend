@@ -12,8 +12,6 @@ export interface LandingContent {
     }>;
   };
   statistics: {
-    professionals: string;
-    professionalsLabel: string;
     hoursDelivered: string;
     hoursDeliveredLabel: string;
   };
@@ -57,10 +55,8 @@ export interface LandingContent {
   };
   _statsBaseline?: {
     date: string;
-    professionals: number;
     hoursDelivered: number;
     hoursPerDay: number;
-    professionalsPerWeek: number;
   };
 }
 
@@ -110,17 +106,13 @@ export const defaultLandingContent: LandingContent = {
     ]
   },
   "statistics": {
-    "professionals": "105+",
-    "professionalsLabel": "Professionals in Network",
     "hoursDelivered": "960,000+",
     "hoursDeliveredLabel": "Hours Delivered"
   },
   "_statsBaseline": {
     "date": "2026-05-13",
-    "professionals": 105,
     "hoursDelivered": 960000,
-    "hoursPerDay": 200,
-    "professionalsPerWeek": 1
+    "hoursPerDay": 200
   },
   "partners": {
     "title": "Trusted by Leading Companies",

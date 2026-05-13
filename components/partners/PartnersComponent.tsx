@@ -3,6 +3,7 @@ import { defaultLandingContent } from '@/components/landing/landing-content';
 import { getLiveStats } from '@/lib/utils/stats';
 import { BACKEND_URL } from '@/lib/config/env';
 
+
 interface Partner {
   slug: string;
   name: string;
@@ -56,7 +57,7 @@ function PartnerLogo({ partner }: { partner: Partner }) {
 }
 
 export default async function PartnersComponent() {
-  const [activePartners, { title, description }, { professionals, professionalsLabel, hoursDelivered, hoursDeliveredLabel }] =
+  const [activePartners, { title, description }, { hoursDelivered, hoursDeliveredLabel }] =
     await Promise.all([
       fetchActivePartners(),
       Promise.resolve(defaultLandingContent.partners),
@@ -94,20 +95,6 @@ export default async function PartnersComponent() {
 
           {/* Stats */}
           <div className="flex flex-row gap-10 sm:gap-12 md:gap-16 sm:text-right">
-            <div>
-              <div
-                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white"
-                style={{ fontFamily: 'var(--font-sans), Lato, sans-serif' }}
-              >
-                {professionals}
-              </div>
-              <p
-                className="text-xs sm:text-sm md:text-base text-gray-200 mt-1"
-                style={{ fontFamily: 'var(--font-sans), Lato, sans-serif' }}
-              >
-                {professionalsLabel}
-              </p>
-            </div>
             <div>
               <div
                 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white"

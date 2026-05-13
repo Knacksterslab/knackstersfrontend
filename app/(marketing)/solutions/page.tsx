@@ -185,7 +185,6 @@ export default function SolutionsPage() {
         <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
           {[
             { value: "6", label: "Solution Domains" },
-            { value: "10,000+", label: "Vetted Professionals" },
             { value: "960,000+", label: "Hours Delivered" },
             { value: "50 hrs", label: "Free to Start" },
           ].map((stat) => (

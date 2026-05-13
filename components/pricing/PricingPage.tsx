@@ -28,7 +28,7 @@ const allIncluded = [
   { icon: Clock, label: 'No long-term contracts' },
   { icon: DollarSign, label: 'No setup fees' },
   { icon: HeartHandshake, label: 'Full-time hire anytime' },
-  { icon: Sparkles, label: 'Access to 10,000+ experts' },
+  { icon: Sparkles, label: 'Access to vetted expert network' },
 ];
 
 const faqs = [

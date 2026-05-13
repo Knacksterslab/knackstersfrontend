@@ -49,7 +49,7 @@ export const pricingPlans = [
     bestFor: 'Map needs, assign talent, build your workflow — prove fit in month one, then scale.',
     features: [
       'Dedicated Customer Success Manager',
-      'Access to 10,000+ experts',
+      'Access to vetted expert network',
       'All 6 service domains',
       'Real-time dashboard',
       'No contracts',

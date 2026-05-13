@@ -43,14 +43,14 @@ export default function AdminDashboardPage() {
   const liveStats = getLiveStats();
   const stats = [
     {
-      title: 'Total Talents',
-      value: liveStats.professionals,
+      title: 'Active Clients',
+      value: '1,234',
       icon: Users,
       color: 'bg-blue-500',
     },
     {
-      title: 'Active Clients',
-      value: '1,234',
+      title: 'Applications',
+      value: talentApplications.length.toString(),
       icon: Briefcase,
       color: 'bg-green-500',
     },

@@ -96,11 +96,11 @@ export default function HowItWorksPage() {
     {
       number: "03",
       title: "Expert Matching (Hours, Not Weeks)",
-      description: "Your CSM searches our 10,000+ vetted professionals and presents the best 2–3 candidates for your approval. You review and approve — they handle the rest.",
+      description: "Your CSM searches our vetted professionals and presents the best 2–3 candidates for your approval. You review and approve — they handle the rest.",
       time: "2–4 hours (your CSM handles this)",
       outcome: "Curated expert profiles presented",
       details: [
-        "CSM searches pre-screened talent pool of 10,000+ professionals",
+        "CSM searches pre-screened talent pool of vetted professionals",
         "Filtered by skills, availability, experience level, and domain",
         "Reviews portfolios and past client ratings (avg 4.8/5 — 8% pass rate)",
         "Shortlists top 2–3 candidates that match your needs",

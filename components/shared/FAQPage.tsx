@@ -90,7 +90,7 @@ export default function FAQPage() {
         },
         {
           question: "Is there a subscription fee?",
-          answer: "Yes. Our pricing is simple and transparent. We offer a free Trial to Hire plan (50 hours, 30 days, one domain). The Flex Retainer starts with a $3,500 onboarding month (100 hours, $35/hr effective) — we use that time to map your needs and build your delivery workflow. From month two the standard rate of $7,000/month ($70/hr effective) applies. All plans include a dedicated Customer Success Manager and access to 10,000+ vetted professionals."
+          answer: "Yes. Our pricing is simple and transparent. We offer a free Trial to Hire plan (50 hours, 30 days, one domain). The Flex Retainer starts with a $3,500 onboarding month (100 hours, $35/hr effective) — we use that time to map your needs and build your delivery workflow. From month two the standard rate of $7,000/month ($70/hr effective) applies. All plans include a dedicated Customer Success Manager and access to our vetted professional network."
         }
       ]
     },
@@ -188,7 +188,7 @@ export default function FAQPage() {
       faqs: [
         {
           question: "How quickly can I start working with talent?",
-          answer: "Most clients are matched with their first professional within 4-6 hours of signup. Our record is 37 minutes from signup to expert assignment. Once you subscribe and meet with your Customer Success Manager, we immediately begin sourcing talent from our pre-vetted network of 10,000+ professionals."
+          answer: "Most clients are matched with their first professional within 4-6 hours of signup. Our record is 37 minutes from signup to expert assignment. Once you subscribe and meet with your Customer Success Manager, we immediately begin sourcing talent from our pre-vetted professional network."
         },
         {
           question: "What happens after I sign up?",
