@@ -110,14 +110,14 @@ export const defaultLandingContent: LandingContent = {
     ]
   },
   "statistics": {
-    "professionals": "9,999+",
+    "professionals": "105+",
     "professionalsLabel": "Professionals in Network",
     "hoursDelivered": "960,000+",
     "hoursDeliveredLabel": "Hours Delivered"
   },
   "_statsBaseline": {
-    "date": "2026-03-27",
-    "professionals": 9999,
+    "date": "2026-05-13",
+    "professionals": 105,
     "hoursDelivered": 960000,
     "hoursPerDay": 200,
     "professionalsPerWeek": 1

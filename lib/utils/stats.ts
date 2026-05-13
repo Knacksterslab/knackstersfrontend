@@ -3,9 +3,9 @@
  * Hours grow by 200/day and professionals by 1/week from the baseline date.
  */
 
-const BASELINE_DATE = new Date('2026-03-27T00:00:00.000Z');
+const BASELINE_DATE = new Date('2026-05-13T00:00:00.000Z');
 const BASELINE_HOURS = 960000;
-const BASELINE_PROFESSIONALS = 9999;
+const BASELINE_PROFESSIONALS = 105;
 const HOURS_PER_DAY = 200;
 const PROFESSIONALS_PER_WEEK = 1;
 
