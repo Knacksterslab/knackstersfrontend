@@ -166,23 +166,29 @@ export default function DashboardLayout() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
                   <div className="lg:col-span-2 space-y-6">
-                    <NewUserTip tipId="task-summary" title="Your Active Tasks" variant="info">
-                      Active tasks show real-time progress. Click any task to view details, communicate with your Knackster, and track time logs.
-                    </NewUserTip>
-                    
-                    <RequestSummary 
-                      projects={data.recentProjects} 
-                      hasActiveSubscription={data.subscription?.status === 'ACTIVE'}
-                    />
-                    
                     {!data.subscription ? (
-                      <PlanSelection 
-                        onSubscriptionComplete={refresh} 
-                        hasUpcomingMeeting={!!data.upcomingMeeting}
-                        onScheduleCall={() => setShowBookingModal(true)}
-                      />
+                      <>
+                        <PlanSelection
+                          onSubscriptionComplete={refresh}
+                          hasUpcomingMeeting={!!data.upcomingMeeting}
+                          onScheduleCall={() => setShowBookingModal(true)}
+                        />
+                        <RequestSummary
+                          projects={data.recentProjects}
+                          hasActiveSubscription={false}
+                        />
+                      </>
                     ) : (
-                      <BillingSummary subscription={data.subscription} />
+                      <>
+                        <NewUserTip tipId="task-summary" title="Your Active Tasks" variant="info">
+                          Active tasks show real-time progress. Click any task to view details, communicate with your Knackster, and track time logs.
+                        </NewUserTip>
+                        <RequestSummary
+                          projects={data.recentProjects}
+                          hasActiveSubscription={data.subscription?.status === 'ACTIVE'}
+                        />
+                        <BillingSummary subscription={data.subscription} />
+                      </>
                     )}
                   </div>
 
