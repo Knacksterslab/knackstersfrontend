@@ -142,43 +142,63 @@ export default function UpcomingMeeting({ meeting, onRefresh }: UpcomingMeetingP
         </div>
 
         <div className="p-4">
-          <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-sm font-semibold text-gray-900 mb-1">
-                  {meeting.title || 'Upcoming Call'}: {formatDate(meetingDate)}
+          <div className="p-4 rounded-xl border border-blue-100 bg-blue-50">
+            {/* Date tile + details */}
+            <div className="flex items-start gap-4">
+              {/* Date tile */}
+              <div className="flex-shrink-0 w-16 bg-blue-100 rounded-xl flex flex-col items-center justify-center py-3 px-2">
+                <span className="text-xs font-semibold text-blue-600 uppercase tracking-wide">
+                  {meetingDate.toLocaleDateString('en-US', { month: 'short' })}
+                </span>
+                <span className="text-3xl font-bold text-blue-700 leading-none">
+                  {meetingDate.getDate()}
+                </span>
+                <span className="text-xs font-medium text-blue-500 mt-0.5">
+                  {meetingDate.toLocaleDateString('en-US', { weekday: 'short' })}
+                </span>
+              </div>
+
+              {/* Meeting details */}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-gray-900 leading-snug">
+                  {meeting.title || 'Strategy Call'}
                 </p>
-                <p className="text-xs text-gray-600">
+                {meeting.description && (
+                  <p className="text-xs text-gray-500 mt-0.5 truncate">{meeting.description}</p>
+                )}
+                <p className="text-xs text-gray-600 mt-2 flex items-center gap-1.5">
+                  <svg className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
+                  </svg>
                   {formatTime(meetingDate)} • {meeting.durationMinutes} min
                 </p>
-                <p className="text-xs text-gray-600 mt-2 flex items-center gap-1">
-                  <span className="inline-block w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                <p className="text-xs text-gray-600 mt-1.5 flex items-center gap-1.5">
+                  <span className="inline-block w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></span>
                   Meeting link sent to your email
                 </p>
               </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setShowModal(true)}
-                  className="text-sm text-blue-600 hover:text-blue-700 font-medium whitespace-nowrap"
-                >
-                  Reschedule
-                </button>
-                <span className="text-gray-300">|</span>
-                <button
-                  onClick={() => setShowCancelDialog(true)}
-                  className="text-sm text-red-600 hover:text-red-700 font-medium whitespace-nowrap"
-                >
-                  Cancel
-                </button>
-              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="border-t border-blue-100 mt-4" />
+
+            {/* Action buttons */}
+            <div className="flex items-center gap-3 mt-4">
+              <button
+                onClick={() => setShowModal(true)}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-blue-200 rounded-lg text-sm font-semibold text-blue-600 hover:bg-blue-50 transition-colors"
+              >
+                <Calendar size={15} />
+                Reschedule
+              </button>
+              <button
+                onClick={() => setShowCancelDialog(true)}
+                className="text-sm font-semibold text-red-500 hover:text-red-600 transition-colors px-2"
+              >
+                Cancel
+              </button>
             </div>
           </div>
-
-          {meeting.description && (
-            <p className="text-sm text-gray-600 leading-relaxed">
-              {meeting.description}
-            </p>
-          )}
         </div>
       </div>
 
