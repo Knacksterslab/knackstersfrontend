@@ -1,18 +1,47 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Logo from '@/components/ui/logo';
 import SolutionSelector, { SolutionType } from '@/components/signup/SolutionSelector';
 import { API_URL } from '@/lib/config/env';
+
+function nameNeedsUpdate(fullName: string | null | undefined, email: string | null | undefined): boolean {
+  if (!fullName) return true;
+  // If the name has no spaces it's likely an email prefix (e.g. "byter2026")
+  if (!fullName.includes(' ')) return true;
+  // If the name matches the part before @ in the email
+  if (email && fullName === email.split('@')[0]) return true;
+  return false;
+}
 
 export default function OnboardingPage() {
   const router = useRouter();
   const [selectedSolution, setSelectedSolution] = useState<SolutionType | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [showNameFields, setShowNameFields] = useState(false);
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/auth/session`, { credentials: 'include' })
+      .then(r => r.json())
+      .then(data => {
+        const user = data?.data;
+        if (user && nameNeedsUpdate(user.fullName, user.email)) {
+          setShowNameFields(true);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const handleContinue = async () => {
+    if (showNameFields && (!firstName.trim() || !lastName.trim())) {
+      setError('Please enter your first and last name.');
+      return;
+    }
+
     if (!selectedSolution) {
       setError('Please select your primary need to continue.');
       return;
@@ -25,11 +54,16 @@ export default function OnboardingPage() {
       const notesEl = document.getElementById('solution-notes') as HTMLTextAreaElement | null;
       const solutionNotes = notesEl?.value || '';
 
+      const body: Record<string, string> = { selectedSolution, solutionNotes };
+      if (showNameFields && firstName.trim() && lastName.trim()) {
+        body.fullName = `${firstName.trim()} ${lastName.trim()}`;
+      }
+
       const res = await fetch(`${API_URL}/api/auth/onboarding`, {
         method: 'PATCH',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ selectedSolution, solutionNotes }),
+        body: JSON.stringify(body),
       });
 
       if (!res.ok) {
@@ -83,6 +117,39 @@ export default function OnboardingPage() {
 
         {/* Solution Selector */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+
+          {/* Name fields — only shown for Google users whose name looks like an email prefix */}
+          {showNameFields && (
+            <div className="mb-8 pb-8 border-b border-gray-100">
+              <h2 className="text-lg font-semibold text-gray-900 mb-1">What's your name?</h2>
+              <p className="text-sm text-gray-500 mb-4">We'll use this to personalise your experience.</p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">First Name*</label>
+                  <input
+                    type="text"
+                    value={firstName}
+                    onChange={e => setFirstName(e.target.value)}
+                    placeholder="Graham"
+                    autoComplete="given-name"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent text-sm"
+                  />
+                </div>
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Last Name*</label>
+                  <input
+                    type="text"
+                    value={lastName}
+                    onChange={e => setLastName(e.target.value)}
+                    placeholder="Fairground"
+                    autoComplete="family-name"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent text-sm"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
           <SolutionSelector
             selectedSolution={selectedSolution}
             onSelect={setSelectedSolution}
